@@ -34,9 +34,10 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-SAMPLE_SPREADSHEET_ID = os.getenv('SAMPLE_SPREADSHEET_ID')
-SAMPLE_RANGE1 = os.getenv('SAMPLE_RANGE1')
-SAMPLE_RANGE2 = os.getenv('SAMPLE_RANGE2')
+SPREADSHEET_ID = os.getenv('SPREADSHEET_ID')
+RANGE1 = os.getenv('RANGE1')
+RANGE2 = os.getenv('RANGE2')
+RANGE3 = os.getenv('RANGE3')
 
 bot = commands.Bot(command_prefix='!')
 
@@ -84,8 +85,8 @@ async def testCommand(ctx, *args):
         body = {
             'values': valuesToWrite
         }
-        result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE1).execute()
-        result2 = sheet.values().update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE2, valueInputOption='USER_ENTERED', body=body).execute()
+        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE1).execute()
+        result2 = sheet.values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE2, valueInputOption='USER_ENTERED', body=body).execute()
         values = result.get('values', [])
 
         if not values:
