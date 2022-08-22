@@ -10,3 +10,27 @@ bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC
 )
 async def my_first_command(ctx: interactions.CommandContext):
     await ctx.send("Hi there!")
+
+@bot.command(
+    name="Other",
+    description="Set Destination or Item target",
+    scope=1011380009010724924,
+)
+async def my_first_command(ctx: interactions.CommandContext):
+    await ctx.send("Hi there!")
+
+@bot.command(
+        name="Player",
+        description="Set a Player target",
+        scope=1011380009010724924,
+    )
+async def my_first_command(ctx: interactions.CommandContext):
+    await ctx.send("Hi there!")
+
+@bot.command(
+        name="Printout",
+        description="Fetch most recent printout",
+        scope=1011380009010724924,
+    )
+async def my_first_command(ctx: interactions.CommandContext):
+    await ctx.send("Hi there!")
