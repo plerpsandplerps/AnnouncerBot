@@ -1,105 +1,20 @@
-print(f"Starting bot...")
-
-
-
-import time
-startTime = time.time()
-
-
-
-print(f"Importing modules...")
-
-
-
-import os
-
 import discord
 from discord.ext import commands
+from discord import guild
+from discord_slash import SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_choice, create_option
 from dotenv import load_dotenv
 
-import pickle
-import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+client = commands.Bot(command_prefix="$")
+slash = SlashCommand(client, sync_commands=True)
+token = "MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA"
 
+@slash.slash(
+    name="hello"
+    description="Just sends a message",
+    guild_ids=[218070024894676993]
+)
+async def _hello(ctx:SlashContext):
+    await ctx.send("World!")
 
-
-print(f"Importing .env configuration...")
-
-
-
-# If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-SPREADSHEET_ID = os.getenv('SPREADSHEET_ID')
-RANGE1 = os.getenv('RANGE1')
-RANGE2 = os.getenv('RANGE2')
-RANGE3 = os.getenv('RANGE3')
-
-bot = commands.Bot(command_prefix='!')
-
-
-
-print("Initializing Google Authentication...")
-
-
-
-creds = None
-if os.path.exists('token.pickle'):
-    with open('token.pickle', 'rb') as token:
-        creds = pickle.load(token)
-if not creds or not creds.valid:
-    if creds and creds.expired and creds.refresh_token:
-        creds.refresh(Request())
-    else:
-        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-        creds = flow.run_local_server(port=0)
-    with open('token.pickle', 'wb') as token:
-        pickle.dump(creds, token)
-service = build('sheets', 'v4', credentials=creds)
-sheet = service.spreadsheets()
-
-
-
-print(f"Startup complete!\t[ {(time.time()-startTime):.2f}s ]")
-
-
-
-
-
-
-
-@bot.command(name='test')
-async def testCommand(ctx, *args):
-    if (len(args) == 0):
-        await ctx.send("Please send some arguements!")
-    else:
-        valuesToWrite = [
-            [ "C1","D1" ],
-            [ "C2","D2" ],
-            [ "C3","D3" ],
-        ]
-        body = {
-            'values': valuesToWrite
-        }
-        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE1).execute()
-        result2 = sheet.values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE2, valueInputOption='USER_ENTERED', body=body).execute()
-        values = result.get('values', [])
-
-        if not values:
-            print('No data found.')
-        else:
-            print('Name, Major:')
-            for row in values:
-                # Print columns A and E, which correspond to indices 0 and 4.
-                print('%s, %s' % (row[0], row[1]))
-                await ctx.send(f"{row[0]} {row[1]}")
-        print(f"Arg0: {args[0]}")
-
-
-
-
-bot.run(TOKEN)
+client.run(token)
