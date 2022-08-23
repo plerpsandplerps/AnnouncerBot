@@ -27,8 +27,8 @@ async def name_this_however_you_want(message: interactions.Message):
         ),
     ],
 )
-async def first_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env.")
+async def first_command(ctx: interactions.CommandContext, playertarget: str):
+    await ctx.send(f"You will use light attack on '{playertarget}'!")
 
 @bot.command(
     name="normalattack",
@@ -43,7 +43,7 @@ async def first_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def second_command(ctx: interactions.CommandContext):
+async def second_command(ctx: interactions.CommandContext, playertarget: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
@@ -59,7 +59,7 @@ async def second_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def third_command(ctx: interactions.CommandContext):
+async def third_command(ctx: interactions.CommandContext, playertarget: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
@@ -75,14 +75,13 @@ async def third_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def fourth_command(ctx: interactions.CommandContext):
+async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
     name="evade",
     description="2turn. for the duration receive no damage from sources other than interrupts",
     scope=1011380009010724924,
-    ],
 )
 async def fifth_command(ctx: interactions.CommandContext):
     await ctx.send("DM me if you want access to the test env")
@@ -91,7 +90,6 @@ async def fifth_command(ctx: interactions.CommandContext):
     name="rest",
     description="2turn. heal one quarter of your missing health each turn",
     scope=1011380009010724924,
-    ],
 )
 async def sixth_command(ctx: interactions.CommandContext):
     await ctx.send("DM me if you want access to the test env")
@@ -109,7 +107,7 @@ async def sixth_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def seventh_command(ctx: interactions.CommandContext):
+async def seventh_command(ctx: interactions.CommandContext, destination: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
@@ -131,12 +129,12 @@ async def seventh_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def eigth_first_command(ctx: interactions.CommandContext):
+async def eigth_first_command(ctx: interactions.CommandContext, playertarget: str, unusedinventoryitem: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
     name="loot",
-    description="roll 1d4. on a 4 or higher gain two items at random. if you are the lowest roller lose a quarter of your current health.",
+    description="roll 1d4. on 4 or higher gain two random items. low roll loses 0.25 of their current health",
     scope=1011380009010724924,
 )
 async def eigth_second_command(ctx: interactions.CommandContext):
@@ -152,7 +150,7 @@ async def eigth_third_command(ctx: interactions.CommandContext):
 
 @bot.command(
     name="aid",
-    description="roll 1d4. if you are the highest roller heal the chosen player for one quarter of their missing health",
+    description="roll 1d4. high roll heals their chosen player for 0.25 of their missing health",
     scope=1011380009010724924,
     options = [
         interactions.Option(
@@ -163,7 +161,7 @@ async def eigth_third_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def eigth_fourth_command(ctx: interactions.CommandContext):
+async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
@@ -187,12 +185,12 @@ async def eigth_fifth_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def eigth_sixth_command(ctx: interactions.CommandContext):
+async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
-    name="Drinking Challenge",
-    description="roll 1d4. if you are the highest roller in the area this turn add 420 damage to a random attack. if you are the lowest roller lose one quarter of your current hp. otherwise heal one quarter of your missing health.  ",
+    name="drinkingchallenge",
+    description="roll 1d4. high roll adds 420 damage to a random attack. low roller loses 0.25 of their current hp",
     scope=1011380009010724924,
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
@@ -204,14 +202,14 @@ async def eigth_seventh_command(ctx: interactions.CommandContext):
     scope=1011380009010724924,
     options = [
         interactions.Option(
-            name="inventoryitem",
+            name="unusedinventoryitem",
             description="choose an item in your inventory you want to use",
             type=interactions.OptionType.STRING,
             required=True,
         ),
     ],
 )
-async def ninth_command(ctx: interactions.CommandContext):
+async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: str):
     await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
