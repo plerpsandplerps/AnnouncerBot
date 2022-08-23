@@ -60,7 +60,7 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def third_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will use light attack on '{playertarget}'!")
+    await ctx.send(f"You will use heavy attack on '{playertarget}'!")
 
 @bot.command(
     name="interrupt",
