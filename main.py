@@ -22,7 +22,7 @@ async def name_this_however_you_want(message: interactions.Message):
         interactions.Option(
             name="playertarget",
             description="who you want to light attack",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
@@ -38,13 +38,13 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
         interactions.Option(
             name="playertarget",
             description="who you want to normal attack",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
 )
 async def second_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will use normal attack on '{playertarget}'!")
 
 @bot.command(
     name="heavyattack",
@@ -54,13 +54,13 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
         interactions.Option(
             name="playertarget",
             description="who you want to heavy attack",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
 )
 async def third_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will use light attack on '{playertarget}'!")
 
 @bot.command(
     name="interrupt",
@@ -70,13 +70,13 @@ async def third_command(ctx: interactions.CommandContext, playertarget: str):
         interactions.Option(
             name="playertarget",
             description="who you want to interrupt",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
 )
 async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will use interrupt on '{playertarget}'!")
 
 @bot.command(
     name="evade",
@@ -84,7 +84,7 @@ async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     scope=1011380009010724924,
 )
 async def fifth_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will receive no damage from sources other than interrupts.")
 
 @bot.command(
     name="rest",
@@ -92,7 +92,7 @@ async def fifth_command(ctx: interactions.CommandContext):
     scope=1011380009010724924,
 )
 async def sixth_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will heal one quarter of your missing health each turn")
 
 @bot.command(
     name="travel",
@@ -108,7 +108,7 @@ async def sixth_command(ctx: interactions.CommandContext):
     ],
 )
 async def seventh_command(ctx: interactions.CommandContext, destination: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will travel to your '{destination}'!")
 
 @bot.command(
     name="exchange",
@@ -124,13 +124,13 @@ async def seventh_command(ctx: interactions.CommandContext, destination: str):
         interactions.Option(
             name="playertarget",
             description="who you want to give your item to",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
 )
 async def eigth_first_command(ctx: interactions.CommandContext, playertarget: str, unusedinventoryitem: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will give '{unusedinventoryitem}' to '{playertarget}'!")
 
 @bot.command(
     name="loot",
@@ -138,7 +138,7 @@ async def eigth_first_command(ctx: interactions.CommandContext, playertarget: st
     scope=1011380009010724924,
 )
 async def eigth_second_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will attempt to loot the dungeon!")
 
 @bot.command(
     name="farm",
@@ -146,7 +146,7 @@ async def eigth_second_command(ctx: interactions.CommandContext):
     scope=1011380009010724924,
 )
 async def eigth_third_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will gain 1d4 seed coins!")
 
 @bot.command(
     name="aid",
@@ -156,13 +156,13 @@ async def eigth_third_command(ctx: interactions.CommandContext):
         interactions.Option(
             name="playertarget",
             description="choose the player you wish to heal",
-            type=interactions.OptionType.STRING,
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
 )
 async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send(f"You will attempt to heal '{playertarget}'!")
 
 @bot.command(
     name="battlelich",
@@ -170,7 +170,7 @@ async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: s
     scope=1011380009010724924,
 )
 async def eigth_fifth_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will attempt to battle the lich!")
 
 @bot.command(
     name="trade",
@@ -185,8 +185,8 @@ async def eigth_fifth_command(ctx: interactions.CommandContext):
         ),
     ],
 )
-async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem: str):
-    await ctx.send("DM me if you want access to the test env")
+async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
+    await ctx.send("You will purchase '{shopitem}' !")
 
 @bot.command(
     name="drinkingchallenge",
@@ -194,7 +194,7 @@ async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem: str):
     scope=1011380009010724924,
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will try to best the rest in a drinking challenge!")
 
 @bot.command(
     name="useitem",
@@ -210,7 +210,7 @@ async def eigth_seventh_command(ctx: interactions.CommandContext):
     ],
 )
 async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: str):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("You will use '{unusedinventoryitem}'!")
 
 @bot.command(
         name="printout",
