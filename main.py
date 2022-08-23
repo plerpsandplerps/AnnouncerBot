@@ -30,14 +30,30 @@ async def name_this_however_you_want(message: interactions.Message):
     options = [
         interactions.Option(
             name="playertarget",
-            description="who you want to light attack",
             type=interactions.OptionType.USER,
+            description="who you want to light attack",
             required=True,
         ),
     ],
 )
 async def first_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will use light attack on '{playertarget}'!")
+    await ctx.send(f"You will use light attack on '{playertarget}'!", ephemeral=True)
+
+@bot.command(
+    name="altattack",
+    description="1turn. attack a player in your area for 950. gain 1rage.",
+    scope=guildid,
+)
+async def altattack_command(ctx: interactions.CommandContext,):
+    select_menu = SelectMenu(
+        custom_id="lightattackalt",
+        options=[
+            SelectOption(label="User 1", value="User-1"),
+            SelectOption(label="User 2", value="User-2"),
+        ],
+        placeholder="Select a player target",
+    )
+    await ctx.send("Pick a player target in your area", components=select_menu, ephemeral=True)
 
 @bot.command(
     name="normalattack",
@@ -53,7 +69,7 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def second_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will use normal attack on '{playertarget}'!")
+    await ctx.send(f"You will use normal attack on '{playertarget}'!", ephemeral=True)
 
 @bot.command(
     name="heavyattack",
@@ -69,7 +85,7 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def third_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will use heavy attack on '{playertarget}'!")
+    await ctx.send(f"You will use heavy attack on '{playertarget}'!", ephemeral=True)
 
 @bot.command(
     name="interrupt",
@@ -85,7 +101,7 @@ async def third_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will use interrupt on '{playertarget}'!")
+    await ctx.send(f"You will use interrupt on '{playertarget}'!", ephemeral=True)
 
 @bot.command(
     name="evade",
@@ -93,7 +109,7 @@ async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     scope=guildid,
 )
 async def fifth_command(ctx: interactions.CommandContext):
-    await ctx.send("You will receive no damage from sources other than interrupts.")
+    await ctx.send("You will receive no damage from sources other than interrupts.", ephemeral=True)
 
 @bot.command(
     name="rest",
@@ -101,7 +117,7 @@ async def fifth_command(ctx: interactions.CommandContext):
     scope=guildid,
 )
 async def sixth_command(ctx: interactions.CommandContext):
-    await ctx.send("You will heal one quarter of your missing health each turn")
+    await ctx.send("You will heal one quarter of your missing health each turn", ephemeral=True)
 
 @bot.command(
     name="traveltocrossroads",
@@ -109,7 +125,7 @@ async def sixth_command(ctx: interactions.CommandContext):
     scope=guildid,
 )
 async def seventh_to_command(ctx: interactions.CommandContext):
-    await ctx.send(f"You will travel to the Crossroads!")
+    await ctx.send(f"You will travel to the Crossroads!", ephemeral=True)
     await ctx.author.remove_role(dungeon, guildid)
     await ctx.author.remove_role(farmland, guildid)
     await ctx.author.remove_role(keep, guildid)
@@ -133,8 +149,8 @@ async def seventh_to_command(ctx: interactions.CommandContext):
 )
 async def seventh_from_command(ctx: interactions.CommandContext, destination: str):
     if crossroads not in ctx.author.roles:
-        return await ctx.send("You aren't in the crossroads! You must use / traveltocrossroads first!")
-    await ctx.send(f"You will travel to the {destination.mention}!")
+        return await ctx.send("You aren't in the crossroads! You must use / traveltocrossroads first!", ephemeral=True)
+    await ctx.send(f"You will travel to the {destination.mention}!", ephemeral=True)
     await ctx.author.remove_role(crossroads, guildid)
     await ctx.author.add_role(destination, guildid)
 
@@ -158,7 +174,7 @@ async def seventh_from_command(ctx: interactions.CommandContext, destination: st
     ],
 )
 async def eigth_first_command(ctx: interactions.CommandContext, playertarget: str, unusedinventoryitem: str):
-    await ctx.send(f"You will give '{unusedinventoryitem}' to '{playertarget}'!")
+    await ctx.send(f"You will give '{unusedinventoryitem}' to '{playertarget}'!", ephemeral=True)
 
 @bot.command(
     name="loot",
@@ -166,7 +182,7 @@ async def eigth_first_command(ctx: interactions.CommandContext, playertarget: st
     scope=guildid,
 )
 async def eigth_second_command(ctx: interactions.CommandContext):
-    await ctx.send("You will attempt to loot the dungeon!")
+    await ctx.send("You will attempt to loot the dungeon!", ephemeral=True)
 
 @bot.command(
     name="farm",
@@ -174,7 +190,7 @@ async def eigth_second_command(ctx: interactions.CommandContext):
     scope=guildid,
 )
 async def eigth_third_command(ctx: interactions.CommandContext):
-    await ctx.send("You will gain 1d4 seed coins!")
+    await ctx.send("You will gain 1d4 seed coins!", ephemeral=True)
 
 @bot.command(
     name="aid",
@@ -190,7 +206,7 @@ async def eigth_third_command(ctx: interactions.CommandContext):
     ],
 )
 async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will attempt to heal '{playertarget}'!")
+    await ctx.send(f"You will attempt to heal '{playertarget}'!", ephemeral=True)
 
 @bot.command(
     name="battlelich",
@@ -198,7 +214,7 @@ async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: s
     scope=guildid,
 )
 async def eigth_fifth_command(ctx: interactions.CommandContext):
-    await ctx.send("You will attempt to battle the lich!")
+    await ctx.send("You will attempt to battle the lich!", ephemeral=True)
 
 @bot.command(
     name="trade",
@@ -214,7 +230,7 @@ async def eigth_fifth_command(ctx: interactions.CommandContext):
     ],
 )
 async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
-    await ctx.send(f"You will purchase '{shopitem}' !")
+    await ctx.send(f"You will purchase '{shopitem}' !", ephemeral=True)
 
 @bot.command(
     name="drinkingchallenge",
@@ -222,7 +238,7 @@ async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
     scope=guildid,
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
-    await ctx.send("You will try to best the rest in a drinking challenge!")
+    await ctx.send("You will try to best the rest in a drinking challenge!", ephemeral=True)
 
 @bot.command(
     name="useitem",
@@ -238,7 +254,7 @@ async def eigth_seventh_command(ctx: interactions.CommandContext):
     ],
 )
 async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: str):
-    await ctx.send(f"You will use '{unusedinventoryitem}'!")
+    await ctx.send(f"You will use '{unusedinventoryitem}'!", ephemeral=True)
 
 @bot.command(
         name="printout",
@@ -246,6 +262,6 @@ async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: s
         scope=guildid,
     )
 async def tenth_command(ctx: interactions.CommandContext):
-    await ctx.send("DM me if you want access to the test env")
+    await ctx.send("DM me if you want access to the test env", ephemeral=True)
 
 bot.start ()
