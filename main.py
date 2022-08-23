@@ -15,35 +15,211 @@ async def name_this_however_you_want(message: interactions.Message):
     )
 
 @bot.command(
-    name="action",
-    description="number between one and nine",
+    name="lightattack",
+    description="1turn. attack a player in your area for 950. gain 1rage.",
     scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="playertarget",
+            description="who you want to light attack",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
 )
 async def first_command(ctx: interactions.CommandContext):
-    await ctx.send("DM @Sabrina the Teenage Lich#8706 if you want access to the test env")
+    await ctx.send("DM me if you want access to the test env.")
 
 @bot.command(
-    name="other",
-    description="set destination or item target",
+    name="normalattack",
+    description="2turn. attack a player in your area for 2300.gain 2rage.",
     scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="playertarget",
+            description="who you want to normal attack",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
 )
 async def second_command(ctx: interactions.CommandContext):
-    await ctx.send("DM @Sabrina the Teenage Lich#8706 if you want access to the test env")
+    await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
-        name="player",
-        description="set a player target",
-        scope=1011380009010724924,
-    )
+    name="heavyattack",
+    description="3turn. attack a player in your area for 3650.gain 3rage.",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="playertarget",
+            description="who you want to heavy attack",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
 async def third_command(ctx: interactions.CommandContext):
-    await ctx.send("DM @Sabrina the Teenage Lich#8706 if you want access to the test env")
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="interrupt",
+    description="1turn. deal 4200 damage to your target if they are resting or evading",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="playertarget",
+            description="who you want to interrupt",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def fourth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="evade",
+    description="2turn. for the duration receive no damage from sources other than interrupts",
+    scope=1011380009010724924,
+    ],
+)
+async def fifth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="rest",
+    description="2turn. heal one quarter of your missing health each turn",
+    scope=1011380009010724924,
+    ],
+)
+async def sixth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="travel",
+    description="set destination",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="destination",
+            description="travel to any area from the crossroads or travel from any area to the crossroads",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def seventh_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="exchange",
+    description="choose a player in the area. give that player an unused item from your inventory",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="unusedinventoryitem",
+            description="choose an unused item from your inventory",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+        interactions.Option(
+            name="playertarget",
+            description="who you want to give your item to",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def eigth_first_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="loot",
+    description="roll 1d4. on a 4 or higher gain two items at random. if you are the lowest roller lose a quarter of your current health.",
+    scope=1011380009010724924,
+)
+async def eigth_second_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="farm",
+    description="roll 1d4. gain that many seed coins.",
+    scope=1011380009010724924,
+)
+async def eigth_third_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="aid",
+    description="roll 1d4. if you are the highest roller heal the chosen player for one quarter of their missing health",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="playertarget",
+            description="choose the player you wish to heal",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def eigth_fourth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="battlelich",
+    description="roll 1d4. if you are the highest roller and rolled 5 gain the lich item",
+    scope=1011380009010724924,
+)
+async def eigth_fifth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="trade",
+    description="exchange seed coins for an item",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="shopitem",
+            description="choose an item in the shop you wish to purchase",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def eigth_sixth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="Drinking Challenge",
+    description="roll 1d4. if you are the highest roller in the area this turn add 420 damage to a random attack. if you are the lowest roller lose one quarter of your current hp. otherwise heal one quarter of your missing health.  ",
+    scope=1011380009010724924,
+)
+async def eigth_seventh_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
+
+@bot.command(
+    name="useitem",
+    description="choose an unused item in your inventory and use it",
+    scope=1011380009010724924,
+    options = [
+        interactions.Option(
+            name="inventoryitem",
+            description="choose an item in your inventory you want to use",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def ninth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
 
 @bot.command(
         name="printout",
         description="fetch most recent printout",
         scope=1011380009010724924,
     )
-async def fourth_command(ctx: interactions.CommandContext):
-    await ctx.send("DM @Sabrina the Teenage Lich#8706 if you want access to the test env")
+async def tenth_command(ctx: interactions.CommandContext):
+    await ctx.send("DM me if you want access to the test env")
 
 bot.start ()
