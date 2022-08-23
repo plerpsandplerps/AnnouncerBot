@@ -5,8 +5,8 @@ bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC
 
 @bot.event
 async def on_ready():
-    print(f"We're online! We've logged in as {client.me.name}.")
-     print(f"Our latency is {round(client.latency)} ms.")
+    print(f"We're online! We've logged in as {bot.me.name}.")
+    print(f"Our latency is {round(bot.latency)} ms.")
 
 @bot.event(name="on_message_create")
 async def name_this_however_you_want(message: interactions.Message):
