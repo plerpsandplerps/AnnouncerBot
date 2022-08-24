@@ -10,5 +10,17 @@
         "Delay": true,
         "Evade": false,
         "Rest": false
+    },
+    "189920974261583872": {
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 10,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1661367566,
+        "Delay": true,
+        "Evade": false,
+        "Rest": false
     }
 }

@@ -49,6 +49,16 @@ async def listen(message: interactions.Message):
         f"We've received a message from {message.author.username}. The message is: {message.content}."
     )
 
+async def getplayerdata():
+    with open("players.json","r") as f:
+        players = json.load(f)
+    return players
+
+async def getplayerdata():
+    with open("bounties.json","r") as g:
+        startingbounties = json.load(g)
+    return bounties
+
 @bot.command(
     name="join",
     description="join the game!",
@@ -89,11 +99,6 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})")
-
-async def getplayerdata():
-    with open("players.json","r") as f:
-        players = json.load(f)
-    return players
 
 @bot.command(
     name="lightattack",
@@ -180,7 +185,7 @@ async def fifth_command(ctx: interactions.CommandContext):
 )
 async def sixth_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("You will heal one quarter of your missing health each turn", ephemeral=False)
+    await ctx.send("You heal half your missing health!", ephemeral=False)
 
 @bot.command(
     name="traveltocrossroads",
@@ -189,7 +194,7 @@ async def sixth_command(ctx: interactions.CommandContext):
 )
 async def seventh_to_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send(f"You will travel to the Crossroads!", ephemeral=False)
+    await ctx.send(f"You travel to the Crossroads!", ephemeral=False)
     await ctx.author.remove_role(dungeon, guildid)
     await ctx.author.remove_role(farmland, guildid)
     await ctx.author.remove_role(keep, guildid)
@@ -214,7 +219,7 @@ async def seventh_to_command(ctx: interactions.CommandContext):
 async def seventh_from_command(ctx: interactions.CommandContext, destination: str):
     if crossroads not in ctx.author.roles:
         return await ctx.send("You aren't in the crossroads! You must use / traveltocrossroads first!", ephemeral=False)
-    await ctx.send(f"You will travel to the {destination.mention}!", ephemeral=False)
+    await ctx.send(f"You travel to {destination.mention}!", ephemeral=False)
     players = await getplayerdata()
     await ctx.author.remove_role(crossroads, guildid)
     await ctx.author.add_role(destination, guildid)
@@ -240,7 +245,7 @@ async def seventh_from_command(ctx: interactions.CommandContext, destination: st
 )
 async def eigth_first_command(ctx: interactions.CommandContext, playertarget: str, unusedinventoryitem: str):
     players = await getplayerdata()
-    await ctx.send(f"You will give '{unusedinventoryitem}' to '{playertarget}'!", ephemeral=False)
+    await ctx.send(f"You give '{unusedinventoryitem}' to '{playertarget}'!", ephemeral=False)
 
 @bot.command(
     name="loot",
@@ -249,7 +254,7 @@ async def eigth_first_command(ctx: interactions.CommandContext, playertarget: st
 )
 async def eigth_second_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("You will attempt to loot the dungeon!", ephemeral=False)
+    await ctx.send("You attempt to loot the dungeon!", ephemeral=False)
 
 @bot.command(
     name="farm",
@@ -258,7 +263,7 @@ async def eigth_second_command(ctx: interactions.CommandContext):
 )
 async def eigth_third_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("You will gain 1d4 seed coins!", ephemeral=False)
+    await ctx.send("You gain 1d4 seed coins!", ephemeral=False)
 
 @bot.command(
     name="aid",
@@ -274,7 +279,7 @@ async def eigth_third_command(ctx: interactions.CommandContext):
     ],
 )
 async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: str):
-    await ctx.send(f"You will attempt to heal '{playertarget}'!", ephemeral=False)
+    await ctx.send(f"You heal '{playertarget}'!", ephemeral=False)
 
 @bot.command(
     name="battlelich",
@@ -283,7 +288,7 @@ async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: s
 )
 async def eigth_fifth_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("You will attempt to battle the lich!", ephemeral=False)
+    await ctx.send("You defeat the lich!", ephemeral=False)
 
 @bot.command(
     name="trade",
@@ -300,7 +305,7 @@ async def eigth_fifth_command(ctx: interactions.CommandContext):
 )
 async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
     players = await getplayerdata()
-    await ctx.send(f"You will purchase '{shopitem}' !", ephemeral=False)
+    await ctx.send(f"You purchase '{shopitem}' !", ephemeral=False)
 
 @bot.command(
     name="drinkingchallenge",
@@ -309,7 +314,7 @@ async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("You will try to best the rest in a drinking challenge!", ephemeral=False)
+    await ctx.send("You best the rest in a drinking challenge!", ephemeral=False)
 
 @bot.command(
     name="useitem",
@@ -326,7 +331,7 @@ async def eigth_seventh_command(ctx: interactions.CommandContext):
 )
 async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: str):
     players = await getplayerdata()
-    await ctx.send(f"You will use '{unusedinventoryitem}'!", ephemeral=False)
+    await ctx.send(f"You use '{unusedinventoryitem}'!", ephemeral=False)
 
 @bot.command(
         name="printout",
@@ -335,6 +340,6 @@ async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: s
     )
 async def tenth_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    await ctx.send("DM me if you want access to the test env", ephemeral=False)
+    await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})", ephemeral=True)
 
 bot.start ()
