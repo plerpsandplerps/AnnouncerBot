@@ -4,6 +4,7 @@ import discord
 import asyncio
 from datetime import datetime
 import time
+import math
 
 crossroads = 1011675481403310153
 dungeon = 1011675534066974770
@@ -30,15 +31,24 @@ async def on_ready():
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
     await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
     await asyncio.sleep(countdown)
-    while Poison < 1000:
+    while Poison < 200:
             Poison=Poison+1
-            countdown=int(countdown*.75)
+            countdown=math.ceil(int(countdown*.75))
             current_time=int(time.time())
             futuretime=int(current_time+countdown)
             print(Poison)
             print(countdown)
-            await channel.send(f"Poison has increased by one, then dealt **{Poison*100} damage** to everyone! The time between poison decreases by 25%! The next poison will occur <t:{futuretime}>." )
+            await channel.send(f"Poison increased by one, then dealt **{Poison*100} damage** to everyone! The time between poisons decreases by 25%! The next poison will occur in {countdown} seconds <t:{futuretime}>." )
             await asyncio.sleep(countdown)
+
+@bot.command(
+    name="poisoncount",
+    description="check the current poison count",
+    scope=guildid,
+)
+async def poison_command(ctx: interactions.CommandContext):
+    await ctx.send(f"The poison is set to {Poison}'!")
+
 
 @bot.event(name="on_message_create")
 async def name_this_however_you_want(message: interactions.Message):
