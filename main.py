@@ -54,13 +54,43 @@ async def listen(message: interactions.Message):
     description="join the game!",
     scope=guildid,
 )
-async def join_command(USER):
-    with open ("players.json","r") as f:
-        players = json.load(f)
-    if str(USER.id) in players:
+async def join_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    if str(ctx.author.id) in players:
+        await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
         return False
     else:
-        players[str(USER.id)]
+        players[str(ctx.author.id)] = {}
+        players[str(ctx.author.id)]["HP"] = 10000
+        players[str(ctx.author.id)]["Location"] = "Crossroads"
+        players[str(ctx.author.id)]["SC"] = 10
+        players[str(ctx.author.id)]["Rage"] = 10
+        players[str(ctx.author.id)]["ReadyInventory"] = ""
+        players[str(ctx.author.id)]["UsedInventory"] = ""
+        players[str(ctx.author.id)]["DelayDate"] = ""
+        players[str(ctx.author.id)]["Delay"] = True
+        players[str(ctx.author.id)]["Evade"] = False
+        players[str(ctx.author.id)]["Rest"] = False
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        print(f"Created {ctx.author.id} player in players.json")
+        players = await getplayerdata()
+        hp_pull = players[str(ctx.author.id)]["HP"]
+        location_pull = players[str(ctx.author.id)]["Location"]
+        SC_pull = players[str(ctx.author.id)]["SC"]
+        Rage_pull = players[str(ctx.author.id)]["Rage"]
+        ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
+        UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        Delay_pull = players[str(ctx.author.id)]["Delay"]
+        Evade_pull = players[str(ctx.author.id)]["Evade"]
+        Rest_pull = players[str(ctx.author.id)]["Rest"]
+        await ctx.send(f"{ctx.author}'s HP: {hp_pull}")
+
+async def getplayerdata():
+    with open("players.json","r") as f:
+        players = json.load(f)
+    return players
 
 @bot.command(
     name="lightattack",

@@ -1,3 +1,14 @@
 {
-  
+    "192697820875194368": {
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 10,
+        "Rage": 10,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": "",
+        "Delay": true,
+        "Evade": false,
+        "Rest": false
+    }
 }
