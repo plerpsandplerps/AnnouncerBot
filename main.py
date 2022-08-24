@@ -14,7 +14,7 @@ lichcastle = 1011675767295451228
 shop = 1011675826741325834
 tavern = 1011675868726304868
 guildid= 1011380009010724924
-poisonchannel= 1011701650798424185
+poisonchannel= 1011380009568587878
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 @bot.event
