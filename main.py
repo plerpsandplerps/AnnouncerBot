@@ -109,6 +109,7 @@ async def getplayerdata():
     ],
 )
 async def first_command(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
     await ctx.send(f"You will use light attack on '{playertarget}'!", ephemeral=False)
 
 @bot.command(
@@ -125,6 +126,7 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def second_command(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
     await ctx.send(f"You will use normal attack on '{playertarget}'!", ephemeral=False)
 
 @bot.command(
@@ -141,6 +143,7 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def third_command(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
     await ctx.send(f"You will use heavy attack on '{playertarget}'!", ephemeral=False)
 
 @bot.command(
@@ -157,6 +160,7 @@ async def third_command(ctx: interactions.CommandContext, playertarget: str):
     ],
 )
 async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
     await ctx.send(f"You will use interrupt on '{playertarget}'!", ephemeral=False)
 
 @bot.command(
@@ -165,14 +169,17 @@ async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     scope=guildid,
 )
 async def fifth_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will receive no damage from sources other than interrupts.", ephemeral=False)
 
 @bot.command(
     name="rest",
+    players = await getplayerdata()
     description="2turn. heal one quarter of your missing health each turn",
     scope=guildid,
 )
 async def sixth_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will heal one quarter of your missing health each turn", ephemeral=False)
 
 @bot.command(
@@ -181,6 +188,7 @@ async def sixth_command(ctx: interactions.CommandContext):
     scope=guildid,
 )
 async def seventh_to_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send(f"You will travel to the Crossroads!", ephemeral=False)
     await ctx.author.remove_role(dungeon, guildid)
     await ctx.author.remove_role(farmland, guildid)
@@ -207,6 +215,7 @@ async def seventh_from_command(ctx: interactions.CommandContext, destination: st
     if crossroads not in ctx.author.roles:
         return await ctx.send("You aren't in the crossroads! You must use / traveltocrossroads first!", ephemeral=False)
     await ctx.send(f"You will travel to the {destination.mention}!", ephemeral=False)
+    players = await getplayerdata()
     await ctx.author.remove_role(crossroads, guildid)
     await ctx.author.add_role(destination, guildid)
 
@@ -230,6 +239,7 @@ async def seventh_from_command(ctx: interactions.CommandContext, destination: st
     ],
 )
 async def eigth_first_command(ctx: interactions.CommandContext, playertarget: str, unusedinventoryitem: str):
+    players = await getplayerdata()
     await ctx.send(f"You will give '{unusedinventoryitem}' to '{playertarget}'!", ephemeral=False)
 
 @bot.command(
@@ -238,6 +248,7 @@ async def eigth_first_command(ctx: interactions.CommandContext, playertarget: st
     scope=guildid,
 )
 async def eigth_second_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will attempt to loot the dungeon!", ephemeral=False)
 
 @bot.command(
@@ -246,6 +257,7 @@ async def eigth_second_command(ctx: interactions.CommandContext):
     scope=guildid,
 )
 async def eigth_third_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will gain 1d4 seed coins!", ephemeral=False)
 
 @bot.command(
@@ -270,6 +282,7 @@ async def eigth_fourth_command(ctx: interactions.CommandContext, playertarget: s
     scope=guildid,
 )
 async def eigth_fifth_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will attempt to battle the lich!", ephemeral=False)
 
 @bot.command(
@@ -286,6 +299,7 @@ async def eigth_fifth_command(ctx: interactions.CommandContext):
     ],
 )
 async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
+    players = await getplayerdata()
     await ctx.send(f"You will purchase '{shopitem}' !", ephemeral=False)
 
 @bot.command(
@@ -294,6 +308,7 @@ async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
     scope=guildid,
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("You will try to best the rest in a drinking challenge!", ephemeral=False)
 
 @bot.command(
@@ -310,6 +325,7 @@ async def eigth_seventh_command(ctx: interactions.CommandContext):
     ],
 )
 async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: str):
+    players = await getplayerdata()
     await ctx.send(f"You will use '{unusedinventoryitem}'!", ephemeral=False)
 
 @bot.command(
@@ -318,6 +334,7 @@ async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: s
         scope=guildid,
     )
 async def tenth_command(ctx: interactions.CommandContext):
+    players = await getplayerdata()
     await ctx.send("DM me if you want access to the test env", ephemeral=False)
 
 bot.start ()
