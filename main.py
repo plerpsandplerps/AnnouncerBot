@@ -14,7 +14,7 @@ lichcastle = 1011675767295451228
 shop = 1011675826741325834
 tavern = 1011675868726304868
 guildid= 1011380009010724924
-poisonchannel= 1011380009568587878
+poisonchannel= 1011701650798424185
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 @bot.event
@@ -23,32 +23,23 @@ async def on_ready():
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
     print(current_time)
-    smalltime=int(60/12)
-    smalltimeunit="twelfth-minutes"
+    smalltime=int(86400)
+    smalltimeunit="days"
     countdown=int(14*smalltime)
     futuretime=int(countdown + current_time)
     Poison=0
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
     await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
     await asyncio.sleep(countdown)
-    while Poison < 200:
-            Poison=Poison+1
-            countdown=math.ceil(int(countdown*.75))
+    while Poison < 20000:
+            Poison=Poison+100
+            countdown=math.ceil(countdown*.75)
             current_time=int(time.time())
             futuretime=int(current_time+countdown)
-            print(Poison)
-            print(countdown)
-            await channel.send(f"Poison increased by one, then dealt **{Poison*100} damage** to everyone! The time between poisons decreases by 25%! The next poison will occur in {countdown} seconds <t:{futuretime}>." )
+            print(f"{Poison} poisons")
+            print(f"{countdown}s")
+            await channel.send(f"Poison damage increased by 100, then dealt **{Poison} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{futuretime}> (in {countdown} seconds)." )
             await asyncio.sleep(countdown)
-
-@bot.command(
-    name="poisoncount",
-    description="check the current poison count",
-    scope=guildid,
-)
-async def poison_command(ctx: interactions.CommandContext):
-    await ctx.send(f"The poison is set to {Poison}'!")
-
 
 @bot.event(name="on_message_create")
 async def name_this_however_you_want(message: interactions.Message):
