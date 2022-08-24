@@ -3,10 +3,10 @@
         "HP": 10000,
         "Location": "Crossroads",
         "SC": 10,
-        "Rage": 10,
+        "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": "",
+        "DelayDate": 1661364083,
         "Delay": true,
         "Evade": false,
         "Rest": false

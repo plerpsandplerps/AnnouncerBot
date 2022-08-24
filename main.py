@@ -16,7 +16,7 @@ lichcastle = 1011675767295451228
 shop = 1011675826741325834
 tavern = 1011675868726304868
 guildid= 1011380009010724924
-poisonchannel= 1011701650798424185
+poisonchannel= 1011380009568587878
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 @bot.event
@@ -24,7 +24,7 @@ async def on_ready():
     print(f"We're online! We've logged in as {bot.me.name}.")
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
-    print(current_time)
+    print(f"Started at {current_time}")
     smalltime=int(86400)
     smalltimeunit="days"
     countdown=int(14*smalltime)
@@ -60,14 +60,17 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
         return False
     else:
+        await ctx.author.add_role(crossroads, guildid)
+        current_time = int(time.time())
+        countdown=int(300)
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["HP"] = 10000
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["SC"] = 10
-        players[str(ctx.author.id)]["Rage"] = 10
+        players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
-        players[str(ctx.author.id)]["DelayDate"] = ""
+        players[str(ctx.author.id)]["DelayDate"] = current_time+countdown
         players[str(ctx.author.id)]["Delay"] = True
         players[str(ctx.author.id)]["Evade"] = False
         players[str(ctx.author.id)]["Rest"] = False
@@ -85,7 +88,7 @@ async def join_command(ctx: interactions.CommandContext):
         Delay_pull = players[str(ctx.author.id)]["Delay"]
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
-        await ctx.send(f"{ctx.author}'s HP: {hp_pull}")
+        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})")
 
 async def getplayerdata():
     with open("players.json","r") as f:
