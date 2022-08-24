@@ -1,16 +1,4 @@
 {
-    "192697820875194368": {
-        "HP": 10000,
-        "Location": "Crossroads",
-        "SC": 10,
-        "Rage": 0,
-        "ReadyInventory": "",
-        "UsedInventory": "",
-        "DelayDate": 1661364083,
-        "Delay": true,
-        "Evade": false,
-        "Rest": false
-    },
     "189920974261583872": {
         "HP": 10000,
         "Location": "Crossroads",
@@ -19,6 +7,18 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1661367566,
+        "Delay": true,
+        "Evade": false,
+        "Rest": false
+    },
+    "192697820875194368": {
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 10,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1661368679,
         "Delay": true,
         "Evade": false,
         "Rest": false

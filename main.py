@@ -54,7 +54,7 @@ async def getplayerdata():
         players = json.load(f)
     return players
 
-async def getplayerdata():
+async def getbountydata():
     with open("bounties.json","r") as g:
         startingbounties = json.load(g)
     return bounties
@@ -99,6 +99,8 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})")
+        await asyncio.sleep(countdown)
+        await ctx.send(f"@{ctx.author} your countdown is over!")
 
 @bot.command(
     name="lightattack",
@@ -179,7 +181,6 @@ async def fifth_command(ctx: interactions.CommandContext):
 
 @bot.command(
     name="rest",
-    players = await getplayerdata()
     description="2turn. heal one quarter of your missing health each turn",
     scope=guildid,
 )
