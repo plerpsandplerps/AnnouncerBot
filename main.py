@@ -13,7 +13,7 @@ lichcastle = 1011675767295451228
 shop = 1011675826741325834
 tavern = 1011675868726304868
 guildid= 1011380009010724924
-poison= 1011380009568587878
+poisonchannel= 1011380009568587878
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 @bot.event
@@ -22,18 +22,23 @@ async def on_ready():
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
     print(current_time)
-    countdown=int(1296000)
-    day=int(86400)
-    futuretime=countdown + current_time
+    smalltime=int(60/12)
+    smalltimeunit="twelfth-minutes"
+    countdown=int(14*smalltime)
+    futuretime=int(countdown + current_time)
     Poison=0
-    channel = await interactions.get(bot, interactions.Channel, object_id=poison)
-    await channel.send(f"Poison is coming. Poison will begin <t:{futuretime}>. Then the time between Poisons will reduce by 1 day.")
+    channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
+    await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
     await asyncio.sleep(countdown)
-    Poison=Poison+1
-    countdown=countdown-day
-    current_time=int(time.time())
-    futuretime=current_time+countdown
-    await channel.send(f"Poison has increased by one! The next poison will occur <t:{futuretime}>." )
+    while Poison < 1000:
+            Poison=Poison+1
+            countdown=int(countdown*.75)
+            current_time=int(time.time())
+            futuretime=int(current_time+countdown)
+            print(Poison)
+            print(countdown)
+            await channel.send(f"Poison has increased by one, then dealt **{Poison*100} damage** to everyone! The time between poison decreases by 25%! The next poison will occur <t:{futuretime}>." )
+            await asyncio.sleep(countdown)
 
 @bot.event(name="on_message_create")
 async def name_this_however_you_want(message: interactions.Message):
