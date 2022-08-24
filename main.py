@@ -66,6 +66,7 @@ async def getbountydata():
 )
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
+    #bounties = await getbountydata()
     if str(ctx.author.id) in players:
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
         return False
@@ -73,10 +74,13 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.author.add_role(crossroads, guildid)
         current_time = int(time.time())
         countdown=int(300)
+        #if str(ctx.author.id) in bounties:
+        #    await ctx.send(f"{ctx.author} has claimed existing bounties!")
+        #    bounty_pull = startingbounties[str(ctx.author.id)]["bounty"]
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["HP"] = 10000
         players[str(ctx.author.id)]["Location"] = "Crossroads"
-        players[str(ctx.author.id)]["SC"] = 10
+        players[str(ctx.author.id)]["SC"] = 10 #+ bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
