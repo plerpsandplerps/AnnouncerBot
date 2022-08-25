@@ -20,7 +20,8 @@ poisonchannel= 1011701650798424185
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 #new poison
-poison to world.json to keep it consistent between script reboots
+#poison to world.json to keep it consistent between script reboots
+
 @bot.event
 async def on_ready():
    print(f"We're online! We've logged in as {bot.me.name}.")
