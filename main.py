@@ -184,8 +184,8 @@ async def join_command(ctx: interactions.CommandContext):
     options = [
         interactions.Option(
             name="playertarget",
-            type=interactions.OptionType.USER,
             description="who you want to light attack",
+            type=interactions.OptionType.USER,
             required=True,
         ),
     ],
