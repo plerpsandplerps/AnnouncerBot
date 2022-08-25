@@ -24,38 +24,37 @@ bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC
 
 @bot.event
 async def on_ready():
-   print(f"We're online! We've logged in as {bot.me.name}.")
-   print(f"Our latency is {round(bot.latency)} ms.")
-   current_time = int(time.time())
-   print(f"Started at {current_time}")
-   smalltime=int(86400)
-   smalltimeunit="days"
-   countdown=int(300)
-   current_time = int(time.time())
-   futuretime=int(countdown + current_time)
-   world = await getworlddata()
-   channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
-   if str("poisondate") in world:
-       print(f"poison date already exists!")
-       return False
-       with open("world.json", "r") as h:
-       #pull poison info from json into pull variables
-           poisondate_pull = world["poisondate"]
-           poison_pull = world["poison"]
-       print (f"poison date {poisondate_pull} and poison {poison_pull}")
-       await channel.send(f"The next poison comes <t:{poisondate_pull}> dealing {poison_pull} damage.")
-   else:
-       world = {}
-       world["poisondate"] = futuretime
-       world["poison"] = 0
-       with open("world.json","w") as h:
-           json.dump(world,h, indent=4)
-       await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
-   await asyncio.sleep(countdown)
-   world = await getworlddata()
-   poisondate_pull = world["poisondate"]
-   poison_pull = world["poison"]
-   while poison_pull < 20000:
+    print(f"We're online! We've logged in as {bot.me.name}.")
+    print(f"Our latency is {round(bot.latency)} ms.")
+    current_time = int(time.time())
+    print(f"Started at {current_time}")
+    smalltime=int(10)
+    smalltimeunit="sixth-minutes"
+    countdown=int(14*smalltime)
+    current_time = int(time.time())
+    futuretime=int(countdown + current_time)
+    world = await getworlddata()
+    channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
+    if str("poisondate") in world:
+        print(f"poison date already exists!")
+        with open("world.json", "r") as h:
+            poisondate_pull = world["poisondate"]
+            poison_pull = world["poison"]
+        print (f"poison date {poisondate_pull} and poison {poison_pull}")
+        await channel.send(f"The next poison comes <t:{poisondate_pull}> to deal {int(poison_pull+100)} damage.")
+        return False
+    else:
+        world = {}
+        world["poisondate"] = futuretime
+        world["poison"] = 0
+        with open("world.json","w") as h:
+            json.dump(world,h, indent=4)
+        await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
+    await asyncio.sleep(countdown)
+    world = await getworlddata()
+    poisondate_pull = world["poisondate"]
+    poison_pull = world["poison"]
+    while poison_pull < 20000:
        poison_pull=poison_pull+100
        countdown=math.ceil(countdown*.75)
        current_time=int(time.time())
