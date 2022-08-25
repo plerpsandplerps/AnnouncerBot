@@ -44,7 +44,14 @@ async def on_ready():
             poisontimer_pull=math.ceil(poisontimer_pull*.75)
             nextpoisontime=int(current_time+poisontimer_pull)
             print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-            # actually damage everyone lol
+            players = await getplayerdata ()
+            print ("before")
+            print (players)
+            players = {key:{key2:value2-poisondamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+            print ("after")
+            print (players)
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
             await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
             poison["poisondate"] = nextpoisontime
             poison["poisondamage"] = poisondamage_pull
