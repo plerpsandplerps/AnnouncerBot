@@ -48,7 +48,7 @@ async def on_ready():
             await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
             poison["poisondate"] = nextpoisontime
             poison["poisondamage"] = poisondamage_pull
-            poison["poisondate"] = poisontimer_pull
+            poison["poisontimer"] = poisontimer_pull
             with open("poison.json","w") as h:
                json.dump(poison,h, indent=4)
         else:
@@ -57,7 +57,7 @@ async def on_ready():
     else:
         #this case has tested successfully!
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
-        smalltimeunit="days" #set to days on golive
+        smalltimeunit="seconds" #set to days on golive
         firstcountdown=int(14*smalltime)
         nextpoisontime=current_time+firstcountdown
         poison = {}
@@ -79,8 +79,12 @@ async def on_ready():
         nextpoisontime=int(current_time+poisontimer_pull)
         print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
         await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
-        # players = await getplayerdata ()
-        # players = {key:value['HP']-poisondamage_pull for (key,value) in players.items()}
+        players = await getplayerdata ()
+        print ("before")
+        print (players)
+        players = {key:{key2:value2-poisondamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+        print ("after")
+        print (players)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         poison["poisondate"] = nextpoisontime
