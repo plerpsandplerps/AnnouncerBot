@@ -103,6 +103,7 @@ async def join_command(ctx: interactions.CommandContext):
         print(f"Created {ctx.author.id} player in players.json")
         players = await getplayerdata()
         hp_pull = players[str(ctx.author.id)]["HP"]
+        # hpmoji = write code to convert hp to emojis if i still want to
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
@@ -117,18 +118,13 @@ async def join_command(ctx: interactions.CommandContext):
         await asyncio.sleep(countdown)
         await ctx.send(f"<@{ctx.author.id}> your countdown is over!")
 
-# add damage for all attacks
-# add buff check for all attacks (usedinventory)
-# add target hp print
-# limit targets to those in area
-# add message for target to see
-
 @bot.command(
     name="lightattack",
     description="24h. attack a player in your area for 950. gain 1rage.",
     scope=guildid,
     options = [
         interactions.Option(
+            # limit targets to those in area here
             name="playertarget",
             type=interactions.OptionType.USER,
             description="who you want to light attack",
@@ -138,7 +134,27 @@ async def join_command(ctx: interactions.CommandContext):
 )
 async def first_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send(f"You use light attack on '{playertarget}'!", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # damagebuff =
+            # damage = 950 + damagebuff
+            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
+            # put message to target in here with current hp
+            # hpmoji = write code to convert hp to emojis if i still want to
+            # add delay
+            # countdown=86400 #seconds in a day
+            # dump to json delay = True
+            # current_time = int(time.time())
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You use light attack on '{playertarget}'! and are delayed for 24h", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="normalattack",
@@ -155,7 +171,27 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
 )
 async def second_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send(f"You use normal attack on '{playertarget}'!", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # damagebuff =
+            # damage = 2300 + damagebuff
+            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
+            # put message to target in here with current hp
+            # hpmoji = write code to convert hp to emojis if i still want to
+            # add delay
+            # countdown=int(86400*2) #seconds in two days
+            # dump to json delay = True
+            # current_time = int(time.time())
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You use normal attack on '{playertarget}'! and are delayed for 48h", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="heavyattack",
@@ -172,7 +208,27 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
 )
 async def third_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send(f"You use heavy attack on '{playertarget}'!", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # damagebuff =
+            # damage = 3650 + damagebuff
+            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
+            # put message to target in here with current hp
+            # hpmoji = write code to convert hp to emojis if i still want to
+            # add delay
+            # countdown=int(86400*3) #seconds in three days
+            # dump to json delay = True
+            # current_time = int(time.time())
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You use heavy attack on '{playertarget}'! and are delayed for 72h", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="interrupt",
@@ -189,25 +245,80 @@ async def third_command(ctx: interactions.CommandContext, playertarget: str):
 )
 async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send(f"You use interrupt on '{playertarget}'!", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # damagebuff =
+            # evaderest = check for evaderest of target
+            # damage = 0 + (if evaderest 4200)
+            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
+            # put message to target in here with current hp
+            # hpmoji = write code to convert hp to emojis if i still want to
+            # add delay
+            # countdown=int(86400*1) #seconds in one day
+            # dump to json delay = True
+            # current_time = int(time.time())
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You use interrupt on '{playertarget}'! and are delayed for 24h", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="evade",
     description="48h. for the duration receive no damage from sources other than interrupts",
     scope=guildid,
 )
-async def fifth_command(ctx: interactions.CommandContext):
+async def fifth_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send("You receive no damage from sources other than interrupts.", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # dump to json evade = true
+            # add delay
+            countdown=int(86400*2) #seconds in two days
+            # dump to json delay = True
+            current_time = int(time.time())
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You use evade and are delayed for 48h", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="rest",
     description="48h. heal one quarter of your missing health each turn",
     scope=guildid,
 )
-async def sixth_command(ctx: interactions.CommandContext):
+async def sixth_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    await ctx.send("You heal half your missing health!", ephemeral=False)
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(ctx.author.id) in players:
+        if Delay_pull = True :
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        else:
+            # dump to json rest = true
+            # add delay
+            countdown=int(86400*2) #seconds in two days
+            # dump to json delay = True
+            current_time = int(time.time())
+            # HP_pull = players[str(ctx.author.id)]["DelayDate"]
+            # missing_health =
+            # dump to json delay_date = countdown + current_time
+            await ctx.send(f"You heal for half of your missing health!", ephemeral=False)
+            # await asyncio.sleep(countdown) #sleep
+            # await ctx.send(f"Your delay is over!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
 
 @bot.command(
     name="traveltocrossroads",
