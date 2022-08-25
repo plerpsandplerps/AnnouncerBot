@@ -28,15 +28,15 @@ async def on_ready():
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
     print(f"Started at {current_time}")
-    world = await getworlddata()
+    poison = await getpoisondata()
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
-    if str("poisondate") in world:
+    if str("poisondate") in poison:
         #this case has tested successfully!
         print(f"poison date already exists!")
         with open("poison.json", "r") as h:
-            poisondate_pull = world["poisondate"]
-            poisondamage_pull = world["poisondamage"]
-            poisontimer_pull = world["poisontimer"]
+            poisondate_pull = poison["poisondate"]
+            poisondamage_pull = poison["poisondamage"]
+            poisontimer_pull = poison["poisontimer"]
         print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
         if poisondate_pull < current_time :
             #this case has tested successfully!
@@ -44,33 +44,33 @@ async def on_ready():
             poisontimer_pull=math.ceil(poisontimer_pull*.75)
             nextpoisontime=int(current_time+poisontimer_pull)
             print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-            await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
             # actually damage everyone lol
-            world["poisondate"] = nextpoisontime
-            world["poisondamage"] = poisondamage_pull
-            world["poisondate"] = poisontimer_pull
+            await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+            poison["poisondate"] = nextpoisontime
+            poison["poisondamage"] = poisondamage_pull
+            poison["poisondate"] = poisontimer_pull
             with open("poison.json","w") as h:
-               json.dump(world,h, indent=4)
+               json.dump(poison,h, indent=4)
         else:
             #this case has been tested successfully!
-            await channel.send(f"The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
+            await channel.send(f"I have awoken! \n (@-everyone to go here) \n The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         #this case has tested successfully!
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
         firstcountdown=int(14*smalltime)
         nextpoisontime=current_time+firstcountdown
-        world = {}
-        world["poisondate"] = nextpoisontime
-        world["poisondamage"] = 0
-        world["poisontimer"] = smalltime
+        poison = {}
+        poison["poisondate"] = nextpoisontime
+        poison["poisondamage"] = 0
+        poison["poisontimer"] = smalltime
         with open("poison.json","w") as h:
-            json.dump(world,h, indent=4)
-        await channel.send(f"Poison is coming in {int(firstcountdown/smalltime)} {smalltimeunit}. Poison will begin <t:{nextpoisontime}>.")
-    world = await getworlddata()
-    poisondate_pull = world["poisondate"]
-    poisondamage_pull = world["poisondamage"]
-    poisontimer_pull = world["poisontimer"]
+            json.dump(poison,h, indent=4)
+        await channel.send(f"Poison is coming in {int(firstcountdown/smalltime)} {smalltimeunit}. \nPoison will begin <t:{nextpoisontime}>.")
+    poison = await getpoisondata()
+    poisondate_pull = poison["poisondate"]
+    poisondamage_pull = poison["poisondamage"]
+    poisontimer_pull = poison["poisontimer"]
     await asyncio.sleep(int(poisondate_pull-current_time))
     while poisondamage_pull < 20000:
         #test successful!
@@ -78,13 +78,16 @@ async def on_ready():
         poisontimer_pull=math.ceil(poisontimer_pull*.75)
         nextpoisontime=int(current_time+poisontimer_pull)
         print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-        await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
-        # actually damage everyone lol
-        world["poisondate"] = nextpoisontime
-        world["poisondamage"] = poisondamage_pull
-        world["poisontimer"] = poisontimer_pull
+        await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+        # players = await getplayerdata ()
+        # players = {key:value['HP']-poisondamage_pull for (key,value) in players.items()}
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        poison["poisondate"] = nextpoisontime
+        poison["poisondamage"] = poisondamage_pull
+        poison["poisontimer"] = poisontimer_pull
         with open("poison.json","w") as h:
-          json.dump(world,h, indent=4)
+          json.dump(poison,h, indent=4)
         await asyncio.sleep(nextpoisontime-current_time)
 
 @bot.event(name="on_message_create")
@@ -106,10 +109,10 @@ async def getbountydata():
     return bounties
 
 #pulls poison.json into dict
-async def getworlddata():
+async def getpoisondata():
     with open("poison.json","r") as h:
-        world = json.load(h)
-    return world
+        poison = json.load(h)
+    return poison
 
 @bot.command(
     name="join",
@@ -121,15 +124,15 @@ async def join_command(ctx: interactions.CommandContext):
     # need to add:
     # check for bounties
     # bounties = await getbountydata()
-    # depends on adding poison to poison.json first:
-        # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
+        # depends on adding poison to poison.json first:
+    # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
     if str(ctx.author.id) in players:
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
         return False
     else:
         await ctx.author.add_role(crossroads, guildid)
         current_time = int(time.time())
-        countdown=int(300)
+        delaytimer=int(300)
         #if str(ctx.author.id) in bounties:
         #    bounty_pull = startingbounties[str(ctx.author.id)]["bounty"]
         #    await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!")
@@ -140,11 +143,11 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
-        players[str(ctx.author.id)]["DelayDate"] = current_time+countdown
-        players[str(ctx.author.id)]["Delay"] = True
+        players[str(ctx.author.id)]["DelayDate"] = current_time
+        players[str(ctx.author.id)]["Delay"] = False
         players[str(ctx.author.id)]["Evade"] = False
         players[str(ctx.author.id)]["Rest"] = False
-        players[str(ctx.author.id)]["Lastaction"] = "Start"
+        players[str(ctx.author.id)]["Lastaction"] = "start"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         print(f"Created {ctx.author.id} player in players.json")
@@ -161,9 +164,7 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})")
-        await asyncio.sleep(countdown)
-        await ctx.send(f"<@{ctx.author.id}> your countdown is over!")
+        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}> ({Delay_pull})")
 
 @bot.command(
     name="lightattack",
@@ -171,7 +172,6 @@ async def join_command(ctx: interactions.CommandContext):
     scope=guildid,
     options = [
         interactions.Option(
-            # limit targets to those in area here
             name="playertarget",
             type=interactions.OptionType.USER,
             description="who you want to light attack",
@@ -183,97 +183,31 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    current_time = int(time.time())
     if str(ctx.author.id) in players:
-        if Delay_pull:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        if Delay_pull or (DelayDate_pull > current_time):
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
             # damagebuff =
-            # damage = 950 + damagebuff
-            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
-            # put message to target in here with current hp
-            # hpmoji = write code to convert hp to emojis if i still want to
-            # add delay
-            # countdown=86400 #seconds in a day
-            # dump to json delay = True
-            # current_time = int(time.time())
-            # dump to json delay_date = countdown + current_time
-            await ctx.send(f"You use light attack on '{playertarget}'! and are delayed for 24h", ephemeral=False)
-            # await asyncio.sleep(countdown) #sleep
-            # await ctx.send(f"Your delay is over!")
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!")
-
-@bot.command(
-    name="normalattack",
-    description="48h. attack a player in your area for 2300. gain 2rage.",
-    scope=guildid,
-    options = [
-        interactions.Option(
-            name="playertarget",
-            description="who you want to normal attack",
-            type=interactions.OptionType.USER,
-            required=True,
-        ),
-    ],
-)
-async def second_command(ctx: interactions.CommandContext, playertarget: str):
-    players = await getplayerdata()
-    Delay_pull = players[str(ctx.author.id)]["Delay"]
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-    if str(ctx.author.id) in players:
-        if Delay_pull :
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
-        else:
-            # damagebuff =
-            # damage = 2300 + damagebuff
-            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
-            # put message to target in here with current hp
-            # hpmoji = write code to convert hp to emojis if i still want to
-            # add delay
-            # countdown=int(86400*2) #seconds in two days
-            # dump to json delay = True
-            # current_time = int(time.time())
-            # dump to json delay_date = countdown + current_time
-            await ctx.send(f"You use normal attack on '{playertarget}'! and are delayed for 48h", ephemeral=False)
-            # await asyncio.sleep(countdown) #sleep
-            # await ctx.send(f"Your delay is over!")
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!")
-
-@bot.command(
-    name="heavyattack",
-    description="72h. attack a player in your area for 3650. gain 3rage.",
-    scope=guildid,
-    options = [
-        interactions.Option(
-            name="playertarget",
-            description="who you want to heavy attack",
-            type=interactions.OptionType.USER,
-            required=True,
-        ),
-    ],
-)
-async def third_command(ctx: interactions.CommandContext, playertarget: str):
-    players = await getplayerdata()
-    Delay_pull = players[str(ctx.author.id)]["Delay"]
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-    if str(ctx.author.id) in players:
-        if Delay_pull:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
-        else:
-            # damagebuff =
-            # damage = 3650 + damagebuff
-            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
-            # put message to target in here with current hp
-            # hpmoji = write code to convert hp to emojis if i still want to
-            # add delay
-            # countdown=int(86400*3) #seconds in three days
-            # dump to json delay = True
-            # current_time = int(time.time())
-            # dump to json delay_date = countdown + current_time
-            await ctx.send(f"You use heavy attack on '{playertarget}'! and are delayed for 72h", ephemeral=False)
-            # await asyncio.sleep(countdown) #sleep
-            # await ctx.send(f"Your delay is over!")
+            damage = 950 #+ damagebuff
+            targethp = players[str(playertarget.id)]["HP"] - damage
+            # targethpmoji = write code to convert hp to emojis?
+            players[str(playertarget.id)]["HP"] = targethp
+            players[str(ctx.author.id)]["Delay"] = True
+            cooldown=86400 #seconds in a day
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{playertarget.id}> you were hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"You use light attack on <@{playertarget.id}>! \n You are on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown) #sleep
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            players[str(ctx.author.id)]["Delay"] = False
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
