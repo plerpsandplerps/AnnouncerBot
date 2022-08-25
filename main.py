@@ -20,7 +20,7 @@ poisonchannel= 1011701650798424185
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 #new poison
-#poison to world.json to keep it consistent between script reboots
+#poison to poison.json to keep it consistent between script reboots
 
 @bot.event
 async def on_ready():
@@ -28,78 +28,70 @@ async def on_ready():
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
     print(f"Started at {current_time}")
-    smalltime=int(10)
-    smalltimeunit="sixth-minutes"
-    countdown=int(14*smalltime)
-    current_time = int(time.time())
-    futuretime=int(countdown + current_time)
     world = await getworlddata()
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
     if str("poisondate") in world:
+        #this case has tested successfully!
         print(f"poison date already exists!")
-        with open("world.json", "r") as h:
+        with open("poison.json", "r") as h:
             poisondate_pull = world["poisondate"]
-            poison_pull = world["poison"]
-        print (f"poison date {poisondate_pull} and poison {poison_pull}")
-        await channel.send(f"The next poison comes <t:{poisondate_pull}> to deal {int(poison_pull+100)} damage.")
-        return False
+            poisondamage_pull = world["poisondamage"]
+            poisontimer_pull = world["poisontimer"]
+        print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
+        if poisondate_pull < current_time :
+            #this case has tested successfully!
+            poisondamage_pull=poisondamage_pull+100
+            poisontimer_pull=math.ceil(poisontimer_pull*.75)
+            nextpoisontime=int(current_time+poisontimer_pull)
+            print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
+            await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+            # actually damage everyone lol
+            world["poisondate"] = nextpoisontime
+            world["poisondamage"] = poisondamage_pull
+            world["poisondate"] = poisontimer_pull
+            with open("poison.json","w") as h:
+               json.dump(world,h, indent=4)
+        else:
+            #this case has been tested successfully!
+            await channel.send(f"The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
+        #this case has tested successfully!
+        smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
+        smalltimeunit="days" #set to days on golive
+        firstcountdown=int(14*smalltime)
+        nextpoisontime=current_time+firstcountdown
         world = {}
-        world["poisondate"] = futuretime
-        world["poison"] = 0
-        with open("world.json","w") as h:
+        world["poisondate"] = nextpoisontime
+        world["poisondamage"] = 0
+        world["poisontimer"] = smalltime
+        with open("poison.json","w") as h:
             json.dump(world,h, indent=4)
-        await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
-    await asyncio.sleep(countdown)
+        await channel.send(f"Poison is coming in {int(firstcountdown/smalltime)} {smalltimeunit}. Poison will begin <t:{nextpoisontime}>.")
     world = await getworlddata()
     poisondate_pull = world["poisondate"]
-    poison_pull = world["poison"]
-    while poison_pull < 20000:
-       poison_pull=poison_pull+100
-       countdown=math.ceil(countdown*.75)
-       current_time=int(time.time())
-       futuretime=int(current_time+countdown)
-       print(f"{poison_pull} poison damage")
-       print(f"{countdown} seconds till next poison")
-       await channel.send(f"Poison damage increased by 100, then dealt **{poison_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{futuretime}> (in {countdown} seconds)." )
-       # actually damage everyone lol
-       world["poisondate"] = futuretime
-       world["poison"] = poison_pull
-       with open("world.json","w") as h:
+    poisondamage_pull = world["poisondamage"]
+    poisontimer_pull = world["poisontimer"]
+    await asyncio.sleep(int(poisondate_pull-current_time))
+    while poisondamage_pull < 20000:
+        #test successful!
+        poisondamage_pull=poisondamage_pull+100
+        poisontimer_pull=math.ceil(poisontimer_pull*.75)
+        nextpoisontime=int(current_time+poisontimer_pull)
+        print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
+        await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+        # actually damage everyone lol
+        world["poisondate"] = nextpoisontime
+        world["poisondamage"] = poisondamage_pull
+        world["poisontimer"] = poisontimer_pull
+        with open("poison.json","w") as h:
           json.dump(world,h, indent=4)
-       await asyncio.sleep(countdown)
+        await asyncio.sleep(nextpoisontime-current_time)
 
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
         f"We've received a message from {message.author.username}. The message is: {message.content}."
     )
-
-# old poison
-#@bot.event
-#async def on_ready():
-#    print(f"We're online! We've logged in as {bot.me.name}.")
-#    print(f"Our latency is {round(bot.latency)} ms.")
-#    current_time = int(time.time())
-#    print(f"Started at {current_time}")
-#    smalltime=int(86400)
-#    smalltimeunit="days"
-#    countdown=int(14*smalltime)
-#    futuretime=int(countdown + current_time)
-#    Poison=0
-#    channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
-#    await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
-#    await asyncio.sleep(countdown)
-#    while Poison < 20000:
-#            Poison=Poison+100
-#            countdown=math.ceil(countdown*.75)
-#            current_time=int(time.time())
-#            futuretime=int(current_time+countdown)
-#            print(f"{Poison} poisons")
-#            print(f"{countdown}s")
-#            await channel.send(f"Poison damage increased by 100, then dealt **{Poison} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{futuretime}> (in {countdown} seconds)." )
-#            await asyncio.sleep(countdown)
-#
 
 #pulls player.json into dict
 async def getplayerdata():
@@ -113,9 +105,9 @@ async def getbountydata():
         startingbounties = json.load(g)
     return bounties
 
-#pulls world.json into dict
+#pulls poison.json into dict
 async def getworlddata():
-    with open("world.json","r") as h:
+    with open("poison.json","r") as h:
         world = json.load(h)
     return world
 
@@ -129,7 +121,7 @@ async def join_command(ctx: interactions.CommandContext):
     # need to add:
     # check for bounties
     # bounties = await getbountydata()
-    # depends on adding poison to world.json first:
+    # depends on adding poison to poison.json first:
         # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
     if str(ctx.author.id) in players:
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
