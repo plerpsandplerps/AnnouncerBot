@@ -205,6 +205,7 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
             # targethpmoji = write code to convert hp to emojis?
             players[str(playertarget.id)]["HP"] = targethp
             players[str(ctx.author.id)]["Delay"] = True
+            players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
             cooldown=86400 #seconds in a day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
