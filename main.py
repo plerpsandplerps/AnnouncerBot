@@ -35,22 +35,21 @@ async def on_ready():
    futuretime=int(countdown + current_time)
    world = await getworlddata()
    channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
-   if str("poisondate") in players:
+   if str("poisondate") in world:
        print(f"poison date already exists!")
        return False
        with open("world.json", "r") as h:
        #pull poison info from json into pull variables
-       poisondate_pull = world["poisondate"]
-       poison_pull = world["poison"]
+           poisondate_pull = world["poisondate"]
+           poison_pull = world["poison"]
        print (f"poison date {poisondate_pull} and poison {poison_pull}")
        await channel.send(f"The next poison comes <t:{poisondate_pull}> dealing {poison_pull} damage.")
    else:
-       world[] = {}
+       world = {}
        world["poisondate"] = futuretime
        world["poison"] = 0
        with open("world.json","w") as h:
-           json.dump(world,f, indent=4)
-       await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
+           json.dump(world,h, indent=4)
        await channel.send(f"Poison is coming in {int(countdown/smalltime)} {smalltimeunit}. Poison will begin <t:{futuretime}>.")
    await asyncio.sleep(countdown)
    world = await getworlddata()
@@ -64,11 +63,11 @@ async def on_ready():
        print(f"{poison_pull} poison damage")
        print(f"{countdown} seconds till next poison")
        await channel.send(f"Poison damage increased by 100, then dealt **{poison_pull} damage** to everyone! The time between poison damage decreases by 25%! The next poison damage will occur on <t:{futuretime}> (in {countdown} seconds)." )
-       actually damage everyone lol
+       # actually damage everyone lol
        world["poisondate"] = futuretime
        world["poison"] = poison_pull
        with open("world.json","w") as h:
-          json.dump(world,f, indent=4)
+          json.dump(world,h, indent=4)
        await asyncio.sleep(countdown)
 
 @bot.event(name="on_message_create")
