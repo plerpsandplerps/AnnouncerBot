@@ -32,8 +32,8 @@
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1661544234,
-        "Delay": true,
+        "DelayDate": 1661462190,
+        "Delay": false,
         "Evade": false,
         "Rest": false,
         "Lastaction": "Start"
