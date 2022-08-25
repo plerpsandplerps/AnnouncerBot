@@ -16,7 +16,7 @@ lichcastle = 1011675767295451228
 shop = 1011675826741325834
 tavern = 1011675868726304868
 guildid= 1011380009010724924
-poisonchannel= 1011380009568587878
+poisonchannel= 1011701650798424185
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 # poison to world.json to keep it consistent between script reboots
@@ -137,7 +137,7 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # damagebuff =
@@ -174,7 +174,7 @@ async def second_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull :
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # damagebuff =
@@ -211,7 +211,7 @@ async def third_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # damagebuff =
@@ -248,7 +248,7 @@ async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # damagebuff =
@@ -278,7 +278,7 @@ async def fifth_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # dump to json evade = true
@@ -303,7 +303,7 @@ async def sixth_command(ctx: interactions.CommandContext, playertarget: str):
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
-        if Delay_pull = True :
+        if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
             # dump to json rest = true
@@ -446,7 +446,7 @@ async def eigth_sixth_command(ctx: interactions.CommandContext, shopitem:str):
 
 @bot.command(
     name="drinkingchallenge",
-    description="roll 1d100. high score: permanently add 420 damage to a random attack. low score: lose 0.25 current hp",
+    description="roll 1d100. high score: add 420 damage to a random attack. low score: lose 0.25 current hp",
     scope=guildid,
 )
 async def eigth_seventh_command(ctx: interactions.CommandContext):
@@ -477,17 +477,17 @@ async def ninth_command(ctx: interactions.CommandContext, unusedinventoryitem: s
     )
 async def tenth_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
-        hp_pull = players[str(ctx.author.id)]["HP"]
-        location_pull = players[str(ctx.author.id)]["Location"]
-        SC_pull = players[str(ctx.author.id)]["SC"]
-        Rage_pull = players[str(ctx.author.id)]["Rage"]
-        ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-        UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
-        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        Delay_pull = players[str(ctx.author.id)]["Delay"]
-        Evade_pull = players[str(ctx.author.id)]["Evade"]
-        Rest_pull = players[str(ctx.author.id)]["Rest"]
-        Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
+    hp_pull = players[str(ctx.author.id)]["HP"]
+    location_pull = players[str(ctx.author.id)]["Location"]
+    SC_pull = players[str(ctx.author.id)]["SC"]
+    Rage_pull = players[str(ctx.author.id)]["Rage"]
+    ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
+    UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    Evade_pull = players[str(ctx.author.id)]["Evade"]
+    Rest_pull = players[str(ctx.author.id)]["Rest"]
+    Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nDelay: <t:{DelayDate_pull}> ({Delay_pull})", ephemeral=True)
 
 bot.start ()
