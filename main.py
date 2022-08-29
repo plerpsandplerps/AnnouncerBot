@@ -157,7 +157,6 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
-        players[str(ctx.author.id)]["NextRage"] = current_time
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -174,7 +173,6 @@ async def join_command(ctx: interactions.CommandContext):
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
-        Ragedate_pull = players[str(ctx.author.id)]["NextRage"]
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
         UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
@@ -184,9 +182,11 @@ async def join_command(ctx: interactions.CommandContext):
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}> ({Delay_pull})")
 
+#light attack is below
+
 @bot.command(
     name="lightattack",
-    description="24h. attack a player in your area for 950. gain 1rage.",
+    description="24h. attack a player in your area for 950.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -202,7 +202,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-    Rage_pull=players[str(ctx.author.id)]["Rage"]
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
     for k,v in players.items():
@@ -213,19 +213,19 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            damage = 950 + Rage_pull #+ damagebuff
+            damage = 950 + #Rage_pull #+ damagebuff
             targethp = players[str(playertargetid)]["HP"] - damage
             # targethpmoji = write code to convert hp to emojis?
             players[str(playertargetid)]["HP"] = targethp
             players[str(ctx.author.id)]["Delay"] = True
-            players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
             cooldown=86400 #seconds in a day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
             players[str(ctx.author.id)]["Lastaction"] = "lightattack"
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> was hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
             await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -236,8 +236,9 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
+
 @bot.autocomplete("lightattack", "playertarget")
-async def test_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     LocationPull = players[str(ctx.author.id)]["Location"]
     sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
@@ -250,44 +251,232 @@ async def test_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
+#normal attack is below
 
 @bot.command(
-    name="interrupt",
-    description="24h. deal 4200 damage to your target if they are resting or evading",
-    scope=guildid,
-    options = [
+    name="normalattack",
+    description="48h. attack a player in your area for 2300.",
+    scope = guildid ,
+    options=[
         interactions.Option(
+            type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to interrupt",
-            type=interactions.OptionType.USER,
+            description="who you want to attack",
             required=True,
-        ),
-    ],
+            autocomplete=True,
+        )
+    ]
 )
-async def fourth_command(ctx: interactions.CommandContext, playertarget: str):
+async def normalattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
-        if Delay_pull:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+        if Delay_pull or (DelayDate_pull > current_time):
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            # damagebuff =
-            # evaderest = check for evaderest of target
-            # damage = 0 + (if evaderest 4200)
-            # dump to json targethp = players[str(playertarget.id)]["HP"] - damage
-            # put message to target in here with current hp
-            # hpmoji = write code to convert hp to emojis if i still want to
-            # add delay
-            # countdown=int(86400*1) #seconds in one day
-            # dump to json delay = True
-            # current_time = int(time.time())
-            # dump to json delay_date = countdown + current_time
-            await ctx.send(f"You use interrupt on '{playertarget}'! and are delayed for 24h", ephemeral=False)
-            # await asyncio.sleep(countdown) #sleep
-            # await ctx.send(f"Your delay is over!")
+            damage = 2300 + #Rage_pull #+ damagebuff
+            targethp = players[str(playertargetid)]["HP"] - damage
+            # targethpmoji = write code to convert hp to emojis?
+            players[str(playertargetid)]["HP"] = targethp
+            players[str(ctx.author.id)]["Delay"] = True
+            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+            cooldown=86400*2 #seconds in two days
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "normalattack"
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown)
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            players[str(ctx.author.id)]["Delay"] = False
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
+
+
+@bot.autocomplete("normalattack", "playertarget")
+async def normal_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+#heavy attack is below
+
+@bot.command(
+    name="heavyattack",
+    description="72h. attack a player in your area for 3650.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to attack",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
+    if str(ctx.author.id) in players:
+        if Delay_pull or (DelayDate_pull > current_time):
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+        else:
+            damage = 3650 + #Rage_pull #+ damagebuff
+            targethp = players[str(playertargetid)]["HP"] - damage
+            # targethpmoji = write code to convert hp to emojis?
+            players[str(playertargetid)]["HP"] = targethp
+            players[str(ctx.author.id)]["Delay"] = True
+            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+            cooldown=86400*3 #seconds in three days
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown)
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            players[str(ctx.author.id)]["Delay"] = False
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
+
+
+@bot.autocomplete("heavyattack", "playertarget")
+async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+#interruptis below
+
+@bot.command(
+    name="interrupt",
+    description="24h. hit a player in your area for 4200 if they are resting or evading.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to interrupt",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def interrupt(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    Delay_pull = players[str(ctx.author.id)]["Delay"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
+    if str(ctx.author.id) in players:
+        if Delay_pull or (DelayDate_pull > current_time):
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+        else:
+            print (players[str(playertargetid)]["Evade"])
+            print (players[str(playertargetid)]["Rest"])
+            if players[str(playertargetid)]["Evade"] or players[str(playertargetid)]["Rest"] :
+                targethp = players[str(playertargetid)]["HP"] - 4200
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*1 #seconds in one day
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "interrupt"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            else:
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*1 #seconds in one day
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "interrupt"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}> for zero damage! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!")
+
+
+@bot.autocomplete("interrupt", "playertarget")
+async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+#evade is below
 
 @bot.command(
     name="evade",
