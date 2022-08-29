@@ -143,7 +143,6 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
         return False
     else:
-        await ctx.author.add_role(crossroads, guildid)
         current_time = int(time.time())
         delaytimer=int(300)
         if str(ctx.author.id) in bounties:
@@ -227,7 +226,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{playertargetid}> was hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id} is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
             players[str(ctx.author.id)]["Delay"] = False
