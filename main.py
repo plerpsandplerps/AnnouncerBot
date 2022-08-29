@@ -37,7 +37,6 @@ async def on_ready():
             poisontimer_pull = poison["poisontimer"]
         print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
         if poisondate_pull < current_time :
-            #this case has tested successfully!
             poisondamage_pull=poisondamage_pull+100
             poisontimer_pull=math.ceil(poisontimer_pull*.75)
             nextpoisontime=int(current_time+poisontimer_pull)
@@ -104,12 +103,12 @@ async def listen(message: interactions.Message):
     print(
         f"We've received a message from {message.author.username}. The message is: {message.content}."
     )
-#    if interactions.ChannelType.DM:
-#        print ("3")
-#        channel = ctx.channel_id
-#        await channel.send("join the test environment! \n test")
-#    else:
-#        pass
+    #if interactions.ChannelType.DM == True :
+    #    print ("3")
+    #    channel = message.channel_id
+    #    await channel.send("join the test environment! \n test")
+    #else:
+    #    pass
 
 #pulls player.json into dict
 async def getplayerdata():
@@ -120,7 +119,7 @@ async def getplayerdata():
 #this pulls the bounty data into dict
 async def getbountydata():
     with open("bounties.json","r") as g:
-        startingbounties = json.load(g)
+        bounties = json.load(g)
     return bounties
 
 #pulls poison.json into dict
@@ -136,9 +135,8 @@ async def getpoisondata():
 )
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
+    bounties = await getbountydata()
     # need to add:
-    # check for bounties
-    # bounties = await getbountydata()
         # depends on adding poison to poison.json first:
     # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
     if str(ctx.author.id) in players:
@@ -148,13 +146,16 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.author.add_role(crossroads, guildid)
         current_time = int(time.time())
         delaytimer=int(300)
-        #if str(ctx.author.id) in bounties:
-        #    bounty_pull = startingbounties[str(ctx.author.id)]["bounty"]
-        #    await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!")
+        if str(ctx.author.id) in bounties:
+            bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
+            await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!")
+        else:
+            return
         players[str(ctx.author.id)] = {}
+        players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
         players[str(ctx.author.id)]["HP"] = 10000
         players[str(ctx.author.id)]["Location"] = "Crossroads"
-        players[str(ctx.author.id)]["SC"] = 10 #+ bounty_pull
+        players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["NextRage"] = current_time
         players[str(ctx.author.id)]["ReadyInventory"] = ""
