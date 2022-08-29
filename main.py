@@ -256,7 +256,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 @bot.autocomplete("lightattack", "playertarget")
@@ -347,7 +347,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 @bot.autocomplete("normalattack", "playertarget")
@@ -438,7 +438,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 @bot.autocomplete("heavyattack", "playertarget")
@@ -525,7 +525,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 @bot.autocomplete("interrupt", "playertarget")
@@ -573,7 +573,7 @@ async def evade_command(ctx: interactions.CommandContext, playertarget: str):
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #rest is below
 
@@ -608,7 +608,7 @@ async def rest_command(ctx: interactions.CommandContext, playertarget: str):
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
-        await ctx.send(f"You need to join with /join before you can do that!")
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 bot.start ()
