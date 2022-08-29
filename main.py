@@ -150,6 +150,7 @@ async def join_command(ctx: interactions.CommandContext):
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
         else:
+            bount_pull = 0
             return
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
