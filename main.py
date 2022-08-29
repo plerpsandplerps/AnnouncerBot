@@ -1,6 +1,5 @@
 import interactions
 from interactions import Button, ButtonStyle, SelectMenu, SelectOption, ActionRow, spread_to_rows
-import discord
 import asyncio
 from datetime import datetime
 import time
@@ -21,7 +20,6 @@ bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC
 
 #new poison
 #poison to poison.json to keep it consistent between script reboots
-
 @bot.event
 async def on_ready():
     print(f"We're online! We've logged in as {bot.me.name}.")
@@ -106,6 +104,12 @@ async def listen(message: interactions.Message):
     print(
         f"We've received a message from {message.author.username}. The message is: {message.content}."
     )
+#    if interactions.ChannelType.DM:
+#        print ("3")
+#        channel = ctx.channel_id
+#        await channel.send("join the test environment! \n test")
+#    else:
+#        pass
 
 #pulls player.json into dict
 async def getplayerdata():
@@ -152,6 +156,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["SC"] = 10 #+ bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
+        players[str(ctx.author.id)]["NextRage"] = current_time
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -168,6 +173,7 @@ async def join_command(ctx: interactions.CommandContext):
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
+        Ragedate_pull = players[str(ctx.author.id)]["NextRage"]
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
         UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
@@ -194,18 +200,18 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     if str(ctx.author.id) in players:
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            # damagebuff =
-            damage = 950 #+ damagebuff
+            damage = 950 + Rage_pull #+ damagebuff
             targethp = players[str(playertarget.id)]["HP"] - damage
             # targethpmoji = write code to convert hp to emojis?
             players[str(playertarget.id)]["HP"] = targethp
             players[str(ctx.author.id)]["Delay"] = True
-            players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
+            players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
             cooldown=86400 #seconds in a day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
@@ -214,7 +220,7 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{playertarget.id}> you were hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
             await ctx.send(f"You use light attack on <@{playertarget.id}>! \n You are on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown) #sleep
+            await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
             players[str(ctx.author.id)]["Delay"] = False
             with open("players.json","w") as f:
@@ -222,6 +228,34 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
+
+@bot.command(
+    name="test_command",
+    description="test lightautopop command",
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="test_option",
+            description="test",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def test_command(ctx: interactions.CommandContext, test_option: str):
+    await ctx.send(test_option)
+
+@bot.autocomplete("test_command", "test_option")
+async def test_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUsers = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    items = sameLocationUsers
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
 
 @bot.command(
     name="interrupt",
