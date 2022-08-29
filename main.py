@@ -7,13 +7,13 @@ import math
 import json
 
 
-crossroads = 1011675481403310153
-dungeon = 1011675534066974770
-farmland = 1011675659992571914
-keep = 1011675740535787530
-lichcastle = 1011675767295451228
-shop = 1011675826741325834
-tavern = 1011675868726304868
+crossroads = 1013916584642891898
+dungeon = 1013916641177907242
+farmland = 1013916731372216380
+keep = 1013916770056278016
+lichcastle = 1013916812695580693
+shop = 1013916856333127690
+tavern = 1013916898729140264
 guildid= 1011380009010724924
 poisonchannel= 1011701650798424185
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
@@ -145,6 +145,7 @@ async def join_command(ctx: interactions.CommandContext):
     else:
         current_time = int(time.time())
         delaytimer=int(300)
+        await ctx.author.add_role(crossroads, guildid)
         if str(ctx.author.id) in bounties:
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
