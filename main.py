@@ -226,8 +226,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["Lastaction"] = "lightattack"
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> you were hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"You use light attack on <@{playertargetid}>! \nYou are on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"<@{playertargetid}> was hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id} is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
             players[str(ctx.author.id)]["Delay"] = False
