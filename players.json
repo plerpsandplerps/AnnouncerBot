@@ -8,18 +8,18 @@
         "NextRage": 1661801093,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1661801093,
-        "Delay": false,
+        "DelayDate": 1662065546,
+        "Delay": true,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "start"
+        "Lastaction": "heavyattack"
     },
     "111327745430016000": {
         "Username": "gondolio",
         "HP": 10000,
         "Location": "Crossroads",
         "SC": 12,
-        "Rage": 200,
+        "Rage": 0,
         "NextRage": 1661804490,
         "ReadyInventory": "",
         "UsedInventory": "",

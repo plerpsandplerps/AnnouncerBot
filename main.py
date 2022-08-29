@@ -213,26 +213,48 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            damage = 950 + #Rage_pull #+ damagebuff
-            targethp = players[str(playertargetid)]["HP"] - damage
-            # targethpmoji = write code to convert hp to emojis?
-            players[str(playertargetid)]["HP"] = targethp
-            players[str(ctx.author.id)]["Delay"] = True
-            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
-            cooldown=86400 #seconds in a day
-            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
-            DelayDate_pull=current_time+cooldown
-            players[str(ctx.author.id)]["Lastaction"] = "lightattack"
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown)
-            players[str(ctx.author.id)]["DelayDate"] = current_time
-            players[str(ctx.author.id)]["Delay"] = False
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            if players[str(playertargetid)]["Evade"]:
+                damage = 0
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400 #seconds in a day
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            else:
+                damage = 950 #+ Rage_pull #+ damagebuff
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400 #seconds in a day
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
@@ -282,26 +304,48 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            damage = 2300 + #Rage_pull #+ damagebuff
-            targethp = players[str(playertargetid)]["HP"] - damage
-            # targethpmoji = write code to convert hp to emojis?
-            players[str(playertargetid)]["HP"] = targethp
-            players[str(ctx.author.id)]["Delay"] = True
-            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
-            cooldown=86400*2 #seconds in two days
-            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
-            DelayDate_pull=current_time+cooldown
-            players[str(ctx.author.id)]["Lastaction"] = "normalattack"
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown)
-            players[str(ctx.author.id)]["DelayDate"] = current_time
-            players[str(ctx.author.id)]["Delay"] = False
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            if players[str(playertargetid)]["Evade"]:
+                damage = 0
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*2 #seconds in two days
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            else:
+                damage = 2300 #+ Rage_pull #+ damagebuff
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*2 #seconds in two days
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "normalattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
@@ -351,26 +395,48 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-            damage = 3650 + #Rage_pull #+ damagebuff
-            targethp = players[str(playertargetid)]["HP"] - damage
-            # targethpmoji = write code to convert hp to emojis?
-            players[str(playertargetid)]["HP"] = targethp
-            players[str(ctx.author.id)]["Delay"] = True
-            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
-            cooldown=86400*3 #seconds in three days
-            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
-            DelayDate_pull=current_time+cooldown
-            players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown)
-            players[str(ctx.author.id)]["DelayDate"] = current_time
-            players[str(ctx.author.id)]["Delay"] = False
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            if players[str(playertargetid)]["Evade"]:
+                damage = 0
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*3 #seconds in three days
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            else:
+                damage = 3650 #+ Rage_pull #+ damagebuff
+                targethp = players[str(playertargetid)]["HP"] - damage
+                # targethpmoji = write code to convert hp to emojis?
+                players[str(playertargetid)]["HP"] = targethp
+                players[str(ctx.author.id)]["Delay"] = True
+                #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+                cooldown=86400*3 #seconds in three days
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                players[str(ctx.author.id)]["Delay"] = False
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
@@ -480,7 +546,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 
 @bot.command(
     name="evade",
-    description="48h. for the duration receive no damage from sources other than interrupts",
+    description="48h. receive no damage from light normal or heavy attacks",
     scope=guildid,
 )
 async def fifth_command(ctx: interactions.CommandContext, playertarget: str):
