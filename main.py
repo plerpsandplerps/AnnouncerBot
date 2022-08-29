@@ -150,7 +150,7 @@ async def join_command(ctx: interactions.CommandContext):
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
         else:
-            bount_pull = 0
+            bounty_pull = 0
             return
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
@@ -188,30 +188,36 @@ async def join_command(ctx: interactions.CommandContext):
 @bot.command(
     name="lightattack",
     description="24h. attack a player in your area for 950. gain 1rage.",
-    scope=guildid,
-    options = [
+    scope = guildid ,
+    options=[
         interactions.Option(
+            type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to light attack",
-            type=interactions.OptionType.USER,
+            description="who you want to attack",
             required=True,
-        ),
-    ],
+            autocomplete=True,
+        )
+    ]
 )
-async def first_command(ctx: interactions.CommandContext, playertarget: str):
+async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
         if Delay_pull or (DelayDate_pull > current_time):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
             damage = 950 + Rage_pull #+ damagebuff
-            targethp = players[str(playertarget.id)]["HP"] - damage
+            targethp = players[str(playertargetid)]["HP"] - damage
             # targethpmoji = write code to convert hp to emojis?
-            players[str(playertarget.id)]["HP"] = targethp
+            players[str(playertargetid)]["HP"] = targethp
             players[str(ctx.author.id)]["Delay"] = True
             players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
             cooldown=86400 #seconds in a day
@@ -220,8 +226,8 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["Lastaction"] = "lightattack"
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertarget.id}> you were hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
-            await ctx.send(f"You use light attack on <@{playertarget.id}>! \n You are on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"<@{playertargetid}> you were hit by a lightattack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"You use light attack on <@{playertargetid}>! \nYou are on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
             players[str(ctx.author.id)]["Delay"] = False
@@ -231,28 +237,15 @@ async def first_command(ctx: interactions.CommandContext, playertarget: str):
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
-@bot.command(
-    name="test_command",
-    description="test lightautopop command",
-    options=[
-        interactions.Option(
-            type=interactions.OptionType.STRING,
-            name="test_option",
-            description="test",
-            required=True,
-            autocomplete=True,
-        )
-    ]
-)
-async def test_command(ctx: interactions.CommandContext, test_option: str):
-    await ctx.send(test_option)
-
-@bot.autocomplete("test_command", "test_option")
+@bot.autocomplete("lightattack", "playertarget")
 async def test_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     LocationPull = players[str(ctx.author.id)]["Location"]
-    sameLocationUsers = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    items = sameLocationUsers
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
