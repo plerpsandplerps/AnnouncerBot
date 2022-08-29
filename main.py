@@ -549,7 +549,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     description="48h. receive no damage from light normal or heavy attacks",
     scope=guildid,
 )
-async def fifth_command(ctx: interactions.CommandContext, playertarget: str):
+async def evade_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
@@ -575,12 +575,14 @@ async def fifth_command(ctx: interactions.CommandContext, playertarget: str):
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
+#rest is below
+
 @bot.command(
     name="rest",
-    description="48h. heal one quarter of your missing health each turn",
+    description="48h. heal half your missing health rounded up",
     scope=guildid,
 )
-async def sixth_command(ctx: interactions.CommandContext, playertarget: str):
+async def rest_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     Delay_pull = players[str(ctx.author.id)]["Delay"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
@@ -588,17 +590,23 @@ async def sixth_command(ctx: interactions.CommandContext, playertarget: str):
         if Delay_pull:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
-            # dump to json rest = true
-            # add delay
-            countdown=int(86400*2) #seconds in two days
-            # dump to json delay = True
+            players[str(ctx.author.id)]["Rest"] = True
+            players[str(ctx.author.id)]["Delay"] = True
+            hp_pull = players[str(ctx.author.id)]["HP"]
+            heal = math.ceil(int(10000 - hp_pull))
+            cooldown=int(86400*2) #seconds in two days
             current_time = int(time.time())
-            # HP_pull = players[str(ctx.author.id)]["DelayDate"]
-            # missing_health =
-            # dump to json delay_date = countdown + current_time
-            await ctx.send(f"You heal for half of your missing health!", ephemeral=False)
-            # await asyncio.sleep(countdown) #sleep
-            # await ctx.send(f"Your delay is over!")
+            players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+            DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown) #sleep
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            players[str(ctx.author.id)]["Delay"] = False
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
     else:
         await ctx.send(f"You need to join with /join before you can do that!")
 
