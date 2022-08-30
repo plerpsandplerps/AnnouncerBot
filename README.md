@@ -54,21 +54,21 @@ https://imgur.com/a/9GK6UBP
     - 24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.
 
 ### Farmland
-      - /farm
-        - 24h. score 1d4. gain your score seed coins.
+  - /farm
+    - 24h. score 1d4. gain your score seed coins.
 
 ### Keep
-      - /aid
-        - 24h. score 1d4. high score: heal chosen player 1/4 of their missing health.
+  - /aid
+    - 24h. score 1d4. high score: heal chosen player 1/4 of their missing health.
 
 ### Lich's Castle
-      - /battlelich
-        - 24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.
+  - /battlelich
+    - 24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.
 
 ### Shop
-      - /trade
-        - 24h. exchange seed coins for a shop item.
+  - /trade
+    - 24h. exchange seed coins for a shop item.
 
 ### Tavern
-      - /drinkingchallenge
-        - 24h. score 1d4. high score: gain a ready drinking challenge medal: see shop items. low score: lose 1/4 current health.
+  - /drinkingchallenge
+    - 24h. score 1d4. high score: gain a ready drinking challenge medal: see shop items. low score: lose 1/4 current health.
