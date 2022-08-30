@@ -2,6 +2,7 @@ import interactions
 from interactions import Button, ButtonStyle, SelectMenu, SelectOption, ActionRow, spread_to_rows
 import asyncio
 from datetime import datetime
+import random
 import time
 import math
 import json
@@ -805,5 +806,40 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
     await ctx.populate(choices)
+
+#farm is below
+
+@bot.command(
+    name="farm",
+    description="24h. roll 1d4 gain that many seed coins.",
+    scope = guildid ,
+)
+async def farm(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        SC_pull = players[str(ctx.author.id)]["SC"]
+        if DelayDate_pull > current_time:
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            farmSC = int(random.randint(0, 4)) #+randbuff
+            SC_pull = players[str(ctx.author.id)]["SC"] +farmSC #+randbuff
+            cooldown=86400*1 #seconds in one day
+            players[str(ctx.author.id)]["SC"] = SC_pull
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "farm"
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> farmed {farmSC} from farming", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> farmed! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown)
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 bot.start ()

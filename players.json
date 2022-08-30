@@ -2,15 +2,29 @@
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
         "HP": 10000,
-        "Location": "Crossroads",
-        "SC": 11,
+        "Location": "Farmland",
+        "SC": 14,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1661966137,
+        "DelayDate": 1661967334,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "exchange",
+        "Lastaction": "farm",
+        "Nextaction": ""
+    },
+    "189920974261583872": {
+        "Username": "The old razzmataz",
+        "HP": 10000,
+        "Location": "Shop",
+        "SC": 12,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1661967149,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "travelfrom",
         "Nextaction": ""
     }
 }
