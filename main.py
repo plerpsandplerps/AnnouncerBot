@@ -534,10 +534,11 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     description="48h. receive no damage from light normal or heavy attacks",
     scope=guildid,
 )
-async def evade_command(ctx: interactions.CommandContext, playertarget: str):
+async def evade_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        current_time = int(time.time())
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
@@ -564,10 +565,11 @@ async def evade_command(ctx: interactions.CommandContext, playertarget: str):
     description="48h. heal half your missing health rounded up",
     scope=guildid,
 )
-async def rest_command(ctx: interactions.CommandContext, playertarget: str):
+async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        current_time = int(time.time())
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
