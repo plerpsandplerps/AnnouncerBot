@@ -146,7 +146,7 @@ async def join_command(ctx: interactions.CommandContext):
         # depends on adding poison to poison.json first:
     # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
     if str(ctx.author.id) in players:
-        await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ")
+        await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
         return False
     else:
         current_time = int(time.time())
@@ -185,7 +185,7 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>")
+        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
 
 #light attack is below
 
@@ -215,7 +215,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             if players[str(playertargetid)]["Evade"]:
                 damage = 0
@@ -235,7 +235,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
             else:
                 damage = 950 #+ Rage_pull #+ damagebuff
                 targethp = players[str(playertargetid)]["HP"] - damage
@@ -254,7 +254,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -301,7 +301,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             if players[str(playertargetid)]["Evade"]:
                 damage = 0
@@ -321,7 +321,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
             else:
                 damage = 2300 #+ Rage_pull #+ damagebuff
                 targethp = players[str(playertargetid)]["HP"] - damage
@@ -340,7 +340,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -387,7 +387,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             if players[str(playertargetid)]["Evade"]:
                 damage = 0
@@ -407,7 +407,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
             else:
                 damage = 3650 #+ Rage_pull #+ damagebuff
                 targethp = players[str(playertargetid)]["HP"] - damage
@@ -426,7 +426,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -473,7 +473,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             print (players[str(playertargetid)]["Evade"])
             print (players[str(playertargetid)]["Rest"])
@@ -493,7 +493,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
             else:
                 #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
                 cooldown=86400*1 #seconds in one day
@@ -508,7 +508,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -539,7 +539,7 @@ async def evade_command(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
             players[str(ctx.author.id)]["Evade"] = True
             cooldown=int(86400*2) #seconds in two days
@@ -553,7 +553,7 @@ async def evade_command(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -569,7 +569,7 @@ async def rest_command(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
             players[str(ctx.author.id)]["Rest"] = True
             hp_pull = players[str(ctx.author.id)]["HP"]
@@ -585,7 +585,7 @@ async def rest_command(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -618,7 +618,7 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             cooldown=86400*1 #seconds in one day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
@@ -634,7 +634,7 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -687,7 +687,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
