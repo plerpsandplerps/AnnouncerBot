@@ -40,7 +40,7 @@ async def on_ready():
             poisondamage_pull=poisondamage_pull+100
             poisontimer_pull=math.ceil(poisontimer_pull*.75)
             nextpoisontime=int(current_time+poisontimer_pull)
-            print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
+            print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} days till next poison")
             players = await getplayerdata ()
             print ("before")
             print (players)
@@ -61,7 +61,7 @@ async def on_ready():
     else:
         #this case has tested successfully!
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
-        smalltimeunit="seconds" #set to days on golive
+        smalltimeunit="days" #set to days on golive
         firstcountdown=int(14*smalltime)
         nextpoisontime=current_time+firstcountdown
         poison = {}
@@ -170,6 +170,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Evade"] = False
         players[str(ctx.author.id)]["Rest"] = False
         players[str(ctx.author.id)]["Lastaction"] = "start"
+        players[str(ctx.author.id)]["Nextaction"] = ""
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         print(f"Created {ctx.author.id} player in players.json")
@@ -594,8 +595,8 @@ async def rest_command(ctx: interactions.CommandContext):
 #travelfrom
 
 @bot.command(
-    name="travelfrom",
-    description="24h. travel from the crossroads to any location.",
+    name="travelto",
+    description="24h. travel to any location from the crossroads .",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -641,7 +642,7 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
-@bot.autocomplete("travelfrom", "destination")
+@bot.autocomplete("travelto", "destination")
 async def travelfrom_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     locations = await getlocationdata()
@@ -692,5 +693,27 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+@bot.command(
+    name="status",
+    description="check your status.",
+    scope=guildid,
+)
+async def status (ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    hp_pull = players[str(ctx.author.id)]["HP"]
+    # hpmoji = write code to convert hp to emojis if i still want to
+    location_pull = players[str(ctx.author.id)]["Location"]
+    SC_pull = players[str(ctx.author.id)]["SC"]
+    Rage_pull = players[str(ctx.author.id)]["Rage"]
+    ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
+    UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    Evade_pull = players[str(ctx.author.id)]["Evade"]
+    Rest_pull = players[str(ctx.author.id)]["Rest"]
+    Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
+    Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
+    await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+
 
 bot.start ()
