@@ -72,3 +72,56 @@ https://imgur.com/a/9GK6UBP
 ### Tavern
   - /drinkingchallenge
     - 24h. score 1d4. high score: gain a ready drinking challenge medal: see shop items. low score: lose 1/4 current health.
+
+## Items
+- Items fall into two broad categories:
+  - Ready items
+    - Items you can use for benefits that can be instantaneous, duration, or permanent in nature.
+    - When you use a Ready Item it moves to your Used Items.
+  - Used items
+    - Items you have used in the past that may or may not be providing you a benefit.
+- The list of items is below.
+
+### Adventuring Gear
+  - /adventuringgear
+    - 48h. increase your loot score by 1 for the rest of the game. doesn't stack.
+
+### Aim Training
+  - /aimtraining
+    - 72h. reduce heavy attacks to 24h cooldown. doesn't stack.
+
+### Banish
+  - /banish
+    - 24h. choose a player in your area and an area. the chosen player travels to the chosen area.
+
+### Crooked Abacus
+  - /crookedabacus
+    - 48h. whenever you exchange or trade, gain a seed coin for the rest of the game.
+
+### I'll try spinning
+  - /tryspinning
+    - 24h. perform a single random attack on a random player in your area. ignore normal cooldown.
+
+### It's a trap
+  - /itsatrap
+    - 48h. choose a player in your area. they cannot use the /traveltocrossroads or /travelto commands for the duration.
+
+### Random Item
+  - /randomitem
+    -24h. add a random ready item to your inventory.
+
+### Tractor
+  - /tractor
+    -24h. whenever you farm, gain an additional seed coin for the rest of the game.
+
+### Drinking Challenge Medal
+  - /drinkingchallengemedal
+    -48h. increase the damage of your light attack by 420 for the rest of the game.
+
+### Uno Reverse
+  - /unoreverse
+    - 48h. choose a player in your area and note your health. after this cooldown return your health to the noted health. The chosen player receives as much damage as you healed or receives as much healing as the damage you received when returning to the noted health.
+
+### Lich's Item
+  - /lichitem
+    - 72h. choose a living player. the next time they would die they set their HP to 5000 instead.
