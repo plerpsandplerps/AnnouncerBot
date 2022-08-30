@@ -71,7 +71,7 @@ https://imgur.com/a/9GK6UBP
 
 ### Tavern
   - /drinkingchallenge
-    - 24h. score 1d4. high score: gain a ready drinking challenge medal: see shop items. low score: lose 1/4 current health.
+    - 24h. score 1d4. high score: gain a ready drinking challenge medal. low score: lose 1/4 current health. otherwise heal 1/4 missing health.
 
 ## Items
 - Items fall into two broad categories:
