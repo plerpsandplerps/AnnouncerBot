@@ -715,5 +715,91 @@ async def status (ctx: interactions.CommandContext):
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
 
+#exchange is below
+
+@bot.command(
+    name="exchange",
+    description="24h. give a player in your area a ready item from your inventory.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to give something to",
+            required=True,
+            autocomplete=True,
+        ),
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="readyitem",
+            description="the item you want to give",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def exchange(ctx: interactions.CommandContext, playertarget: str, readyitem: str):
+    players = await getplayerdata()
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    print(f"{readyitem} is the item target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if DelayDate_pull > current_time:
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+            if not str("\n") not in ReadyInventory_pull:
+                await ctx.send(f"You don't have any items in your Ready Inventory!")
+            else:
+                cooldown=86400*1 #seconds in one day
+                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+                DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["Lastaction"] = "exchange"
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{playertargetid}> was given an item from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> gave an item to <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+
+@bot.autocomplete("exchange", "playertarget")
+async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+
+@bot.autocomplete("exchange", "readyitem")
+async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+    print(ReadyInventory_pull)
+    readyitems = list(ReadyInventory_pull.split("\n"))
+    print (readyitems)
+    items = readyitems
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
 
 bot.start ()

@@ -1,2 +1,2 @@
 # AnnouncerBot
-Announcer Bot for yearly games
+Announcer Bot for yearly games!
