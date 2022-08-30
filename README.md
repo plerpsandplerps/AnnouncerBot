@@ -128,4 +128,4 @@ https://imgur.com/a/9GK6UBP
 
 ### Beer-bandolier
   - /beerbando
-    - 24h. the next three times you act you also heal 300. doesn't stack.
+    - 24h. you gain three rage.
