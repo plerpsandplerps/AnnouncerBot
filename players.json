@@ -2,15 +2,15 @@
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
         "HP": 10000,
-        "Location": "Crossroads (under construction)",
+        "Location": "Crossroads",
         "SC": 11,
         "Rage": 0,
-        "ReadyInventory": "Test1",
+        "ReadyInventory": "\n        Test1",
         "UsedInventory": "",
-        "DelayDate": 1661877694,
+        "DelayDate": 1661966137,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "exchange",
         "Nextaction": ""
     }
 }

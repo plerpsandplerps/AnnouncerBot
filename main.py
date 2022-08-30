@@ -754,16 +754,20 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
-            if not str("\n") not in ReadyInventory_pull:
-                await ctx.send(f"You don't have any items in your Ready Inventory!")
+            if ReadyInventory_pull == "":
+                await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
             else:
                 cooldown=86400*1 #seconds in one day
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "exchange"
+                players[str(playertargetid)]["ReadyInventory"] = players[str(playertargetid)]["ReadyInventory"]  + "\n        " + readyitem
+                ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+                ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
+                players[str(ctx.author.id)]["ReadyInventory"] = ReadyInventory_pull
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was given an item from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was given {readyitem} from <@{ctx.author.id}>!", ephemeral=False)
                 await ctx.send(f"<@{ctx.author.id}> gave an item to <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -794,7 +798,7 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     players = await getplayerdata()
     ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
     print(ReadyInventory_pull)
-    readyitems = list(ReadyInventory_pull.split("\n"))
+    readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
     print (readyitems)
     items = readyitems
     choices = [
