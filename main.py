@@ -205,7 +205,6 @@ async def join_command(ctx: interactions.CommandContext):
 )
 async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -214,6 +213,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             playertargetid=k
     print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
@@ -291,7 +291,6 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 )
 async def normalattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -300,6 +299,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
             playertargetid=k
     print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
@@ -377,7 +377,6 @@ async def normal_autocomplete(ctx: interactions.CommandContext, value: str = "")
 )
 async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -386,6 +385,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             playertargetid=k
     print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
@@ -463,7 +463,6 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 )
 async def interrupt(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -472,6 +471,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             playertargetid=k
     print(f"{playertargetid} is the player target id")
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
@@ -536,8 +536,8 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 )
 async def evade_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
@@ -566,8 +566,8 @@ async def evade_command(ctx: interactions.CommandContext, playertarget: str):
 )
 async def rest_command(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False)
         else:
@@ -608,15 +608,15 @@ async def rest_command(ctx: interactions.CommandContext, playertarget: str):
 async def travelfrom(ctx: interactions.CommandContext, destination: str):
     locations = await getlocationdata()
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{destination} is the destination")
     for k,v in locations.items():
-        if v['Username']==str(destination):
+        if v['Name']==str(destination):
             destinationid=k
     print(f"{destinationid} is the player destination id")
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
@@ -654,17 +654,17 @@ async def travelfrom_autocomplete(ctx: interactions.CommandContext, value: str =
 #travelto
 
 @bot.command(
-    name="travelto",
+    name="traveltocrossroads",
     description="24h. travel to the crossroads from any location.",
     scope = guildid ,
 )
-async def travelto(ctx: interactions.CommandContext):
+async def traveltocrossroads(ctx: interactions.CommandContext):
     locations = await getlocationdata()
     players = await getplayerdata()
-    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
