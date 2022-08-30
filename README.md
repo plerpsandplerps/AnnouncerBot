@@ -84,7 +84,7 @@ https://imgur.com/a/9GK6UBP
 
 ### Adventuring Gear
   - /adventuringgear
-    - 48h. increase your loot score by 1 for the rest of the game. doesn't stack.
+    - 48h. increase your loot score by 1 for the rest of the game.
 
 ### Aim Training
   - /aimtraining
@@ -112,7 +112,7 @@ https://imgur.com/a/9GK6UBP
 
 ### Tractor
   - /tractor
-    -24h. whenever you farm, gain an additional seed coin for the rest of the game.
+    -48h. whenever you farm, gain an additional seed coin for the rest of the game.
 
 ### Drinking Challenge Medal
   - /drinkingchallengemedal
@@ -120,8 +120,12 @@ https://imgur.com/a/9GK6UBP
 
 ### Uno Reverse
   - /unoreverse
-    - 48h. choose a player in your area and note your health. after this cooldown return your health to the noted health. The chosen player receives as much damage as you healed or receives as much healing as the damage you received when returning to the noted health.
+    - 48h. choose a player in your area and note your current health. after this cooldown return your health to the noted health. The chosen player receives as much damage as you healed or receives as much healing as the damage you received when returning to the noted health.
 
 ### Lich's Item
   - /lichitem
-    - 72h. choose a living player. the next time they would die they set their HP to 5000 instead.
+    - 72h. choose a living player. the next time they would die they set their HP to 5000 instead. doesn't stack.
+
+### Beer-bandolier
+  - /beerbando
+    - 24h. the next three times you act you also heal 300. doesn't stack.
