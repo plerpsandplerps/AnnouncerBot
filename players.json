@@ -1,29 +1,3 @@
 {
-    "111327745430016000": {
-        "Username": "gondolio",
-        "HP": 10000,
-        "Location": "Crossroads",
-        "SC": 12,
-        "Rage": 0,
-        "NextRage": 1661804490,
-        "ReadyInventory": "",
-        "UsedInventory": "",
-        "DelayDate": 1661890900,
-        "Evade": false,
-        "Rest": false,
-        "Lastaction": "lightattack"
-    },
-    "192697820875194368": {
-        "Username": "Sabrina the Teenage Lich",
-        "HP": 10000,
-        "Location": "Crossroads",
-        "SC": 11,
-        "Rage": 0,
-        "ReadyInventory": "",
-        "UsedInventory": "",
-        "DelayDate": 1661895304,
-        "Evade": false,
-        "Rest": false,
-        "Lastaction": "travelfrom"
-    }
+
 }
