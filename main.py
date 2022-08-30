@@ -589,6 +589,8 @@ async def rest_command(ctx: interactions.CommandContext, playertarget: str):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#travelfrom
+
 @bot.command(
     name="travelfrom",
     description="24h. travel from the crossroads to any location.",
@@ -618,10 +620,11 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = False) #golive
         else:
-                cooldown=86400*1 #seconds in one day
+            cooldown=86400*1 #seconds in one day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
             players[str(ctx.author.id)]["Lastaction"] = "travelfrom"
+            players[str(ctx.author.id)]["Location"] = destination
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
             await ctx.author.remove_role(crossroads, guildid)
@@ -640,12 +643,52 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
 async def travelfrom_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     locations = await getlocationdata()
-    sameLocationUsernames = [v["Username"] for v in locations.values()]
+    sameLocationUsernames = [v["Name"] for v in locations.values()]
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
     await ctx.populate(choices)
+
+#travelto
+
+@bot.command(
+    name="travelto",
+    description="24h. travel to the crossroads from any location.",
+    scope = guildid ,
+)
+async def travelto(ctx: interactions.CommandContext):
+    locations = await getlocationdata()
+    players = await getplayerdata()
+    DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    if str(ctx.author.id) in players:
+        if DelayDate_pull > current_time:
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            cooldown=86400*1 #seconds in one day
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "travelto"
+            players[str(ctx.author.id)]["Location"] = "Crossroads"
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.author.remove_role(dungeon, guildid)
+            await ctx.author.remove_role(farmland, guildid)
+            await ctx.author.remove_role(keep, guildid)
+            await ctx.author.remove_role(lichcastle, guildid)
+            await ctx.author.remove_role(shop, guildid)
+            await ctx.author.remove_role(tavern, guildid)
+            await ctx.author.add_role(crossroads, guildid)
+            await ctx.send(f"<@{ctx.author.id}> traveled to {destination}! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown)
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!")
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 bot.start ()

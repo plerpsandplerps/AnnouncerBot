@@ -9,7 +9,6 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1661890900,
-        "Delay": true,
         "Evade": false,
         "Rest": false,
         "Lastaction": "lightattack"
@@ -23,7 +22,6 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1661895304,
-        "Delay": true,
         "Evade": false,
         "Rest": false,
         "Lastaction": "travelfrom"
