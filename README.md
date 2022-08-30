@@ -124,7 +124,7 @@ https://imgur.com/a/9GK6UBP
 
 ### Lich's Item
   - /lichitem
-    - 72h. choose a living player. the next time they would die they set their HP to 5000 instead. doesn't stack.
+    - 72h. the next time you would die you set your HP to 5000 instead. then discard this item. doesn't stack.
 
 ### Beer-bandolier
   - /beerbando
