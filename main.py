@@ -239,7 +239,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
             else:
-                damage = 950 #+ Rage_pull #+ damagebuff
+                UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+                damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal")*420)
                 targethp = players[str(playertargetid)]["HP"] - damage
                 # targethpmoji = write code to convert hp to emojis?
                 players[str(playertargetid)]["HP"] = targethp
