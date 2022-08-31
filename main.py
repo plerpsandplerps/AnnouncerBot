@@ -570,24 +570,29 @@ async def rest_command(ctx: interactions.CommandContext):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         current_time = int(time.time())
+        Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-            players[str(ctx.author.id)]["Rest"] = True
-            hp_pull = players[str(ctx.author.id)]["HP"]
-            heal = math.ceil(int(10000 - hp_pull))
-            cooldown=int(86400*1) #seconds in one day
-            current_time = int(time.time())
-            players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
-            DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown) #sleep
-            players[str(ctx.author.id)]["DelayDate"] = current_time
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+            if Lastaction_pull = "rest":
+                await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
+            else:
+                players[str(ctx.author.id)]["Rest"] = True
+                hp_pull = players[str(ctx.author.id)]["HP"]
+                heal = math.ceil(int((10000 - hp_pull)/2))
+                cooldown=int(86400*1) #seconds in one day
+                current_time = int(time.time())
+                players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+                players[str(ctx.author.id)]["Lastaction"]= "rest"
+                DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await asyncio.sleep(cooldown) #sleep
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
