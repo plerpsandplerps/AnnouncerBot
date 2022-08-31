@@ -574,7 +574,7 @@ async def rest_command(ctx: interactions.CommandContext):
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-            if Lastaction_pull = "rest":
+            if Lastaction_pull == "rest":
                 await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
             else:
                 players[str(ctx.author.id)]["Rest"] = True
