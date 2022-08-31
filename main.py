@@ -912,4 +912,15 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
+#tavernthoughts
+#current_time = int(time.time())
+#scores = gettaverndata()
+#async def gettaverndata():
+#    with open("tavern.json","r") as h:
+#        scores = json.load(h)
+#    return scores
+# playerroll = random.randint(1,4)
+# if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) >= playerroll #check if the max is greater than the player's roll
+#   await ctx.send(f"Your roll of {playerroll} failed to beat the high score of {max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)}" , )
+
 bot.start ()
