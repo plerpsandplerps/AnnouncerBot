@@ -920,7 +920,12 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #        scores = json.load(h)
 #    return scores
 # playerroll = random.randint(1,4)
-# if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) >= playerroll #check if the max is greater than the player's roll
+#if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) >= playerroll: #check if the max is greater than the player's roll
 #   await ctx.send(f"Your roll of {playerroll} failed to beat the high score of {max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)}" , )
+#   if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) = playerroll: #check if the min is equal to the player's roll
+#        await ctx.send(f"Your roll of {playerroll} is the lowest roll you lose 1/4 of your current health!" , )
+#       #playerdmg
+#else:
+#
 
 bot.start ()
