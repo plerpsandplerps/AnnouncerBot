@@ -585,6 +585,7 @@ async def rest_command(ctx: interactions.CommandContext):
                 players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
                 players[str(ctx.author.id)]["Lastaction"]= "rest"
                 DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+                players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"]+ heal,10000)
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
@@ -876,13 +877,14 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
-            hp_pull=players[str(playertargetid)]["HP"]
-            heal = math.ceil(int((10000 - hp_pull)/4))
+            targethp=players[str(playertargetid)]["HP"]
+            heal = min(math.ceil(int((10000 - targethp)/4)),10000)
             cooldown=86400*1 #seconds in one day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
             players[str(ctx.author.id)]["Lastaction"] = "aid"
             players[str(playertargetid)]["HP"] = players[str(playertargetid)]["HP"] + heal
+            targethp=players[str(playertargetid)]["HP"]
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{playertargetid}> was healed by aid from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
@@ -896,8 +898,8 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
-@bot.autocomplete("interrupt", "playertarget")
-async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+@bot.autocomplete("aid", "playertarget")
+async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     Usernames = [v["Username"] for v in players.values()]
     print (Usernames)
