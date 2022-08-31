@@ -531,7 +531,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 
 @bot.command(
     name="evade",
-    description="48h. receive no damage from light normal or heavy attacks",
+    description="24h. receive no damage from light normal or heavy attacks",
     scope=guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
@@ -543,7 +543,7 @@ async def evade_command(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
             players[str(ctx.author.id)]["Evade"] = True
-            cooldown=int(86400*2) #seconds in two days
+            cooldown=int(86400*1) #seconds in one days
             current_time = int(time.time())
             players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
             DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
@@ -562,7 +562,7 @@ async def evade_command(ctx: interactions.CommandContext):
 
 @bot.command(
     name="rest",
-    description="48h. heal half your missing health rounded up",
+    description="24h. heal half your missing health rounded up unless you rested last action.",
     scope=guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
@@ -576,7 +576,7 @@ async def rest_command(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["Rest"] = True
             hp_pull = players[str(ctx.author.id)]["HP"]
             heal = math.ceil(int(10000 - hp_pull))
-            cooldown=int(86400*2) #seconds in two days
+            cooldown=int(86400*1) #seconds in one day
             current_time = int(time.time())
             players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
             DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
