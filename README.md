@@ -29,10 +29,10 @@ https://imgur.com/a/9GK6UBP
     - 24h. hit a player in your area for 4200 if they are resting or evading.
 ### Evade
   - /evade
-    - 48h. receive no damage from light normal or heavy attacks.
+    - 24h. receive no damage from light normal or heavy attacks.
 ### Rest
   - /rest
-    - 48h. heal half your missing health rounded up.
+    - 24h. heal half your missing health rounded up unless you rested last action.
 ### Area Action
   - see below for commands
     - 24h. see the area actions listed alongside the locations below.
@@ -59,7 +59,7 @@ https://imgur.com/a/9GK6UBP
 
 ### Keep
   - /aid
-    - 24h. score 1d4. high score: heal chosen player 1/4 of their missing health.
+    - 24h. heal chosen player 1/4 of their missing health.
 
 ### Lich's Castle
   - /battlelich

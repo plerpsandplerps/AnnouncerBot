@@ -845,4 +845,66 @@ async def farm(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#aid is below
+
+@bot.command(
+    name="aid",
+    description="24h. heal chosen player 1/4 of their missing health.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to aid",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def aid(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            playertargetid=k
+    print(f"{playertargetid} is the player target id")
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if DelayDate_pull > current_time:
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+            hp_pull=players[str(playertargetid)]["HP"]
+            heal = math.ceil(int((10000 - hp_pull)/4))
+            cooldown=86400*1 #seconds in one day
+            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
+            DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "aid"
+            players[str(playertargetid)]["HP"] = players[str(playertargetid)]["HP"] + heal
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{playertargetid}> was healed by aid from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used aid on <@{playertargetid}> to heal them! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await asyncio.sleep(cooldown)
+            players[str(ctx.author.id)]["DelayDate"] = current_time
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+
+@bot.autocomplete("interrupt", "playertarget")
+async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    Usernames = [v["Username"] for v in players.values()]
+    print (Usernames)
+    items = Usernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
 bot.start ()
