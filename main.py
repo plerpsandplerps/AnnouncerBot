@@ -33,7 +33,7 @@ async def on_ready():
         print(f"poison date already exists!")
         with open("poison.json", "r") as h:
             poisondate_pull = poison["poisondate"]
-            poisondamage_pull = min(poison["poisondamage"] +100, 1500)
+            poisondamage_pull = poison["poisondamage"]
             poisontimer_pull = poison["poisontimer"]
         print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
         if poisondate_pull < current_time :
