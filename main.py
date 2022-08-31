@@ -34,12 +34,11 @@ async def on_ready():
         print(f"poison date already exists!")
         with open("poison.json", "r") as h:
             poisondate_pull = poison["poisondate"]
-            poisondamage_pull = poison["poisondamage"]
+            poisondamage_pull = min(poison["poisondamage"] +100, 1500)
             poisontimer_pull = poison["poisontimer"]
         print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
         if poisondate_pull < current_time :
-            poisondamage_pull=poisondamage_pull+100
-            poisontimer_pull=math.ceil(poisontimer_pull*.75)
+            poisontimer_pull=max(math.ceil(poisontimer_pull*.9),86400)
             nextpoisontime=int(current_time+poisontimer_pull)
             print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} days till next poison")
             players = await getplayerdata ()
@@ -50,7 +49,7 @@ async def on_ready():
             print (players)
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+            await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
             poison["poisondate"] = nextpoisontime
             poison["poisondamage"] = poisondamage_pull
             poison["poisontimer"] = poisontimer_pull
@@ -63,27 +62,27 @@ async def on_ready():
         #this case has tested successfully!
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
-        firstcountdown=int(14*smalltime)
+        firstcountdown=int(7*smalltime)
         nextpoisontime=current_time+firstcountdown
         poison = {}
         poison["poisondate"] = nextpoisontime
-        poison["poisondamage"] = 0
-        poison["poisontimer"] = smalltime
+        poison["poisondamage"] = 750
+        poison["poisontimer"] = firstcountdown
         with open("poison.json","w") as h:
             json.dump(poison,h, indent=4)
-        await channel.send(f"Poison is coming in {int(firstcountdown/smalltime)} {smalltimeunit}. \nPoison will begin <t:{nextpoisontime}>.")
+        await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
     poison = await getpoisondata()
     poisondate_pull = poison["poisondate"]
     poisondamage_pull = poison["poisondamage"]
     poisontimer_pull = poison["poisontimer"]
     await asyncio.sleep(int(poisondate_pull-current_time))
-    while poisondamage_pull < 20000:
+    while poisondamage_pull < 500000:
         #test successful!
-        poisondamage_pull=poisondamage_pull+100
-        poisontimer_pull=math.ceil(poisontimer_pull*.75)
+        poisondamage_pull= min(poison["poisondamage"] +100, 1500)
+        poisontimer_pull=max(math.ceil(poisontimer_pull*.9),86400)
         nextpoisontime=int(current_time+poisontimer_pull)
         print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-        await channel.send(f"Poison damage increased by 100, then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+        await channel.send(f"Poison damage dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
         players = await getplayerdata ()
         print ("before")
         print (players)
