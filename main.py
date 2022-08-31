@@ -30,7 +30,6 @@ async def on_ready():
     poison = await getpoisondata()
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
     if str("poisondate") in poison:
-        #this case has tested successfully!
         print(f"poison date already exists!")
         with open("poison.json", "r") as h:
             poisondate_pull = poison["poisondate"]
@@ -56,10 +55,8 @@ async def on_ready():
             with open("poison.json","w") as h:
                json.dump(poison,h, indent=4)
         else:
-            #this case has been tested successfully!
             await channel.send(f"I have awoken! \n (@-everyone to go here) \n The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
-        #this case has tested successfully!
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
         firstcountdown=int(7*smalltime)
@@ -68,13 +65,15 @@ async def on_ready():
         poison["poisondate"] = nextpoisontime
         poison["poisondamage"] = 750
         poison["poisontimer"] = firstcountdown
+        poisondamage_pull = poison["poisondamage"]
+        poisontimer_pull = firstcountdown
         with open("poison.json","w") as h:
             json.dump(poison,h, indent=4)
-        await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
-    poison = await getpoisondata()
-    poisondate_pull = poison["poisondate"]
-    poisondamage_pull = poison["poisondamage"]
-    poisontimer_pull = poison["poisontimer"]
+        poison = await getpoisondata()
+        poisondate_pull = poison["poisondate"]
+        poisondamage_pull = poison["poisondamage"]
+        poisontimer_pull = poison["poisontimer"]
+        await channel.send(f"The first poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
     await asyncio.sleep(int(poisondate_pull-current_time))
     while poisondamage_pull < 500000:
         #test successful!
@@ -82,7 +81,7 @@ async def on_ready():
         poisontimer_pull=max(math.ceil(poisontimer_pull*.9),86400)
         nextpoisontime=int(current_time+poisontimer_pull)
         print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-        await channel.send(f"Poison damage dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 25%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds)." )
+        await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage will occur on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
         players = await getplayerdata ()
         print ("before")
         print (players)
