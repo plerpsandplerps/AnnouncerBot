@@ -1,3 +1,8 @@
 {
-  
+    "Item1Name": {
+        "Description": "Item1Desc",
+    },
+    "Item2Name": {
+        "Description": "Item2Desc",
+    }
 }
