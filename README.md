@@ -4,11 +4,9 @@ Announcer Bot for yearly games!
 Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties earned) in the Crossroads location!
 
 ## Poison
-- A 14 day poison timer starts and the poison damage is set to zero when the bot launches.
+- A 7 day poison timer starts and the poison damage is set to 750 when the bot launches.
 - Whenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.
-- Then the poison timer restarts with 25% less time. (See the image below for the poison damage over time)
-
-https://imgur.com/a/9GK6UBP
+- Then the poison timer restarts with 10% less time. 
 
 ## Actions
 - Actions are what players do!

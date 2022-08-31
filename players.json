@@ -12,5 +12,19 @@
         "Rest": false,
         "Lastaction": "travelfrom",
         "Nextaction": ""
+    },
+    "121800126900469762": {
+        "Username": "FatalBagel",
+        "HP": 10000,
+        "Location": "Farmland",
+        "SC": 15,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662059528,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "travelfrom",
+        "Nextaction": ""
     }
 }
