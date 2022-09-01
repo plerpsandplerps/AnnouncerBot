@@ -54,5 +54,19 @@
         "Rest": false,
         "Lastaction": "travelfrom",
         "Nextaction": ""
+    },
+    "225769348235657216": {
+        "Username": "Vantheos",
+        "HP": 10000,
+        "Location": "Farmland",
+        "SC": 12,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662136334,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "travelfrom",
+        "Nextaction": ""
     }
 }
