@@ -552,7 +552,7 @@ async def evade_command(ctx: interactions.CommandContext):
             DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> used evade! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> used evade! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=True)
             await asyncio.sleep(cooldown) #sleep
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
@@ -591,7 +591,7 @@ async def rest_command(ctx: interactions.CommandContext):
                 players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"]+ heal,10000)
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await ctx.send(f"<@{ctx.author.id}> used rest! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=True)
                 await asyncio.sleep(cooldown) #sleep
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
