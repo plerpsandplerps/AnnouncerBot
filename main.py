@@ -953,7 +953,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
                 hslist = [(x["Username"], x["Media"]) for x in data if x["Score"] == highscore]
-                await ctx.send(f"The highscores belong to \n{hslist}" , ephemeral = False)
+                hslistsplit = hslist.split("\n")
+                await ctx.send(f"The highscores belong to \n{hslistsplit}" , ephemeral = False)
                 if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) = playerroll: #check if the min is equal to the player's roll
                     hp_pull = players[str(ctx.author.id)]["HP"]
                     hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
