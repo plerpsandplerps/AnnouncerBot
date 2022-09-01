@@ -137,8 +137,8 @@ async def getlocationdata():
 
 async def gettaverndata():
     with open("tavern.json","r") as j:
-    scores = json.load(j)
-return scores
+        scores = json.load(j)
+    return scores
 
 @bot.command(
     name="join",
@@ -918,7 +918,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     await ctx.populate(choices)
 @bot.command(
     name="drinkingchallenge",
-    description="24h. score 1d4. high score: gain a used drinking challenge medal. low score: lose 1/4 current health. otherwise heal 1/4 missing health.",
+    description="24h. 1d4 high: used drinkingchallengemedal low: lose .25 currenthealth else: heal .25 missing health",
     scope = guildid ,
 )
 async def drinkingchallenge (ctx: interactions.CommandContext):
@@ -942,20 +942,20 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
             else:
                 scores[str("NPC3")]["Scoreexpiry"] = int(random.randint(1,4)-1)
             if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) > playerroll: #check if the max is greater than the player's roll
-                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} failed to beat the high score of {max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)}" , ephemeral = False)
+                highscore= max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)
+                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} failed to beat the high score of {highscore}" , ephemeral = False)
                 scores[str(ctx.author.id)] = {}
                 scores[str(ctx.author.id)]["Username"] = str(ctx.author.user)
                 scores[str(ctx.author.id)]["Media"] = str(ctx.author.get_avatar_url())
                 scores[str(ctx.author.id)]["Score"] = playerroll
                 scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
-                highscore = max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)
                 print(f"Highscore is {highscore}")
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
                 hslist = [(x["Username"], x["Media"]) for x in data if x["Score"] == highscore]
                 hslistsplit = hslist.split("\n")
                 await ctx.send(f"The highscores belong to \n{hslistsplit}" , ephemeral = False)
-                if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) = playerroll: #check if the min is equal to the player's roll
+                if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) == playerroll: #check if the min is equal to the player's roll
                     hp_pull = players[str(ctx.author.id)]["HP"]
                     hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
                     await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the lowest roll. /nNew HP: {hp_pull}" , ephemeral = True )
