@@ -135,6 +135,11 @@ async def getlocationdata():
         locations = json.load(i)
     return locations
 
+async def gettaverndata():
+    with open("tavern.json","r") as j:
+    scores = json.load(j)
+return scores
+
 @bot.command(
     name="join",
     description="join the game!",
@@ -231,7 +236,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "lightattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -251,7 +256,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "lightattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -318,7 +323,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "lightattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -337,7 +342,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "normalattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -404,7 +409,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -423,7 +428,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -490,7 +495,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "interrupt"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -505,7 +510,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Lastaction"] = "interrupt"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                await ctx.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
                 await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}> for zero damage! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -911,22 +916,99 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
     await ctx.populate(choices)
+@bot.command(
+    name="drinkingchallenge",
+    description="24h. score 1d4. high score: gain a used drinking challenge medal. low score: lose 1/4 current health. otherwise heal 1/4 missing health.",
+    scope = guildid ,
+)
+async def drinkingchallenge (ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    scores = gettaverndata()
+    current_time = int(time.time())
+    playerroll = random.randint(1,4)
+    cooldown=86400 #seconds in a day
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if DelayDate_pull > current_time:
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            if scores[str("NPC4")]["Scoreexpiry"] > current_time :
+                return
+            else:
+                scores[str("NPC4")]["Scoreexpiry"] = int(random.randint(1,4)-1)
+            if scores[str("NPC3")]["Scoreexpiry"] > current_time :
+                return
+            else:
+                scores[str("NPC3")]["Scoreexpiry"] = int(random.randint(1,4)-1)
+            if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) > playerroll: #check if the max is greater than the player's roll
+                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} failed to beat the high score of {max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)}" , ephemeral = False)
+                scores[str(ctx.author.id)] = {}
+                scores[str(ctx.author.id)]["Username"] = str(ctx.author.user)
+                scores[str(ctx.author.id)]["Media"] = str(ctx.author.get_avatar_url())
+                scores[str(ctx.author.id)]["Score"] = playerroll
+                scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
+                highscore = max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)
+                print(f"Highscore is {highscore}")
+                with open("tavern.json","w") as j:
+                    json.dump(scores,j, indent=4)
+                hslist = [(x["Username"], x["Media"]) for x in data if x["Score"] == highscore]
+                await ctx.send(f"The highscores belong to \n{hslist}" , ephemeral = False)
+                if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) = playerroll: #check if the min is equal to the player's roll
+                    hp_pull = players[str(ctx.author.id)]["HP"]
+                    hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+                    await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the lowest roll. /nNew HP: {hp_pull}" , ephemeral = True )
+                    await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , ephemeral = False )
+                    players[str(ctx.author.id)]["HP"] = hp_pull
+                    players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                    players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+                    await asyncio.sleep(cooldown)
+                    players[str(ctx.author.id)]["DelayDate"] = current_time
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+                    await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+                else:
+                    await ctx.send(f"Your roll of {playerroll} was neither the high nor low roll. You heal for 1/4 your missing health!" , ephemeral = False )
+                    hp_pull = players[str(ctx.author.id)]["HP"]
+                    hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
+                    await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is neither the high nor low roll. /nNew HP: {hp_pull}" , ephemeral = True )
+                    await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , ephemeral = False )
+                    players[str(ctx.author.id)]["HP"] = hp_pull
+                    players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                    players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+                    await asyncio.sleep(cooldown)
+                    players[str(ctx.author.id)]["DelayDate"] = current_time
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+                    await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+            else:
+                await ctx.send(f"You rolled the high roll of {playerroll}!, gaining a drinkingchallengemedal in your used inventory!")
+                UsedInventory_pull=players[str(ctx.author.id)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
+                players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+                scores[str(ctx.author.id)] = {}
+                scores[str(ctx.author.id)]["Username"] = str(ctx.author.user)
+                scores[str(ctx.author.id)]["Media"] = str(ctx.author.avatar)
+                scores[str(ctx.author.id)]["Score"] = playerroll
+                scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
+                with open("tavern.json","w") as j:
+                    json.dump(scores,j, indent=4)
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the high roll. /nNew HP: {hp_pull}" , ephemeral = True )
+                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the high roll. They gain a drinkingchallengemedal that increases their light attack damage!" , ephemeral = False )
+                await asyncio.sleep(cooldown)
+                players[str(ctx.author.id)]["DelayDate"] = current_time
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+                await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
-#tavernthoughts
-#current_time = int(time.time())
-#scores = gettaverndata()
-#async def gettaverndata():
-#    with open("tavern.json","r") as h:
-#        scores = json.load(h)
-#    return scores
-# playerroll = random.randint(1,4)
-#if max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) > playerroll: #check if the max is greater than the player's roll
-#   await ctx.send(f"Your roll of {playerroll} failed to beat the high score of {max(x["Score"] for x in scores if x["Scoreexpiry"] > current_time)}" , )
-#   if min(x["Score"] for x in scores if x["Scoreexpiry"] > current_time) = playerroll: #check if the min is equal to the player's roll
-#        await ctx.send(f"Your roll of {playerroll} is the lowest roll you lose 1/4 of your current health!" , )
-#       #playerdmg
-#else:
-#   await ctx.send(f"You rolled the high roll of {playerroll}!, gaining a drinkingchallengemedal in your used inventory!")
-#   #add the item to used inventory
+
 
 bot.start ()
