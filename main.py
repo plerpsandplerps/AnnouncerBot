@@ -890,7 +890,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             targethp=players[str(playertargetid)]["HP"]
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await ctx.send(f"<@{playertargetid}> was healed by aid from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+            await ctx.send(f"<@{playertargetid}> was healed by aid from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
             await ctx.send(f"<@{ctx.author.id}> used aid on <@{playertargetid}> to heal them! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
