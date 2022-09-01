@@ -926,6 +926,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #        await ctx.send(f"Your roll of {playerroll} is the lowest roll you lose 1/4 of your current health!" , )
 #       #playerdmg
 #else:
-#
+#   await ctx.send(f"You rolled the high roll of {playerroll}!, gaining a drinkingchallengemedal in your used inventory!")
+#   #add the item to used inventory
 
 bot.start ()

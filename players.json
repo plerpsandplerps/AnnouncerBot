@@ -26,5 +26,33 @@
         "Rest": false,
         "Lastaction": "travelfrom",
         "Nextaction": ""
+    },
+    "189920974261583872": {
+        "Username": "The old razzmataz",
+        "HP": 10000,
+        "Location": "Farmland",
+        "SC": 12,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662128229,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "travelfrom",
+        "Nextaction": ""
+    },
+    "127675466524917760": {
+        "Username": "Agumander",
+        "HP": 10000,
+        "Location": "Farmland",
+        "SC": 12,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662130731,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "travelfrom",
+        "Nextaction": ""
     }
 }
