@@ -3,11 +3,6 @@ Announcer Bot for yearly games!
 
 Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties earned) in the Crossroads location!
 
-## Poison
-- A 7 day poison timer starts and the poison damage is set to 750 when the bot launches.
-- Whenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.
-- Then the poison timer restarts with 10% less time. 
-
 ## Actions
 - Actions are what players do!
 - To get started take the /join action!
@@ -127,3 +122,8 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Beer-bandolier
   - /beerbando
     - 24h. you gain three rage.
+
+## Poison
+- A 7 day poison timer starts and the poison damage is set to 650 when the bot launches.
+- Whenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.
+- Then the poison timer restarts with 10% less time.

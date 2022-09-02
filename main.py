@@ -7,7 +7,7 @@ import time
 import math
 import json
 
-
+#RoleIDs to replace with your server's roleids
 crossroads = 1013916584642891898
 dungeon = 1013916641177907242
 farmland = 1013916731372216380
@@ -17,8 +17,13 @@ shop = 1013916856333127690
 tavern = 1013916898729140264
 dead = 1014618473948786690
 
+#ServerID to replace with the serverID
 guildid= 1011380009010724924
+
+#Replace with the channel_id where you would like to send your poison pings
 poisonchannel= 1011701650798424185
+
+#Place your token here:
 bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 #new poison
@@ -65,7 +70,7 @@ async def on_ready():
         nextpoisontime=current_time+firstcountdown
         poison = {}
         poison["poisondate"] = nextpoisontime
-        poison["poisondamage"] = 750
+        poison["poisondamage"] = 650
         poison["poisontimer"] = firstcountdown
         poisondamage_pull = poison["poisondamage"]
         poisontimer_pull = firstcountdown
