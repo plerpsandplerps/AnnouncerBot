@@ -72,15 +72,15 @@
     "351395988977614849": {
         "Username": "Mr.Wiggles",
         "HP": 10000,
-        "Location": "Crossroads",
+        "Location": "Tavern",
         "SC": 12,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662123732,
+        "DelayDate": 1662213046,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "start",
+        "Lastaction": "travelfrom",
         "Nextaction": ""
     },
     "216337793868103680": {

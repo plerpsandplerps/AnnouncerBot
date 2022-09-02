@@ -16,6 +16,7 @@ lichcastle = 1013916812695580693
 shop = 1013916856333127690
 tavern = 1013916898729140264
 dead = 1014618473948786690
+playing = 1015250670988828734
 
 #ServerID to replace with the serverID
 guildid= 1011380009010724924
@@ -163,6 +164,7 @@ async def join_command(ctx: interactions.CommandContext):
         current_time = int(time.time())
         delaytimer=int(300)
         await ctx.author.add_role(crossroads, guildid)
+        await ctx.author.add_role(playing, guildid)
         if str(ctx.author.id) in bounties:
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
