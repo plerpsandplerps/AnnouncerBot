@@ -68,5 +68,33 @@
         "Rest": false,
         "Lastaction": "travelfrom",
         "Nextaction": ""
+    },
+    "351395988977614849": {
+        "Username": "Mr.Wiggles",
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 12,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662123732,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "start",
+        "Nextaction": ""
+    },
+    "216337793868103680": {
+        "Username": "Dhruv",
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 16,
+        "Rage": 0,
+        "ReadyInventory": "",
+        "UsedInventory": "",
+        "DelayDate": 1662124968,
+        "Evade": false,
+        "Rest": false,
+        "Lastaction": "start",
+        "Nextaction": ""
     }
 }
