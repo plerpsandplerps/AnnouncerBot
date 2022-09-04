@@ -241,6 +241,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -261,6 +263,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -327,7 +331,9 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 cooldown=86400*2 #seconds in two days
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
-                players[str(ctx.author.id)]["Lastaction"] = "lightattack"
+                players[str(ctx.author.id)]["Lastaction"] = "normalattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -347,6 +353,8 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "normalattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -414,6 +422,8 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -433,6 +443,8 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "heavyattack"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -500,6 +512,8 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "interrupt"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -515,6 +529,8 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "interrupt"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
@@ -561,6 +577,7 @@ async def evade_command(ctx: interactions.CommandContext):
             cooldown=int(86400*1) #seconds in one days
             current_time = int(time.time())
             players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+            players[str(ctx.author.id)]["Lastaction"] = "evade"
             DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -599,6 +616,7 @@ async def rest_command(ctx: interactions.CommandContext):
                 current_time = int(time.time())
                 players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
                 players[str(ctx.author.id)]["Lastaction"]= "rest"
+                players[str(ctx.author.id)]["Rest"] = True
                 DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
                 players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"]+ heal,10000)
                 with open("players.json","w") as f:
@@ -612,7 +630,7 @@ async def rest_command(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
-#travelfrom
+#travelto
 
 @bot.command(
     name="travelto",
@@ -628,7 +646,7 @@ async def rest_command(ctx: interactions.CommandContext):
         )
     ]
 )
-async def travelfrom(ctx: interactions.CommandContext, destination: str):
+async def travelto(ctx: interactions.CommandContext, destination: str):
     locations = await getlocationdata()
     players = await getplayerdata()
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
@@ -646,8 +664,10 @@ async def travelfrom(ctx: interactions.CommandContext, destination: str):
             cooldown=86400*1 #seconds in one day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
-            players[str(ctx.author.id)]["Lastaction"] = "travelfrom"
+            players[str(ctx.author.id)]["Lastaction"] = "travelto"
             players[str(ctx.author.id)]["Location"] = destination
+            players[str(ctx.author.id)]["Evade"] = False
+            players[str(ctx.author.id)]["Rest"] = False
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
             await ctx.author.remove_role(crossroads, guildid)
@@ -694,7 +714,11 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             cooldown=86400*1 #seconds in one day
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
+            players[str(ctx.author.id)]["Evade"] = False
+            players[str(ctx.author.id)]["Rest"] = False
             players[str(ctx.author.id)]["Lastaction"] = "travelto"
+            players[str(ctx.author.id)]["Evade"] = False
+            players[str(ctx.author.id)]["Rest"] = False
             players[str(ctx.author.id)]["Location"] = "Crossroads"
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -781,6 +805,8 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
                 players[str(ctx.author.id)]["Lastaction"] = "exchange"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 players[str(playertargetid)]["ReadyInventory"] = players[str(playertargetid)]["ReadyInventory"]  + "\n        " + readyitem
                 ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
                 ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
@@ -849,6 +875,8 @@ async def farm(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
             players[str(ctx.author.id)]["Lastaction"] = "farm"
+            players[str(ctx.author.id)]["Evade"] = False
+            players[str(ctx.author.id)]["Rest"] = False
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
             await ctx.send(f"<@{ctx.author.id}> farmed {farmSC} from farming", ephemeral=False)
@@ -898,6 +926,8 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
             DelayDate_pull=current_time+cooldown
             players[str(ctx.author.id)]["Lastaction"] = "aid"
+            players[str(ctx.author.id)]["Evade"] = False
+            players[str(ctx.author.id)]["Rest"] = False
             players[str(playertargetid)]["HP"] = players[str(playertargetid)]["HP"] + heal
             targethp=players[str(playertargetid)]["HP"]
             with open("players.json","w") as f:
@@ -969,6 +999,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                     await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , ephemeral = False )
                     players[str(ctx.author.id)]["HP"] = hp_pull
                     players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                    players[str(ctx.author.id)]["Evade"] = False
+                    players[str(ctx.author.id)]["Rest"] = False
                     players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
@@ -985,6 +1017,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                     await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , ephemeral = False )
                     players[str(ctx.author.id)]["HP"] = hp_pull
                     players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                    players[str(ctx.author.id)]["Evade"] = False
+                    players[str(ctx.author.id)]["Rest"] = False
                     players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
@@ -997,6 +1031,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 await ctx.send(f"You rolled the high roll of {playerroll}!, gaining a drinkingchallengemedal in your used inventory!")
                 UsedInventory_pull=players[str(ctx.author.id)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
                 players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
+                players[str(ctx.author.id)]["Evade"] = False
+                players[str(ctx.author.id)]["Rest"] = False
                 players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
                 scores[str(ctx.author.id)] = {}
                 scores[str(ctx.author.id)]["Username"] = str(ctx.author.user)
