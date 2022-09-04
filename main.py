@@ -245,7 +245,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> evaded a light attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=False)
+                # put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -267,7 +268,8 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> was hit by a light attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                # put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used a light attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -336,7 +338,8 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> evaded a normal attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -357,7 +360,8 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> was hit by a normal attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target where
                 await ctx.send(f"<@{ctx.author.id}> used a normal attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -426,7 +430,8 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> evaded a heavy attack from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -447,7 +452,8 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> was hit by a heavy attack by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used a heavy attack on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -516,7 +522,8 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                await ctx.author.send(f"<@{playertargetid}> was hit and damaged by an interrupt by <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target here
                 await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
@@ -533,8 +540,9 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
                 players[str(ctx.author.id)]["Rest"] = False
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
-                await ctx.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
-                await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}> for zero damage! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+                await ctx.author.send(f"<@{playertargetid}> was not damaged by an interrupt from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
+                #put dm to target here
+                await ctx.send(f"<@{ctx.author.id}> used an interrupt on <@{playertargetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
