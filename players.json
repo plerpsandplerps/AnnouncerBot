@@ -6,11 +6,11 @@
         "SC": 11,
         "Rage": 0,
         "ReadyInventory": "",
-        "UsedInventory": "",
-        "DelayDate": 1662340590,
+        "UsedInventory": "\n        drinkingchallengemedal",
+        "DelayDate": 1662398911,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "lightattack",
         "Nextaction": ""
     },
     "121800126900469762": {
@@ -71,7 +71,7 @@
     },
     "351395988977614849": {
         "Username": "Mr.Wiggles",
-        "HP": 10000,
+        "HP": 8630,
         "Location": "Tavern",
         "SC": 12,
         "Rage": 0,
