@@ -1,14 +1,14 @@
 {
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
-        "HP": 10000,
-        "Location": "Farmland",
+        "HP": 5800,
+        "Location": "Tavern",
         "SC": 11,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662148091,
-        "Evade": true,
+        "DelayDate": 1662340590,
+        "Evade": false,
         "Rest": false,
         "Lastaction": "travelfrom",
         "Nextaction": ""
@@ -35,10 +35,10 @@
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662128229,
+        "DelayDate": 1662215631,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "interrupt",
         "Nextaction": ""
     },
     "127675466524917760": {

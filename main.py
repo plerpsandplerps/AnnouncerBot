@@ -705,7 +705,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await ctx.author.remove_role(shop, guildid)
             await ctx.author.remove_role(tavern, guildid)
             await ctx.author.add_role(crossroads, guildid)
-            await ctx.send(f"<@{ctx.author.id}> traveled to {destination}! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"<@{ctx.author.id}> traveled to the Crossroads! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
             await asyncio.sleep(cooldown)
             players[str(ctx.author.id)]["DelayDate"] = current_time
             with open("players.json","w") as f:
