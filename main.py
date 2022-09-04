@@ -1074,7 +1074,7 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
                 await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the high roll. \nNew HP: {hp_pull}" , ephemeral = True )
-                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the high roll. They gain a drinkingchallengemedal that increases their light attack damage!" , ephemeral = False )
+                await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the high roll. They gain a **drinkingchallengemedal** that increases their light attack damage!" , ephemeral = False )
                 await asyncio.sleep(cooldown)
                 players[str(ctx.author.id)]["DelayDate"] = current_time
                 with open("players.json","w") as f:
