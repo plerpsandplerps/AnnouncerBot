@@ -691,7 +691,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
 
 
 @bot.autocomplete("travelto", "destination")
-async def travelfrom_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     locations = await getlocationdata()
     sameLocationUsernames = [v["Name"] for v in locations.values()]
@@ -979,7 +979,7 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         Username_pull = players[str(ctx.author.id)]["Username"]
-        print(f"{Username_pull} is delayed until {DelayDate_pull} ? currrenttime is {current_time}")
+        print(f"{Username_pull} is delayed until {DelayDate_pull}?{current_time} is currrenttime")
         if DelayDate_pull > current_time:
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
@@ -1014,17 +1014,16 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 scores[str(ctx.author.id)]["Media"] = str(ctx.author.get_avatar_url(guildid))
                 scores[str(ctx.author.id)]["Score"] = playerroll
                 scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
-                print(f"Highscore is {highscore}")
+                print(f"Highscore is {highscore} which is greater than player's {playerroll}")
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
-                hslist = [(x["Username"], x["Media"]) for x in scores.values() if x["Score"] == highscore]
+                hslist = '\n\n'.join('\n'.join((x["Username"], x["Media"])) for x in scores.values() if x["Score"] == highscore)
                 print(f"{hslist}")
-                hslistsplit = hslist.split("\n")
-                await ctx.send(f"The highscores belong to \n{hslistsplit}" , ephemeral = False)
+                await ctx.send(f"The highscore(s) belong to \n{hslist}" , ephemeral = False)
                 if lowscore == playerroll: #check if the min is equal to the player's roll
                     hp_pull = players[str(ctx.author.id)]["HP"]
                     hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
-                    await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the lowest roll. \nnNew HP: {hp_pull}" , ephemeral = True )
+                    await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , ephemeral = True )
                     await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , ephemeral = False )
                     players[str(ctx.author.id)]["HP"] = hp_pull
                     players[str(ctx.author.id)]["Lastaction"] = "drinkingchallenge"
@@ -1039,7 +1038,6 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                         json.dump(players,f, indent=4)
                     await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
                 else:
-                    await ctx.send(f"Your roll of {playerroll} was neither the high nor low roll. You heal for 1/4 your missing health!" , ephemeral = False )
                     hp_pull = players[str(ctx.author.id)]["HP"]
                     hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
                     await ctx.send(f"<@{ctx.author.id}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , ephemeral = True )
