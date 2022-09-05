@@ -1,3 +1,26 @@
 {
-  
+    "NPC3": {
+        "Username": "Denny Punks",
+        "Media": "<https://tenor.com/view/what-the-fucks-up-fuck-gif-20824798>",
+        "Score": 2,
+        "Scoreexpiry": 1662398108
+    },
+    "NPC4": {
+        "Username": "Super Dancers",
+        "Media": "<https://tenor.com/view/super-hero-spiderman-batman-superman-gif-9940660>",
+        "Score": 2,
+        "Scoreexpiry": 1662396850
+    },
+    "192697820875194368": {
+        "Username": "Sabrina the Teenage Lich",
+        "Media": "<https://cdn.discordapp.com/guilds/1011380009010724924/users/192697820875194368/avatars/c29ad95202994b1f7949129d3add67fa.png>",
+        "Score": 2,
+        "Scoreexpiry": 1662464364
+    },
+    "351395988977614849": {
+        "Username": "Mr.Wiggles",
+        "Media": "<https://cdn.discordapp.com/guilds/1011380009010724924/users/351395988977614849/avatars/30800a2c93719f0d19e066c4c99ff3a6.png>",
+        "Score": 4,
+        "Scoreexpiry": 1662409039
+    }
 }
