@@ -24,8 +24,13 @@ guildid= 1011380009010724924
 #Replace with the channel_id where you would like to send your poison pings
 poisonchannel= 1011701650798424185
 
+
 #Place your token here:
-bot = interactions.Client(token="MTAxMTM0OTI5NDQ5NTgzODMyOQ.Gvg2zG.tssIbqSl9rSMC2vii5FOY5FLtdG5yA1U5ze0bA", intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
+with open('.gitignore/config.json', 'r') as cfg:
+  # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
+  tokens = json.load(cfg)
+
+bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
 #new poison
 #poison to poison.json to keep it consistent between script reboots
