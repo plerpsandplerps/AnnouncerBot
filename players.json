@@ -1,13 +1,13 @@
 {
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
-        "HP": 5728,
+        "HP": 4296,
         "Location": "Tavern",
         "SC": 11,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal\n        drinkingchallengemedal\n        drinkingchallengemedal\n        drinkingchallengemedal\n        drinkingchallengemedal",
-        "DelayDate": 1662428726,
+        "DelayDate": 1662464364,
         "Evade": false,
         "Rest": false,
         "Lastaction": "drinkingchallenge",
