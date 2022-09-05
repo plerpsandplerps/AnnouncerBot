@@ -1,8 +1,10 @@
 {
-    "Item1Name": {
-        "Description": "Item1Desc",
+    "drinkingchallengemedal": {
+        "Description": "48h. increase the damage of your light attack by 420 for the rest of the game.",
+        "Cooldown": 172800,
     },
     "Item2Name": {
         "Description": "Item2Desc",
+        "Cooldown": 172800,
     }
 }
