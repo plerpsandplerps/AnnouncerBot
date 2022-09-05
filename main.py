@@ -998,7 +998,7 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
             if scores[str("NPC3")]["Scoreexpiry"] > current_time:
                 highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
                 lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
-                print("NPC4 score is not expired, and has not been rewritten")
+                print("NPC3 score is not expired, and has not been rewritten")
                 print(f"highscore is {highscore}")
             else:
                 scores[str("NPC3")]["Score"] = int(random.randint(1,4)-1)
@@ -1011,13 +1011,14 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 await ctx.send(f"<@{ctx.author.id}>'s roll of {playerroll} failed to beat the high score of {highscore}" , ephemeral = False)
                 scores[str(ctx.author.id)] = {}
                 scores[str(ctx.author.id)]["Username"] = str(ctx.author.user)
-                scores[str(ctx.author.id)]["Media"] = "https://cdn.discordapp.com/avatars/"+str(ctx.author.id)+"/"+str(ctx.author.get_avatar_url(guildid))
+                scores[str(ctx.author.id)]["Media"] = str(ctx.author.get_avatar_url(guildid))
                 scores[str(ctx.author.id)]["Score"] = playerroll
                 scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
                 print(f"Highscore is {highscore}")
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
-                hslist = [(x["Username"], x["Media"]) for x in scores if x["Score"] == highscore]
+                hslist = [(x["Username"], x["Media"]) for x in scores.values() if x["Score"] == highscore]
+                print(f"{hslist}")
                 hslistsplit = hslist.split("\n")
                 await ctx.send(f"The highscores belong to \n{hslistsplit}" , ephemeral = False)
                 if lowscore == playerroll: #check if the min is equal to the player's roll

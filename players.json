@@ -76,11 +76,11 @@
         "SC": 12,
         "Rage": 0,
         "ReadyInventory": "",
-        "UsedInventory": "",
-        "DelayDate": 1662213046,
+        "UsedInventory": "\n        drinkingchallengemedal",
+        "DelayDate": 1662409039,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "drinkingchallenge",
         "Nextaction": ""
     },
     "216337793868103680": {
