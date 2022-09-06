@@ -11,7 +11,7 @@
         "Evade": false,
         "Rest": false,
         "Lastaction": "travelto",
-        "Nextaction": ""
+        "Nextaction": "travelto 1013916731372216380"
     },
     "121800126900469762": {
         "Username": "FatalBagel",
@@ -30,16 +30,16 @@
     "189920974261583872": {
         "Username": "The old razzmataz",
         "HP": 10000,
-        "Location": "Farmland",
+        "Location": "Crossroads",
         "SC": 12,
-        "Rage": 0,
+        "Rage": -1,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662215631,
+        "DelayDate": 1662578707,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "interrupt",
-        "Nextaction": ""
+        "Lastaction": "travelto",
+        "Nextaction": "travelto 1013916731372216380"
     },
     "127675466524917760": {
         "Username": "Agumander",

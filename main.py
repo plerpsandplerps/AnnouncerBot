@@ -240,11 +240,11 @@ async def queuenexttarget(ctx, actiontargetid):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: {words[0]} \nThis will be replaced by Next action: {displayaction}")
+            await ctx.send(f"You already have a queued action: {words[0]} \nThis will be replaced by Next action: {displayaction}", ephemeral=True)
         else:
-            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis will be replaced by Next action: {displayaction}")
+            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis will be replaced by Next action: {displayaction}", ephemeral = True)
     else:
-        await ctx.send(f"Next action: {displayaction}")
+        await ctx.send(f"Next action: {displayaction}", ephemeral = True)
 
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
@@ -318,9 +318,9 @@ async def dolightattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -337,9 +337,9 @@ async def dolightattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -407,9 +407,9 @@ async def donormalattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +3
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -426,9 +426,9 @@ async def donormalattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +3
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -496,9 +496,9 @@ async def doheavyattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +6
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -515,9 +515,9 @@ async def doheavyattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
-        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +6
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
+        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -585,8 +585,8 @@ async def dointerrupt(authorid,targetid,channelid):
     if players[str(targetid)]["Evade"] or players[str(targetid)]["Rest"]:
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
         cooldown = 86400 * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -601,8 +601,8 @@ async def dointerrupt(authorid,targetid,channelid):
         # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
         cooldown = 86400 * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
-        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+        players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
         players[str(authorid)]["Evade"] = False
@@ -667,8 +667,8 @@ async def doevade(authorid):
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "evade"
-    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+    players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -702,8 +702,8 @@ async def dorest(authorid):
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "rest"
-    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+    players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
     players[str(authorid)]["Rest"] = True
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
@@ -745,8 +745,8 @@ async def dotravelto(authorid,targetid,channelid):
     players[str(authorid)]["Location"] = destination
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
-    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+    players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
 
@@ -815,8 +815,8 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
     players[str(authorid)]["Location"] = "Crossroads"
-    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+    players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -973,8 +973,8 @@ async def dofarm(authorid):
     players[str(authorid)]["Lastaction"] = "farm"
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
-    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+    players[str(authorid)]["HP"] = max(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = min(players[str(authorid)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
@@ -989,15 +989,15 @@ async def dofarm(authorid):
 async def farm(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+    if str(authorid) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
         if farmland not in ctx.author.roles:
             await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            dofarm(ctx.author.id)
+            dofarm(authorid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
