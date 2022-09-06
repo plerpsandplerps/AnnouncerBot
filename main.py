@@ -28,7 +28,6 @@ guildid= 1011380009010724924
 #Replace with the channel_id where you would like to send your poison pings
 poisonchannel= 1011701650798424185
 
-
 #Place your token here:
 with open('.gitignore/config.json', 'r') as cfg:
   # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
@@ -319,7 +318,9 @@ async def dolightattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -336,7 +337,9 @@ async def dolightattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +1
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -350,7 +353,7 @@ async def dolightattack(authorid,targetid,channelid):
 
 @bot.command(
     name="lightattack",
-    description="24h. attack a player in your area for 950.",
+    description="24h.1rage. attack a player in your area for 950.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -364,7 +367,6 @@ async def dolightattack(authorid,targetid,channelid):
 )
 async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
     for k,v in players.items():
@@ -405,7 +407,9 @@ async def donormalattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +3
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -422,7 +426,9 @@ async def donormalattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +3
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -436,7 +442,7 @@ async def donormalattack(authorid,targetid,channelid):
 
 @bot.command(
     name="normalattack",
-    description="48h. attack a player in your area for 2300.",
+    description="48h.3rage. attack a player in your area for 2300.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -490,7 +496,9 @@ async def doheavyattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +6
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -507,7 +515,9 @@ async def doheavyattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
+        players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +6
         cooldown = 86400  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -520,7 +530,7 @@ async def doheavyattack(authorid,targetid,channelid):
         await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 @bot.command(
     name="heavyattack",
-    description="72h. attack a player in your area for 3650.",
+    description="72h.6rage. attack a player in your area for 3650.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -575,7 +585,8 @@ async def dointerrupt(authorid,targetid,channelid):
     if players[str(targetid)]["Evade"] or players[str(targetid)]["Rest"]:
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
-        # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
         cooldown = 86400 * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
@@ -590,6 +601,8 @@ async def dointerrupt(authorid,targetid,channelid):
         # players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +200
         cooldown = 86400 * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
+        players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+        players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
         players[str(authorid)]["Evade"] = False
@@ -654,6 +667,8 @@ async def doevade(authorid):
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "evade"
+    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -687,6 +702,8 @@ async def dorest(authorid):
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "rest"
+    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
     players[str(authorid)]["Rest"] = True
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
@@ -728,6 +745,8 @@ async def dotravelto(authorid,targetid,channelid):
     players[str(authorid)]["Location"] = destination
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
+    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
 
@@ -796,6 +815,8 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
     players[str(authorid)]["Location"] = "Crossroads"
+    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -824,7 +845,6 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await dotraveltocrossroads(ctx.author.id)
-
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -894,6 +914,8 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
                 cooldown=86400*1 #seconds in one day
                 players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
                 DelayDate_pull=current_time+cooldown
+                players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+                players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
                 players[str(ctx.author.id)]["Lastaction"] = "exchange"
                 players[str(ctx.author.id)]["Evade"] = False
                 players[str(ctx.author.id)]["Rest"] = False
@@ -951,6 +973,8 @@ async def dofarm(authorid):
     players[str(authorid)]["Lastaction"] = "farm"
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
+    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
@@ -1017,6 +1041,8 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["Evade"] = False
             players[str(ctx.author.id)]["Rest"] = False
             players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
+            players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+            players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
             targethp=players[str(targetid)]["HP"]
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -1095,6 +1121,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 scores[str(ctx.author.id)]["Score"] = playerroll
                 scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
                 print(f"Highscore is {highscore} which is greater than player's {playerroll}")
+                players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+                players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
                 hslist = '\n\n'.join('\n'.join((x["Username"], x["Media"])) for x in scores.values() if x["Score"] == highscore)
@@ -1127,6 +1155,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                     players[str(ctx.author.id)]["Evade"] = False
                     players[str(ctx.author.id)]["Rest"] = False
                     players[str(ctx.author.id)]["DelayDate"] = current_time + cooldown
+                    players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+                    players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
                     await asyncio.sleep(cooldown)
@@ -1148,6 +1178,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
                 scores[str(ctx.author.id)]["Score"] = playerroll
                 scores[str(ctx.author.id)]["Scoreexpiry"] = current_time+cooldown
                 hp_pull=players[str(ctx.author.id)]["HP"]
+                players[str(ctx.author.id)]["HP"] = max(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+                players[str(ctx.author.id)]["Rage"] = min(players[str(ctx.author.id)]["Rage"] -1,0)
                 with open("tavern.json","w") as j:
                     json.dump(scores,j, indent=4)
                 with open("players.json","w") as f:
