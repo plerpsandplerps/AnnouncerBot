@@ -19,6 +19,9 @@ tavern = 1013916898729140264
 dead = 1014618473948786690
 playing = 1015250670988828734
 
+#general channel id
+general = 1011380009568587878
+
 #ServerID to replace with the serverID
 guildid= 1011380009010724924
 
