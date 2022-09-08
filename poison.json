@@ -1,5 +1,6 @@
 {
-    "poisondate": 1662576191,
-    "poisondamage": 650,
-    "poisontimer": 604800
+    "poisondate": 1663046108,
+    "firstpoison":1662576191,
+    "poisondamage": 750,
+    "poisontimer": 544320
 }
