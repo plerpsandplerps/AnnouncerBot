@@ -213,7 +213,7 @@ async def pollforready():
         locations = await getlocationdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
-        #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*3))
 
 async def evaderest(authorid):
@@ -1179,6 +1179,7 @@ async def dodrinkingchallenge(authorid,channelid):
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
     if highscore > playerroll: #check if the max is greater than the player's roll
+        print(f"playerscore is lower than highscore")
         await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , user_id=[authorid], channel_id=[channelid])
         scores[str(authorid)] = {}
         scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
@@ -1189,6 +1190,7 @@ async def dodrinkingchallenge(authorid,channelid):
             json.dump(scores,tav, indent=4)
         print(f"Highscore is {highscore} which is greater than player's {playerroll}")
         if lowscore == playerroll: #check if the min is equal to the player's roll
+            print(f"lowscore is equal to playerscore")
             hp_pull = players[str(authorid)]["HP"]
             hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
             await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
@@ -1197,6 +1199,7 @@ async def dodrinkingchallenge(authorid,channelid):
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
         else :
+            print(f"lowscore is not equal to playerscore")
             hp_pull = players[str(authorid)]["HP"]
             hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
             await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
