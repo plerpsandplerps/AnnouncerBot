@@ -911,6 +911,34 @@ async def status (ctx: interactions.CommandContext):
     await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
 
 #exchange is below
+async def doexchange(authorid, playertarget, readyitem):
+    players = await getplayerdata()
+    #Rage_pull=players[str(ctx.author.id)]["Rage"]
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    print(f"{readyitem} is the item target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
+    cooldown=86400*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = max(players[str(authorid)]["Rage"] -1,0)
+    players[str(authorid)]["Lastaction"] = "exchange"
+    players[str(authorid)]["Evade"] = False
+    players[str(authorid)]["Rest"] = False
+    players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
+    ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
+    ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
+    players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await ctx.send(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", ephemeral=False)
+    await ctx.send(f"<@{authorid}> gave an item to <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+
 
 @bot.command(
     name="exchange",
@@ -935,40 +963,19 @@ async def status (ctx: interactions.CommandContext):
 )
 async def exchange(ctx: interactions.CommandContext, playertarget: str, readyitem: str):
     players = await getplayerdata()
-    #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
-    print(f"{playertarget} is the player target")
-    print(f"{readyitem} is the item target")
-    for k,v in players.items():
-        if v['Username']==str(playertarget):
-            targetid=k
-    print(f"{targetid} is the player target id")
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        if DelayDate_pull > current_time:
+    if str(authorid) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+        if crossroads not in ctx.author.roles:
+            await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)  # golive
+        elif ReadyInventory_pull=="":
+            await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
-            if ReadyInventory_pull == "":
-                await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
-            else:
-                cooldown=86400*1 #seconds in one day
-                players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
-                DelayDate_pull=current_time+cooldown
-                players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-                players[str(ctx.author.id)]["Rage"] = max(players[str(ctx.author.id)]["Rage"] -1,0)
-                players[str(ctx.author.id)]["Lastaction"] = "exchange"
-                players[str(ctx.author.id)]["Evade"] = False
-                players[str(ctx.author.id)]["Rest"] = False
-                players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
-                ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
-                ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
-                players[str(ctx.author.id)]["ReadyInventory"] = ReadyInventory_pull
-                with open("players.json","w") as f:
-                    json.dump(players,f, indent=4)
-                await ctx.send(f"<@{targetid}> was given {readyitem} from <@{ctx.author.id}>!", ephemeral=False)
-                await ctx.send(f"<@{ctx.author.id}> gave an item to <@{targetid}>! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-
+            doexchange(ctx.author.id, playertarget,readyitem)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1040,7 +1047,7 @@ async def farm(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            dofarm(authorid)
+            dofarm(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1090,15 +1097,15 @@ async def doaid(authorid, playertarget):
 async def aid(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
-    if str(authorid) in players:
+    if str(ctx.author.id) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if farmland not in ctx.author.roles:
-            await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
+        if keep not in ctx.author.roles:
+            await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            doaid(authorid, playertarget)
+            doaid(ctx.author.id, playertarget)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1224,13 +1231,13 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
     current_time = int(time.time())
     if str(authorid) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if farmland not in ctx.author.roles:
-            await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
+        if tavern not in ctx.author.roles:
+            await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            dodrinkingchallenge(authorid)
+            dodrinkingchallenge(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
