@@ -1,21 +1,21 @@
 {
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
-        "HP": 5050,
-        "Location": "Farmland",
+        "HP": 6288,
+        "Location": "Crossroads",
         "SC": 11,
         "Rage": 1,
         "ReadyInventory": "",
-        "UsedInventory": "\n        drinkingchallengemedal",
-        "DelayDate": 1662730695,
+        "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
+        "DelayDate": 1662754053,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "lightattack",
-        "Nextaction": "heavyattack 189920974261583872"
+        "Lastaction": "travelto",
+        "Nextaction": "traveltocrossroads"
     },
     "121800126900469762": {
         "Username": "FatalBagel",
-        "HP": 9250,
+        "HP": 8300,
         "Location": "Farmland",
         "SC": 15,
         "Rage": 0,
@@ -32,14 +32,14 @@
         "HP": 8830,
         "Location": "Farmland",
         "SC": 12,
-        "Rage": 0,
+        "Rage": 1,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662665291,
+        "DelayDate": 1662751951,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelto",
-        "Nextaction": "lightattack 121800126900469762"
+        "Lastaction": "lightattack",
+        "Nextaction": "evade"
     },
     "127675466524917760": {
         "Username": "Agumander",
@@ -72,16 +72,16 @@
     "351395988977614849": {
         "Username": "Mr.Wiggles",
         "HP": 7880,
-        "Location": "Tavern",
+        "Location": "Crossroads",
         "SC": 12,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
-        "DelayDate": 1662602857,
+        "DelayDate": 1662751670,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "drinkingchallenge",
-        "Nextaction": ""
+        "Lastaction": "travelto",
+        "Nextaction": "travelto 1013916584642891898"
     },
     "216337793868103680": {
         "Username": "Dhruv",
