@@ -8,10 +8,8 @@ import time
 import math
 import json
 
-#Place your token here:
 with open('.gitignore2/config.json', 'r') as cfg:
-  # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
-  tokens = json.load(cfg)
+   tokens = json.load(cfg)
 
 #RoleIDs to replace with the server's roleids
 crossroads = tokens["crossroads"]
@@ -449,6 +447,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx,targetid,)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
+            await ctx.send(f"You light attack!",ephemeral=True)
             await dolightattack(ctx.author.id,targetid,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -535,6 +534,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid )
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
+            await ctx.send(f"You normal attack!",ephemeral=True)
             await donormalattack(ctx.author.id, targetid, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -619,6 +619,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid )
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
+            await ctx.send(f"You heavy attack!",ephemeral=True)
             await doheavyattack(ctx.author.id, targetid, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -699,6 +700,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid )
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
+            await ctx.send(f"You interrupt!",ephemeral=True)
             await dointerrupt(ctx.author.id, targetid, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -746,7 +748,8 @@ async def evade_command(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-            doevade(ctx.author.id,channelid)
+            await ctx.send(f"You evade!",ephemeral=True)
+            await doevade(ctx.author.id,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -786,7 +789,8 @@ async def rest_command(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-             dorest(ctx.author.id,channelid)
+            await ctx.send(f"You rest!",ephemeral=True)
+            await dorest(ctx.author.id,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -840,6 +844,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
             await queuenexttarget(ctx,destinationid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
+            await ctx.send(f"You travel!",ephemeral=True)
             await dotravelto(ctx.author.id,destinationid,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -897,7 +902,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"<@{ctx.author.id}> traveled to the Crossroads! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+            await ctx.send(f"You travel!",ephemeral=True)
             await dotraveltocrossroads(ctx.author.id, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -987,7 +992,8 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            doexchange(ctx.author.id, playertarget,readyitem,channelid)
+            await ctx.send(f"You exchange!",ephemeral=True)
+            await doexchange(ctx.author.id, playertarget,readyitem,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1058,7 +1064,8 @@ async def farm(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            dofarm(ctx.author.id,channelid)
+            await ctx.send(f"You farm!",ephemeral=True)
+            await dofarm(ctx.author.id,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1084,8 +1091,8 @@ async def doaid(authorid, playertarget,channelid):
     targethp=players[str(targetid)]["HP"]
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await ctx.send(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {targethp} ", ephemeral=True)
-    await ctx.send(f"<@{authorid}> used aid on <@{targetid}> to heal them! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {targethp} ", channel_id=[channelid])
+    await send_message(f"<@{authorid}> used aid on <@{targetid}> to heal them! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
 @bot.command(
@@ -1114,7 +1121,8 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            doaid(ctx.author.id, playertarget,channelid)
+            await ctx.send(f"You aid!",ephemeral=True)
+            await doaid(ctx.author.id, playertarget,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1128,5 +1136,97 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
     await ctx.populate(choices)
+
+#drinkingchallenge is below
+
+async def dodrinkingchallenge(authorid,channelid):
+    players = await getplayerdata()
+    scores = await gettaverndata()
+    Lastaction_pull = players[str(authorid)]["Lastaction"]
+    playerroll = int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1)
+    print(f"playerroll = {playerroll}")
+    print(f"scores = \n{scores}")
+    current_time = int(time.time())
+    cooldown=86400*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "drinkingchallenge"
+    await evaderest(authorid)
+    await rage (authorid)
+    if scores[str("NPC4")]["Scoreexpiry"] > current_time :
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC4 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+    else:
+        scores[str("NPC4")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC4")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC4 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+    if scores[str("NPC3")]["Scoreexpiry"] > current_time:
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC3 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+    else:
+        scores[str("NPC3")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC3")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC3 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    if highscore > playerroll: #check if the max is greater than the player's roll
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , user_id=[authorid], channel_id=[channelid])
+        scores[str(authorid)] = {}
+        scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+        scores[str(authorid)]["Media"] = ""
+        scores[str(authorid)]["Score"] = playerroll
+        scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+        with open("tavern.json","w") as tav:
+            json.dump(scores,tav, indent=4)
+        print(f"Highscore is {highscore} which is greater than player's {playerroll}")
+        if lowscore == playerroll: #check if the min is equal to the player's roll
+            hp_pull = players[str(authorid)]["HP"]
+            hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+            await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+            await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
+            players[str(authorid)]["HP"] = hp_pull
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+        else :
+            hp_pull = players[str(authorid)]["HP"]
+            hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
+            await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+            await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[channelid])
+            players[str(authorid)]["HP"] = hp_pull
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+
+@bot.command(
+    name="drinkingchallenge",
+    description="24h.score 1d4.high:gain drinkingchallengemedal. low:lose 1/4 current hp. else:heal 1/4 missing hp.",
+    scope = guildid ,
+)
+async def drinkingchallenge(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if tavern not in ctx.author.roles:
+            await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You drink!",ephemeral=True)
+            await dodrinkingchallenge(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 bot.start ()
