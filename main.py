@@ -1046,6 +1046,33 @@ async def farm(ctx: interactions.CommandContext):
 
 #aid is below
 
+async def doaid(authorid, playertarget):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
+    targethp=players[str(targetid)]["HP"]
+    heal = min(math.ceil(int((10000 - targethp)/4)),10000)
+    cooldown=86400*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "aid"
+    players[str(authorid)]["Evade"] = False
+    players[str(authorid)]["Rest"] = False
+    players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
+    players[str(authorid)]["HP"] = min(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
+    players[str(authorid)]["Rage"] = max(players[str(ctx.author.id)]["Rage"] -1,0)
+    targethp=players[str(targetid)]["HP"]
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await ctx.send(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {targethp} ", ephemeral=True)
+    await ctx.send(f"<@{authorid}> used aid on <@{targetid}> to heal them! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
+
+
 @bot.command(
     name="aid",
     description="24h. heal chosen player 1/4 of their missing health.",
@@ -1063,41 +1090,17 @@ async def farm(ctx: interactions.CommandContext):
 async def aid(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
-    print(f"{playertarget} is the player target")
-    for k,v in players.items():
-        if v['Username']==str(playertarget):
-            targetid=k
-    print(f"{targetid} is the player target id")
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        if DelayDate_pull > current_time:
+    if str(authorid) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if farmland not in ctx.author.roles:
+            await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            #players[str(ctx.author.id)]["Rage"] = players[str(ctx.author.id)]["Rage"] +200
-            targethp=players[str(targetid)]["HP"]
-            heal = min(math.ceil(int((10000 - targethp)/4)),10000)
-            cooldown=86400*1 #seconds in one day
-            players[str(ctx.author.id)]["DelayDate"] = current_time+cooldown
-            DelayDate_pull=current_time+cooldown
-            players[str(ctx.author.id)]["Lastaction"] = "aid"
-            players[str(ctx.author.id)]["Evade"] = False
-            players[str(ctx.author.id)]["Rest"] = False
-            players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
-            players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] + ((players[str(ctx.author.id)]["Rage"])*420),10000)
-            players[str(ctx.author.id)]["Rage"] = max(players[str(ctx.author.id)]["Rage"] -1,0)
-            targethp=players[str(targetid)]["HP"]
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{targetid}> was healed by aid from <@{ctx.author.id}>! \nNew HP: {targethp} ", ephemeral=True)
-            await ctx.send(f"<@{ctx.author.id}> used aid on <@{targetid}> to heal them! \n<@{ctx.author.id}> is on cooldown until <t:{DelayDate_pull}>", ephemeral=False)
-            await asyncio.sleep(cooldown)
-            players[str(ctx.author.id)]["DelayDate"] = current_time
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await ctx.send(f"<@{ctx.author.id}> Your cooldown is over and you are free to act!", ephemeral = True)
+            doaid(authorid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
-
 
 @bot.autocomplete("aid", "playertarget")
 async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
