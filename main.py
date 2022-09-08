@@ -8,16 +8,21 @@ import time
 import math
 import json
 
+#Place your token here:
+with open('.gitignore2/config.json', 'r') as cfg:
+  # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
+  tokens = json.load(cfg)
+
 #RoleIDs to replace with the server's roleids
-crossroads = 1013916584642891898
-dungeon = 1013916641177907242
-farmland = 1013916731372216380
-keep = 1013916770056278016
-lichcastle = 1013916812695580693
-shop = 1013916856333127690
-tavern = 1013916898729140264
-dead = 1014618473948786690
-playing = 1015250670988828734
+crossroads = tokens["crossroads"]
+dungeon = tokens["dungeon"]
+farmland = tokens["farmland"]
+keep = tokens["keep"]
+lichcastle = tokens["lichcastle"]
+shop = tokens["shop"]
+tavern = tokens["tavern"]
+dead = tokens["dead"]
+playing = tokens["playing"]
 
 #general channel id
 general = 1011380009568587878
@@ -27,11 +32,6 @@ guildid= 1011380009010724924
 
 #Replace with the channel_id where you would like to send your poison pings
 poisonchannel= 1011701650798424185
-
-#Place your token here:
-with open('.gitignore2/config.json', 'r') as cfg:
-  # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
-  tokens = json.load(cfg)
 
 bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
