@@ -209,13 +209,13 @@ async def queuenext(ctx):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: {words[0]}\nThis will be replaced by Next action: {displayaction}")
+            await ctx.send(f"You already have a queued action: {words[0]}\nThis will be replaced by Next action: {displayaction}", ephemeral=True)
         elif words[1] in players:
-            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis will be replaced by Next action: {displayaction}")
+            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis will be replaced by Next action: {displayaction}", ephemeral=True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: {words[0]} {locations[words[1]]['Name']}\nThis will be replaced by Next action: {displayaction}")
+            await ctx.send(f"You already have a queued action: {words[0]} {locations[words[1]]['Name']}\nThis will be replaced by Next action: {displayaction}", ephemeral=True)
     else:
-        await ctx.send(f"Next action: {displayaction}")
+        await ctx.send(f"Next action: {displayaction}", ephemeral=True)
 
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
@@ -242,8 +242,10 @@ async def queuenexttarget(ctx, actiontargetid):
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
             await ctx.send(f"You already have a queued action: {words[0]} \nThis has been replaced by Next action: {displayaction}", ephemeral=True)
-        else:
+        elif words[1] in players:
             await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
+        elif words[1] in locations:
+            await ctx.send(f"You already have a queued action: {words[0]} {locations[words[1]]['Name']}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral = True)
 
