@@ -169,8 +169,8 @@ async def gettaverndata():
     return scores
 
 async def getlichdata():
-    with open("lichcastle.json","r") as lich:
-        scores = json.load(lich)
+    with open("lichcastle.json","r") as l:
+        scores = json.load(l)
     return scores
 
 async def pollfornext():
@@ -1195,7 +1195,11 @@ async def dodrinkingchallenge(authorid,channelid):
         print(f"playerscore is lower than highscore")
         await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[channelid])
     else:
-        return
+        print(f"playerscore is the highscore")
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[channelid])
+        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
         print(f"lowscore is equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
@@ -1238,5 +1242,116 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             await dodrinkingchallenge(ctx.author.id, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+#battlelich is below
+
+async def dobattlelich(authorid,channelid):
+    players = await getplayerdata()
+    scores = await getlichdata()
+    Lastaction_pull = players[str(authorid)]["Lastaction"]
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1))
+    print(f"playerroll = {playerroll}")
+    print(f"scores = \n{scores}\n")
+    current_time = int(time.time())
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "battlelich"
+    await evaderest(authorid)
+    await rage (authorid)
+    if scores[str("NPC2")]["Scoreexpiry"] > current_time :
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC2 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    else:
+        scores[str("NPC2")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC2")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC2 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    if scores[str("NPC1")]["Scoreexpiry"] > current_time:
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC1 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    else:
+        scores[str("NPC1")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC1")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC1 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    scores[str(authorid)]["Media"] = ""
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    with open("lichcastle.json","w") as l:
+        json.dump(scores,l, indent=4)
+    print("Player Lich Score Saved")
+    #check if the max is greater than the player's roll
+    if highscore > playerroll:
+        print(f"playerscore is lower than highscore")
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[channelid])
+    else:
+        print(f"playerscore is the highscore")
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the LichItem." , channel_id=[channelid])
+        players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+"LichItem"
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    if lowscore == playerroll: #check if the min is equal to the player's roll
+        print(f"lowscore is equal to playerscore")
+        hp_pull = players[str(authorid)]["HP"]
+        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
+        players[str(authorid)]["HP"] = hp_pull
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    else :
+        return
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+
+@bot.command(
+    name="battlelich",
+    description="24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.",
+    scope = guildid ,
+)
+async def battlelich(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if tavern not in ctx.author.roles:
+            await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You battle the lich!",ephemeral=True)
+            await dobattlelich(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+functiondict = {'lightattack' : dolightattack,
+                'normalattack' : donormalattack,
+                'heavyattack' : doheavyattack,
+                'interrupt' : dointerrupt,
+                'evade' : doevade,
+                'rest' : dorest,
+                'farm' : dofarm,
+                'travelto' : dotravelto,
+                'traveltocrossroads': dotraveltocrossroads,
+                'aid': doaid,
+                'drinkingchallenge': dodrinkingchallenge,
+                'battlelich': dobattlelich}
 
 bot.start ()
