@@ -1,13 +1,13 @@
 {
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
-        "HP": 6288,
+        "HP": 7216,
         "Location": "Crossroads",
         "SC": 11,
         "Rage": 2,
         "ReadyInventory": "",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
-        "DelayDate": 1662756197,
+        "DelayDate": 1662757316,
         "Evade": false,
         "Rest": false,
         "Lastaction": "drinkingchallenge",
@@ -29,7 +29,7 @@
     },
     "189920974261583872": {
         "Username": "The old razzmataz",
-        "HP": 7880,
+        "HP": 6930,
         "Location": "Farmland",
         "SC": 12,
         "Rage": 1,
@@ -46,27 +46,27 @@
         "HP": 9250,
         "Location": "Farmland",
         "SC": 12,
-        "Rage": 0,
+        "Rage": 6,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662130731,
+        "DelayDate": 1662757236,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "heavyattack",
         "Nextaction": ""
     },
     "225769348235657216": {
         "Username": "Vantheos",
         "HP": 7880,
-        "Location": "Farmland",
+        "Location": "Crossroads",
         "SC": 12,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662136334,
+        "DelayDate": 1662756687,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelfrom",
+        "Lastaction": "travelto",
         "Nextaction": ""
     },
     "351395988977614849": {
@@ -100,15 +100,15 @@
     "286716632225808384": {
         "Username": "shankhunt42",
         "HP": 9250,
-        "Location": "Crossroads",
+        "Location": "Dungeon",
         "SC": 12,
         "Rage": 0,
         "ReadyInventory": "",
         "UsedInventory": "",
-        "DelayDate": 1662566024,
+        "DelayDate": 1662756789,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "start",
+        "Lastaction": "travelto",
         "Nextaction": ""
     }
 }

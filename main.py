@@ -22,14 +22,17 @@ tavern = tokens["tavern"]
 dead = tokens["dead"]
 playing = tokens["playing"]
 
-#general channel id
-general = 1011380009568587878
+#how long the lowest cooldowns are
+basecd = tokens["basecooldown"]
 
-#ServerID to replace with the serverID
-guildid= 1011380009010724924
+#general channel id
+general = tokens["general"]
+
+#serverid
+guildid= tokens["guildid"]
 
 #Replace with the channel_id where you would like to send your poison pings
-poisonchannel= 1011701650798424185
+poisonchannel= tokens["poisonchannel"]
 
 bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
@@ -54,7 +57,7 @@ async def on_ready():
             poisontimer_pull = poison["poisontimer"]
         print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
         if poisondate_pull < current_time :
-            poisontimer_pull=max(math.ceil(poisontimer_pull*.9),86400)
+            poisontimer_pull=max(math.ceil(poisontimer_pull*.9),basecd)
             nextpoisontime=int(current_time+poisontimer_pull)
             print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} days till next poison")
             players = await getplayerdata ()
@@ -74,7 +77,7 @@ async def on_ready():
         else:
             await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
-        smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
+        smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
         firstcountdown=int(7*smalltime)
         nextpoisontime=current_time+firstcountdown
@@ -96,7 +99,7 @@ async def on_ready():
     while poisondamage_pull < 500000:
         #test successful!
         poisondamage_pull= min(poison["poisondamage"] +100, 1500)
-        poisontimer_pull=max(math.ceil(poisontimer_pull*.9),86400)
+        poisontimer_pull=max(math.ceil(poisontimer_pull*.9),basecd)
         nextpoisontime=int(current_time+poisontimer_pull)
         print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
         await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage occurs on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
@@ -118,7 +121,7 @@ async def on_ready():
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
-        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n ^end content"
+        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n ^end content\n"
     )
     #if interactions.ChannelType.DM == True :
     #    print ("3")
@@ -126,8 +129,6 @@ async def listen(message: interactions.Message):
     #    await channel.send("join the test environment! \n test")
     #else:
     #    pass
-
-#write evaderest(authorid) to set evade/rest back to false after taking a different actions
 
 #write deathcheck() to set location to "Dead" and remove all roles when player hits 0 hp
 
@@ -391,7 +392,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage(authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
@@ -408,7 +409,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
@@ -478,7 +479,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd*2  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
@@ -495,7 +496,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
@@ -564,7 +565,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd*3  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -581,7 +582,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = 86400  # seconds in a day
+        cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -649,7 +650,7 @@ async def dointerrupt(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
-        cooldown = 86400 * 1  # seconds in one day
+        cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
@@ -659,7 +660,7 @@ async def dointerrupt(authorid,targetid,channelid):
         await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used an interrupt on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",channel_id=channelid)
     else:
-        cooldown = 86400 * 1  # seconds in one day
+        cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         await rage (authorid)
         DelayDate_pull = current_time + cooldown
@@ -723,7 +724,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 async def doevade(authorid,channelid):
     players = await getplayerdata()
     players[str(authorid)]["Evade"] = True
-    cooldown = int(86400 * 1)  # seconds in one days
+    cooldown = int(basecd * 1)  # seconds in one days
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "evade"
@@ -759,7 +760,7 @@ async def dorest(authorid,channelid):
     players[str(authorid)]["Rest"] = True
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
-    cooldown = int(86400 * 1)  # seconds in one day
+    cooldown = int(basecd * 1)  # seconds in one day
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "rest"
@@ -800,7 +801,7 @@ async def dotravelto(authorid,targetid,channelid):
     destination = locations[targetid]['Name']
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown = 86400 * 1  # seconds in one day
+    cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "travelto"
@@ -866,7 +867,7 @@ async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = "
 async def dotraveltocrossroads(authorid ,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown = 86400 * 1  # seconds in one day
+    cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "travelto"
@@ -939,7 +940,7 @@ async def doexchange(authorid, playertarget, readyitem, channelid):
             targetid=k
     print(f"{targetid} is the player target id")
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    cooldown=86400*1 #seconds in one day
+    cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     await rage (authorid)
@@ -1034,7 +1035,7 @@ async def dofarm(authorid,channelid):
     Lastaction_pull=player[str(authorid)]["Lastaction"]
     farmSC = int(random.randint(0, 4)) + (UsedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
-    cooldown = 86400 * 1  # seconds in one day
+    cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["SC"] = SC_pull
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
@@ -1081,7 +1082,7 @@ async def doaid(authorid, playertarget,channelid):
     print(f"{targetid} is the player target id")
     targethp=players[str(targetid)]["HP"]
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
-    cooldown=86400*1 #seconds in one day
+    cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "aid"
@@ -1143,11 +1144,11 @@ async def dodrinkingchallenge(authorid,channelid):
     players = await getplayerdata()
     scores = await gettaverndata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
-    playerroll = int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1)
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1))
     print(f"playerroll = {playerroll}")
-    print(f"scores = \n{scores}")
+    print(f"scores = \n{scores}\n")
     current_time = int(time.time())
-    cooldown=86400*1 #seconds in one day
+    cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "drinkingchallenge"
@@ -1158,6 +1159,7 @@ async def dodrinkingchallenge(authorid,channelid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print("NPC4 score is not expired, and has not been rewritten")
         print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
     else:
         scores[str("NPC4")]["Score"] = int(random.randint(1,4)-1)
         scores[str("NPC4")]["Scoreexpiry"] = current_time +cooldown
@@ -1165,11 +1167,13 @@ async def dodrinkingchallenge(authorid,channelid):
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
     if scores[str("NPC3")]["Scoreexpiry"] > current_time:
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print("NPC3 score is not expired, and has not been rewritten")
         print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
     else:
         scores[str("NPC3")]["Score"] = int(random.randint(1,4)-1)
         scores[str("NPC3")]["Scoreexpiry"] = current_time +cooldown
@@ -1178,35 +1182,38 @@ async def dodrinkingchallenge(authorid,channelid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    if highscore > playerroll: #check if the max is greater than the player's roll
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    scores[str(authorid)]["Media"] = ""
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    with open("tavern.json","w") as t:
+        json.dump(scores,t, indent=4)
+    print("Player Tavern Score Saved")
+    #check if the max is greater than the player's roll
+    if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , user_id=[authorid], channel_id=[channelid])
-        scores[str(authorid)] = {}
-        scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
-        scores[str(authorid)]["Media"] = ""
-        scores[str(authorid)]["Score"] = playerroll
-        scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
-        with open("tavern.json","w") as tav:
-            json.dump(scores,tav, indent=4)
-        print(f"Highscore is {highscore} which is greater than player's {playerroll}")
-        if lowscore == playerroll: #check if the min is equal to the player's roll
-            print(f"lowscore is equal to playerscore")
-            hp_pull = players[str(authorid)]["HP"]
-            hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
-            await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
-            await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
-            players[str(authorid)]["HP"] = hp_pull
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-        else :
-            print(f"lowscore is not equal to playerscore")
-            hp_pull = players[str(authorid)]["HP"]
-            hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
-            await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
-            await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[channelid])
-            players[str(authorid)]["HP"] = hp_pull
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[channelid])
+    else:
+        return
+    if lowscore == playerroll: #check if the min is equal to the player's roll
+        print(f"lowscore is equal to playerscore")
+        hp_pull = players[str(authorid)]["HP"]
+        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
+        players[str(authorid)]["HP"] = hp_pull
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    else :
+        print(f"lowscore is not equal to playerscore")
+        hp_pull = players[str(authorid)]["HP"]
+        hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[channelid])
+        players[str(authorid)]["HP"] = hp_pull
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
 
