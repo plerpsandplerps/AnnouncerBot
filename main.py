@@ -1242,6 +1242,8 @@ functiondict = {'lightattack' : dolightattack,
                 'rest' : dorest,
                 'farm' : dofarm,
                 'travelto' : dotravelto,
-                'traveltocrossroads': dotraveltocrossroads}
+                'traveltocrossroads': dotraveltocrossroads,
+                'aid': doaid,
+                'drinkingchallenge': dodrinkingchallenge}
 
 bot.start ()
