@@ -23,5 +23,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Git ignore
+# gitignore
 .gitignore2/
