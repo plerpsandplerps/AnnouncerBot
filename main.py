@@ -128,6 +128,8 @@ async def listen(message: interactions.Message):
     #else:
     #    pass
 
+#eventually want to add Rage to a callable function so i don't repeat it everywhere lol!
+
 #pulls player.json into dict
 async def getplayerdata():
     with open("players.json","r") as f:
@@ -1003,7 +1005,9 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
 async def dofarm(authorid):
     players = await getplayerdata()
     current_time = int(time.time())
-    farmSC = int(random.randint(0, 4))  # +randbuff
+    UsedInventory_pull=players[str(authorid)]["UsedInventory"]
+    Lastaction_pull=player[str(authorid)]["Lastaction"]
+    farmSC = int(random.randint(0, 4)) + (UsedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
     cooldown = 86400 * 1  # seconds in one day
     players[str(authorid)]["SC"] = SC_pull
@@ -1058,7 +1062,6 @@ async def farm(ctx: interactions.CommandContext):
 )
 async def aid(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
-    #Rage_pull=players[str(ctx.author.id)]["Rage"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
     for k,v in players.items():
@@ -1117,7 +1120,8 @@ async def drinkingchallenge (ctx: interactions.CommandContext):
     #Rage_pull=players[str(ctx.author.id)]["Rage"]
     scores = await gettaverndata()
     current_time = int(time.time())
-    playerroll = int(random.randint(1,4))
+    Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
+    playerroll = int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1)
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}")
     cooldown=86400 #seconds in a day
