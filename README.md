@@ -117,7 +117,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Lich's Item
   - /lichitem
-    - 72h. the next time you would die you set your HP to 5000 instead. then discard this item. doesn't stack.
+    - 48h. set target player's HP to 4200.
 
 ### Beer-bandolier
   - /beerbando
