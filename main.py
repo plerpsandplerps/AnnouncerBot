@@ -214,6 +214,12 @@ async def pollforready():
         print(f"I sent a message to {readyplayers}")
         await asyncio.sleep(int(1*60*60*3))
 
+async def evaderest(authorid):
+    players = await getplayerdata()
+    players[str(authorid)]["Evade"]=False
+    players[str(authorid)]["Rest"]=False
+    return players
+
 async def send_message(message : str, **kwargs):
     if('user_id' in kwargs.keys()):
         for targetid in kwargs['user_id']:
@@ -387,8 +393,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> evaded a light attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -405,8 +410,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was hit by a light attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -474,8 +478,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> evaded a normal attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -492,8 +495,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was hit by a normal attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -560,8 +562,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> evaded a heavy attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -578,8 +579,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -645,8 +645,7 @@ async def dointerrupt(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
@@ -792,8 +791,7 @@ async def dotravelto(authorid,targetid,channelid):
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
-    players[str(authorid)]["Evade"] = False
-    players[str(authorid)]["Rest"] = False
+    await evaderest(authorid)
     await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -859,8 +857,7 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["Evade"] = False
     players[str(authorid)]["Rest"] = False
     players[str(authorid)]["Lastaction"] = "travelto"
-    players[str(authorid)]["Evade"] = False
-    players[str(authorid)]["Rest"] = False
+    await evaderest(authorid)
     players[str(authorid)]["Location"] = "Crossroads"
     await rage (authorid)
     with open("players.json", "w") as f:
@@ -930,8 +927,7 @@ async def doexchange(authorid, playertarget, readyitem):
     DelayDate_pull=current_time+cooldown
     await rage (authorid)
     players[str(authorid)]["Lastaction"] = "exchange"
-    players[str(authorid)]["Evade"] = False
-    players[str(authorid)]["Rest"] = False
+    await evaderest(authorid)
     players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
@@ -1023,8 +1019,7 @@ async def dofarm(authorid):
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "farm"
-    players[str(authorid)]["Evade"] = False
-    players[str(authorid)]["Rest"] = False
+    await evaderest(authorid)
     await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -1068,8 +1063,7 @@ async def doaid(authorid, playertarget):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "aid"
-    players[str(authorid)]["Evade"] = False
-    players[str(authorid)]["Rest"] = False
+    await evaderest(authorid)
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
     await rage (authorid)
     targethp=players[str(targetid)]["HP"]
@@ -1175,8 +1169,7 @@ async def dodrinkingchallenge (authorid):
             await ctx.send(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , ephemeral = False )
             players[str(authorid)]["HP"] = hp_pull
             players[str(authorid)]["Lastaction"] = "drinkingchallenge"
-            players[str(authorid)]["Evade"] = False
-            players[str(authorid)]["Rest"] = False
+            await evaderest(authorid)
             players[str(authorid)]["DelayDate"] = current_time + cooldown
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -1187,8 +1180,7 @@ async def dodrinkingchallenge (authorid):
             await ctx.send(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , ephemeral = False )
             players[str(authorid)]["HP"] = hp_pull
             players[str(authorid)]["Lastaction"] = "drinkingchallenge"
-            players[str(authorid)]["Evade"] = False
-            players[str(authorid)]["Rest"] = False
+            await evaderest(authorid)
             players[str(authorid)]["DelayDate"] = current_time + cooldown
             await rage (authorid)
             with open("players.json","w") as f:
@@ -1197,8 +1189,7 @@ async def dodrinkingchallenge (authorid):
         await ctx.send(f"You rolled the high roll of {playerroll}! gaining a drinkingchallengemedal in your used inventory!")
         UsedInventory_pull=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
         players[str(authorid)]["Lastaction"] = "drinkingchallenge"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await evaderest(authorid)
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         players[str(authorid)]["UsedInventory"] = UsedInventory_pull
         scores[str(authorid)] = {}
