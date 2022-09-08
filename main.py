@@ -29,7 +29,7 @@ guildid= 1011380009010724924
 poisonchannel= 1011701650798424185
 
 #Place your token here:
-with open('.gitignore/config.json', 'r') as cfg:
+with open('.gitignore2/config.json', 'r') as cfg:
   # Deserialize the JSON data (essentially turning it into a Python dictionary object so we can use it in our code)
   tokens = json.load(cfg)
 
