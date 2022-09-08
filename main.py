@@ -265,15 +265,51 @@ async def queuenexttarget(ctx, actiontargetid):
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     bounties = await getbountydata()
-    # need to add:
-        # depends on adding poison to poison.json first:
-    # check for poisondate (if join b4 poison, 10SC+bounty and 10000hp, otherwise min(SC)-1 and MIN(HP)-1)
+    poison = await getpoisondata()
     if str(ctx.author.id) in players:
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
         return False
+    elif  poison["firstpoisondate"] < int(time.time()) : #players who join late get reduced HP and SC
+        current_time = int(time.time())
+        await ctx.author.add_role(crossroads, guildid)
+        await ctx.author.add_role(playing, guildid)
+        if str(ctx.author.id) in bounties:
+            bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
+            await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
+        else:
+            bounty_pull = 0
+            return
+        players[str(ctx.author.id)] = {}
+        players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
+        players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
+        players[str(ctx.author.id)]["Location"] = "Crossroads"
+        players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
+        players[str(ctx.author.id)]["Rage"] = 0
+        players[str(ctx.author.id)]["ReadyInventory"] = ""
+        players[str(ctx.author.id)]["UsedInventory"] = ""
+        players[str(ctx.author.id)]["DelayDate"] = current_time
+        players[str(ctx.author.id)]["Evade"] = False
+        players[str(ctx.author.id)]["Rest"] = False
+        players[str(ctx.author.id)]["Lastaction"] = "start"
+        players[str(ctx.author.id)]["Nextaction"] = ""
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        print(f"Created {ctx.author.id} player in players.json")
+        players = await getplayerdata()
+        hp_pull = players[str(ctx.author.id)]["HP"]
+        # hpmoji = write code to convert hp to emojis if i still want to
+        location_pull = players[str(ctx.author.id)]["Location"]
+        SC_pull = players[str(ctx.author.id)]["SC"]
+        Rage_pull = players[str(ctx.author.id)]["Rage"]
+        ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
+        UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        Evade_pull = players[str(ctx.author.id)]["Evade"]
+        Rest_pull = players[str(ctx.author.id)]["Rest"]
+        Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
+        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
     else:
         current_time = int(time.time())
-        delaytimer=int(300)
         await ctx.author.add_role(crossroads, guildid)
         await ctx.author.add_role(playing, guildid)
         if str(ctx.author.id) in bounties:
