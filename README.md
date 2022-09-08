@@ -10,13 +10,13 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 - The core actions are listed below.
 ### Light Attack
   - /lightattack
-    - 24h. attack a player in your area for 950.
+    - 24h.1rage. attack a player in your area for 950.
 ### Normal Attack
   - /normalattack
-    - 48h. attack a player in your area for 2300.
+    - 48h.3rage. attack a player in your area for 2300.
 ### Heavy Attack
   - /heavyattack
-    - 72h. attack a player in your area for 3650.
+    - 72h.6rage. attack a player in your area for 3650.
 ### Interrupt
   - /interrupt
     - 24h. hit a player in your area for 4200 if they are resting or evading.
