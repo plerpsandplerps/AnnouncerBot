@@ -44,6 +44,7 @@ async def on_ready():
     current_time = int(time.time())
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
+    loop.create_task(pollforready())
     print(f"Started at {current_time}")
     poison = await getpoisondata()
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
@@ -73,7 +74,7 @@ async def on_ready():
             with open("poison.json","w") as h:
                json.dump(poison,h, indent=4)
         else:
-            await channel.send(f"I have awoken! \n (@-everyone to go here) \n The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
+            await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
@@ -119,7 +120,7 @@ async def on_ready():
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
-        f"We've received a message from {message.author.username}. The message is: {message.content}."
+        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n ^end content"
     )
     #if interactions.ChannelType.DM == True :
     #    print ("3")
@@ -171,7 +172,7 @@ async def gettaverndata():
 async def pollfornext():
     #run forever
     while True:
-        print(f"polling for next:{int(time.time())}")
+        print(f"\npolling for next:{int(time.time())}")
         players = await getplayerdata()
         locations = await getlocationdata()
         for k,v in players.items():
@@ -200,6 +201,18 @@ async def pollfornext():
                     elif words[1] in locations:
                         print(f"{v['Username']} is not ready to {words[0]} {locations[words[1]]['Name']}")
         await asyncio.sleep(300)
+
+async def pollforready():
+    #run forever
+    while True:
+        print(f"\npolling for ready:{int(time.time())}")
+        players = await getplayerdata()
+        locations = await getlocationdata()
+        readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
+        print(readyplayers)
+        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+        print(f"I sent a message to {readyplayers}")
+        await asyncio.sleep(int(1*60*60*3))
 
 async def send_message(message : str, **kwargs):
     if('user_id' in kwargs.keys()):
@@ -899,7 +912,7 @@ async def status (ctx: interactions.CommandContext):
     Rest_pull = players[str(ctx.author.id)]["Rest"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
-    await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+    await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>\nNextaction: {Nextaction_pull}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, playertarget, readyitem):
