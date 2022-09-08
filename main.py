@@ -128,6 +128,11 @@ async def listen(message: interactions.Message):
     #else:
     #    pass
 
+#write evaderest(authorid) to set evade/rest back to false after taking a different actions
+
+#write deathcheck() to set location to "Dead" and remove all roles when player hits 0 hp
+
+#rage heals 420 for each rage stack then decreases by 1
 async def rage(authorid):
     await getplayerdata()
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
@@ -166,7 +171,7 @@ async def gettaverndata():
 async def pollfornext():
     #run forever
     while True:
-        print('polling for next:')
+        print(f"polling for next:{int(time.time())}")
         players = await getplayerdata()
         locations = await getlocationdata()
         for k,v in players.items():
