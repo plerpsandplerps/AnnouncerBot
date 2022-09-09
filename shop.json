@@ -1,10 +1,46 @@
 {
-    "drinkingchallengemedal": {
+  "adventuringgear": {
+      "Description": "48h. increase your loot score by 1 for the rest of the game.",
+      "Cooldown": 172800,
+    },
+  "aimtraining": {
+      "Description": "72h. reduce heavy attacks to 24h cooldown. doesn't stack.",
+      "Cooldown": 259200,
+    },
+  "banish": {
+      "Description": "24h. choose a player in your area and an area. the chosen player travels to the chosen area.",
+      "Cooldown": 86400,
+    },
+  "croockedabacus": {
+      "Description": "48h. whenever you exchange or trade, gain a seed coin for the rest of the game.",
+      "Cooldown": 172800,
+    },
+  "drinkingchallengemedal": {
         "Description": "48h. increase the damage of your light attack by 420 for the rest of the game.",
         "Cooldown": 172800,
     },
-    "Item2Name": {
-        "Description": "Item2Desc",
-        "Cooldown": 172800,
+  "illtryspinning": {
+      "Description": "24h. perform a single random attack on a random player in your area. ignore that attack's cooldown.",
+      "Cooldown": 86400,
+    },
+  "itsatrap": {
+      "Description": "48h. choose a player in your area. they cannot use the /traveltocrossroads or /travelto commands during this item's cooldown.",
+      "Cooldown": 172800,
+    },
+  "randomitem": {
+      "Description": "24h. add a random item to your ready inventory.",
+      "Cooldown": 86400,
+    },
+  "tractor": {
+      "Description": "48h. whenever you farm, gain an additional seed coin for the rest of the game.",
+      "Cooldown": 172800,
+    },
+  "unoreverse": {
+      "Description": "48h. choose a player in your area and note your current health. after this cooldown return your health to the noted health. The chosen player receives as much damage as you healed or receives as much healing as the damage you received when returning to the noted health.",
+      "Cooldown": 172800,
+    },
+  "beerbandolier": {
+      "Description": "24h. you gain three rage.",
+      "Cooldown": 86400,
     }
 }

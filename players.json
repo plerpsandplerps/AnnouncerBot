@@ -11,7 +11,7 @@
         "Evade": false,
         "Rest": false,
         "Lastaction": "battlelich",
-        "Nextaction": ""
+        "Nextaction": "battlelich"
     },
     "121800126900469762": {
         "Username": "FatalBagel",
@@ -67,7 +67,7 @@
         "Evade": false,
         "Rest": false,
         "Lastaction": "travelto",
-        "Nextaction": ""
+        "Nextaction": "travelto 1013916731372216380"
     },
     "351395988977614849": {
         "Username": "Mr.Wiggles",
