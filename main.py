@@ -12,27 +12,27 @@ with open('.gitignore2/config.json', 'r') as cfg:
    tokens = json.load(cfg)
 
 #RoleIDs to replace with the server's roleids
-crossroads = tokens["crossroads"]
-dungeon = tokens["dungeon"]
-farmland = tokens["farmland"]
-keep = tokens["keep"]
-lichcastle = tokens["lichcastle"]
-shop = tokens["shop"]
-tavern = tokens["tavern"]
-dead = tokens["dead"]
-playing = tokens["playing"]
+crossroads = tokens["crossroadsroleid"]
+dungeon = tokens["dungeonroleid"]
+farmland = tokens["farmlandroleid"]
+keep = tokens["keeproleid"]
+lichcastle = tokens["lichcastleroleid"]
+shop = tokens["shoproleid"]
+tavern = tokens["tavernroleid"]
+dead = tokens["deadroleid"]
+playing = tokens["playingroleid"]
 
 #how long the lowest cooldowns are
 basecd = tokens["basecooldown"]
 
 #general channel id
-general = tokens["general"]
+general = tokens["generalchannelid"]
 
 #serverid
 guildid= tokens["guildid"]
 
 #Replace with the channel_id where you would like to send your poison pings
-poisonchannel= tokens["poisonchannel"]
+poisonchannel= tokens["poisonchannelid"]
 
 bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
@@ -1341,6 +1341,17 @@ async def battlelich(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+@bot.command(
+    name="help",
+    description="get the readme link",
+    scope = guildid ,
+)
+async def help(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot", ephemeral = True) #golive
+
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
                 'heavyattack' : doheavyattack,
@@ -1353,5 +1364,7 @@ functiondict = {'lightattack' : dolightattack,
                 'aid': doaid,
                 'drinkingchallenge': dodrinkingchallenge,
                 'battlelich': dobattlelich}
+
+
 
 bot.start ()
