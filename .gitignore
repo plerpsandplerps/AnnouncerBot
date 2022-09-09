@@ -25,3 +25,6 @@ $RECYCLE.BIN/
 
 # gitignore
 .gitignore2/
+
+# playershidden
+players.json
