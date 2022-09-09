@@ -224,7 +224,7 @@ async def pollforready():
         locations = await getlocationdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
-        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+        #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*3))
 
 
@@ -1358,7 +1358,7 @@ async def battlelich(ctx: interactions.CommandContext):
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        if tavern not in ctx.author.roles:
+        if lichcastle not in ctx.author.roles:
             await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)

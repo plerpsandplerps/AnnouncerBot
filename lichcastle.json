@@ -1,14 +1,20 @@
 {
     "NPC1": {
         "Username": "Bagel Boss Bitch",
-        "Media": "<https://tenor.com/view/littleman-bagel-boss-midget-angry-pissed-gif-14552890>",
+        "Media": "https://tenor.com/view/littleman-bagel-boss-midget-angry-pissed-gif-14552890",
         "Score": 2,
-        "Scoreexpiry": "Never"
+        "Scoreexpiry": 1662753583
     },
     "NPC2": {
         "Username": "Storm Coming Lady",
-        "Media": "<https://tenor.com/view/big-storm-coming-ready-warning-threat-gif-4223991>",
+        "Media": "https://tenor.com/view/big-storm-coming-ready-warning-threat-gif-4223991",
         "Score": 3,
-        "Scoreexpiry": "Never"
+        "Scoreexpiry": 1662753583
     },
+    "192697820875194368": {
+        "Username": "Sabrina the Teenage Lich",
+        "Media": "",
+        "Score": 3,
+        "Scoreexpiry": 1662823191
+    }
 }

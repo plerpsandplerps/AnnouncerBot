@@ -5,12 +5,12 @@
         "Location": "Crossroads",
         "SC": 11,
         "Rage": 6,
-        "ReadyInventory": "",
+        "ReadyInventory": "\n        LichItem",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
-        "DelayDate": 1662731625,
+        "DelayDate": 1662823191,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "travelto",
+        "Lastaction": "battlelich",
         "Nextaction": ""
     },
     "121800126900469762": {
