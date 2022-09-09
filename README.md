@@ -117,7 +117,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Lich's Item
   - /lichitem
-    - 48h. set target player's HP to 4200.
+    - 24h. set target player's HP to 4200.
 
 ### Beer-bandolier
   - /beerbando

@@ -888,7 +888,7 @@ async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = "
     await ctx.populate(choices)
 
 #travelto
-async def dotraveltocrossroads(authorid ,channelid):
+async def dotraveltocrossroads(authorid):
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
@@ -909,7 +909,7 @@ async def dotraveltocrossroads(authorid ,channelid):
     await user.remove_role(role=tavern, guild_id=guildid)
     await user.add_role(role=crossroads, guild_id=guildid)
     await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid])
-    await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[channelid])
+    await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[general])
 
 @bot.command(
     name="traveltocrossroads",
