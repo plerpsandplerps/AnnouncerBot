@@ -224,7 +224,7 @@ async def pollforready():
         locations = await getlocationdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
-        #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*3))
 
 
@@ -236,7 +236,7 @@ async def pollforqueue():
         locations = await getlocationdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
-        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*12))
 
 async def evaderest(authorid):
