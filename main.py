@@ -427,7 +427,6 @@ async def dolightattack(authorid,targetid,channelid):
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
@@ -498,7 +497,6 @@ async def donormalattack(authorid,targetid,channelid):
     if players[str(targetid)]["Evade"]:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
@@ -516,7 +514,6 @@ async def donormalattack(authorid,targetid,channelid):
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
@@ -586,7 +583,6 @@ async def doheavyattack(authorid,targetid,channelid):
     if players[str(targetid)]["Evade"]:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
@@ -604,7 +600,6 @@ async def doheavyattack(authorid,targetid,channelid):
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
@@ -667,7 +662,7 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
-#interruptis below
+#interrupt is below
 async def dointerrupt(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
@@ -945,7 +940,6 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
 async def status (ctx: interactions.CommandContext):
     players = await getplayerdata()
     hp_pull = players[str(ctx.author.id)]["HP"]
-    # hpmoji = write code to convert hp to emojis if i still want to
     location_pull = players[str(ctx.author.id)]["Location"]
     SC_pull = players[str(ctx.author.id)]["SC"]
     Rage_pull = players[str(ctx.author.id)]["Rage"]
