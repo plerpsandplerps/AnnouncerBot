@@ -46,6 +46,7 @@ async def on_ready():
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollforready())
+    loop.create_task(pollforqueue())
     print(f"Started at {current_time}")
     poison = await getpoisondata()
     channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
@@ -216,6 +217,18 @@ async def pollforready():
         print(readyplayers)
         await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*3))
+
+
+async def pollforqueue():
+    #run forever
+    while True:
+        print(f"\npolling for no queue:{int(time.time())}")
+        players = await getplayerdata()
+        locations = await getlocationdata()
+        noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
+        print(noqueueplayers)
+        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+        await asyncio.sleep(int(1*60*60*12))
 
 async def evaderest(authorid):
     players = await getplayerdata()
