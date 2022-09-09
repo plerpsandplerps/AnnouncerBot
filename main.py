@@ -140,7 +140,7 @@ async def rage(authorid):
     players[str(authorid)]["Rage"] = max(players[str(authorid)]["Rage"] -1,0)
     return players
 
-#hpmoji added
+#hpmojiconv function converts an hp number into a string of hp squares
 async def hpmojiconv(hp):
     players = await getplayerdata()
     numofgreensqs = math.floor(hp/500)
@@ -352,7 +352,6 @@ async def join_command(ctx: interactions.CommandContext):
         print(f"Created {ctx.author.id} player in players.json")
         players = await getplayerdata()
         hp_pull = players[str(ctx.author.id)]["HP"]
-        # hpmoji = write code to convert hp to emojis if i still want to
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
@@ -362,7 +361,8 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        hpmoji = await hpmojiconv(hp_pull)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
     else:
         current_time = int(time.time())
         await ctx.author.add_role(crossroads, guildid)
@@ -391,7 +391,7 @@ async def join_command(ctx: interactions.CommandContext):
         print(f"Created {ctx.author.id} player in players.json")
         players = await getplayerdata()
         hp_pull = players[str(ctx.author.id)]["HP"]
-        # hpmoji = write code to convert hp to emojis if i still want to
+        hpmoji = await hpmojiconv(hp_pull)
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
@@ -401,7 +401,7 @@ async def join_command(ctx: interactions.CommandContext):
         Evade_pull = players[str(ctx.author.id)]["Evade"]
         Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
 
 #light attack is below
 async def dolightattack(authorid,targetid,channelid):
