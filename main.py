@@ -122,7 +122,7 @@ async def on_ready():
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
-        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n ^end content\n"
+        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n \nend content\n"
     )
     #if interactions.ChannelType.DM == True :
     #    print ("3")
@@ -139,6 +139,15 @@ async def rage(authorid):
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
     players[str(authorid)]["Rage"] = max(players[str(authorid)]["Rage"] -1,0)
     return players
+
+#hpmoji added
+async def hpmojiconv(hp):
+    players = await getplayerdata()
+    numofgreensqs = math.floor(hp/500)
+    numofredsqs = math.floor((10000-hp)/500)
+    yellowsq = math.ceil((hp-(numofgreensqs*500))/500)
+    hpmoji = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")
+    return hpmoji
 
 #pulls player.json into dict
 async def getplayerdata():
@@ -227,7 +236,7 @@ async def pollforqueue():
         locations = await getlocationdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
-        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*12))
 
 async def evaderest(authorid):
@@ -401,7 +410,6 @@ async def dolightattack(authorid,targetid,channelid):
     if players[str(targetid)]["Evade"]:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
-        # targethpmoji = write code to convert hp to emojis?
         players[str(targetid)]["HP"] = targethp
         await rage(authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
@@ -410,9 +418,10 @@ async def dolightattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a light attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> evaded a light attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a light attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
@@ -427,9 +436,10 @@ async def dolightattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was hit by a light attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> was hit by a light attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a light attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 @bot.command(
@@ -497,9 +507,10 @@ async def donormalattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a normal attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> evaded a normal attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a normal attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
@@ -514,9 +525,10 @@ async def donormalattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was hit by a normal attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> was hit by a normal attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a normal attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 @bot.command(
@@ -583,9 +595,10 @@ async def doheavyattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a heavy attack from <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> evaded a heavy attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
@@ -600,9 +613,10 @@ async def doheavyattack(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 @bot.command(
     name="heavyattack",
@@ -668,9 +682,10 @@ async def dointerrupt(authorid,targetid,channelid):
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
         await evaderest(authorid)
+        hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {targethp} ", user_id=[authorid,targetid])
+        await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used an interrupt on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",channel_id=channelid)
     else:
         cooldown = basecd * 1  # seconds in one day
@@ -781,9 +796,10 @@ async def dorest(authorid,channelid):
     players[str(authorid)]["Rest"] = True
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
+    hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-    await send_message(f"<@{authorid}> used rest! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", user_id=[authorid])
+    await send_message(f"<@{authorid}> used rest! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}> \nNew Hp: {hpmoji}", user_id=[authorid])
 
 @bot.command(
     name="rest",
@@ -940,7 +956,8 @@ async def status (ctx: interactions.CommandContext):
     Rest_pull = players[str(ctx.author.id)]["Rest"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
-    await ctx.send(f"{ctx.author}'s HP: {hp_pull} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>\nNextaction: {Nextaction_pull}", ephemeral = True)
+    hpmoji = await hpmojiconv(hp_pull)
+    await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>\nNextaction: {Nextaction_pull}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, playertarget, readyitem, channelid):
@@ -1103,9 +1120,10 @@ async def doaid(authorid, playertarget,channelid):
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
     await rage (authorid)
     targethp=players[str(targetid)]["HP"]
+    hpmoji = await hpmojiconv(targethp)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {targethp} ", channel_id=[channelid])
+    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
     await send_message(f"<@{authorid}> used aid on <@{targetid}> to heal them! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
@@ -1217,7 +1235,8 @@ async def dodrinkingchallenge(authorid,channelid):
         print(f"lowscore is equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        hpmoji = await hpmojiconv(hp_pull)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
         await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
@@ -1226,7 +1245,8 @@ async def dodrinkingchallenge(authorid,channelid):
         print(f"lowscore is not equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        hpmoji = await hpmojiconv(hp_pull)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
         await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[channelid])
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
@@ -1322,7 +1342,8 @@ async def dobattlelich(authorid,channelid):
         print(f"lowscore is equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hp_pull}" , user_id=[authorid] )
+        hpmoji = await hpmojiconv(hp_pull)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
         await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:

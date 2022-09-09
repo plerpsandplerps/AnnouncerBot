@@ -1,17 +1,17 @@
 {
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
-        "HP": 7216,
+        "HP": 1846,
         "Location": "Tavern",
         "SC": 11,
-        "Rage": 2,
+        "Rage": 5,
         "ReadyInventory": "",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
-        "DelayDate": 1662757316,
+        "DelayDate": 1662820247,
         "Evade": false,
         "Rest": false,
-        "Lastaction": "drinkingchallenge",
-        "Nextaction": "traveltocrossroads"
+        "Lastaction": "lightattack",
+        "Nextaction": "lightattack 192697820875194368"
     },
     "121800126900469762": {
         "Username": "FatalBagel",
