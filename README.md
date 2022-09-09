@@ -1,5 +1,5 @@
 # AnnouncerBot
-Announcer Bot for yearly games!
+Announcer Bot for a rpg minigame!
 
 Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties earned) in the Crossroads location!
 
