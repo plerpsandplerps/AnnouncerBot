@@ -11,16 +11,10 @@ import json
 with open('.gitignore2/config.json', 'r') as cfg:
    tokens = json.load(cfg)
 
-#RoleIDs to replace with the server's roleids
-crossroads = tokens["crossroadsroleid"]
-dungeon = tokens["dungeonroleid"]
-farmland = tokens["farmlandroleid"]
-keep = tokens["keeproleid"]
-lichcastle = tokens["lichcastleroleid"]
-shop = tokens["shoproleid"]
-tavern = tokens["tavernroleid"]
-dead = tokens["deadroleid"]
-playing = tokens["playingroleid"]
+#load in location data
+global locations
+with open("locations.json", "r") as i:
+    locations = json.load(i)
 
 #how long the lowest cooldowns are
 basecd = tokens["basecooldown"]
@@ -167,12 +161,6 @@ async def getpoisondata():
         poison = json.load(h)
     return poison
 
-#pulls location.json into dict:
-async def getlocationdata():
-    with open("locations.json","r") as i:
-        locations = json.load(i)
-    return locations
-
 async def gettaverndata():
     with open("tavern.json","r") as j:
         scores = json.load(j)
@@ -188,7 +176,6 @@ async def pollfornext():
     while True:
         print(f"\npolling for next:{int(time.time())}")
         players = await getplayerdata()
-        locations = await getlocationdata()
         for k,v in players.items():
             if v['Nextaction'] != "":
                 words = players[k]['Nextaction'].split()
@@ -202,8 +189,8 @@ async def pollfornext():
                         loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'channelid':general}))
                         print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
                     elif words[1] in locations:
-                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'channelid':general}))
-                        print(f"{v['Username']} is doing {words[0]} {locations[words[1]]['Name']}")
+                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     players[k]['Nextaction'] = ""
                     with open("players.json", "w") as f:
                         json.dump(players, f, indent=4)
@@ -213,7 +200,7 @@ async def pollfornext():
                     elif words[1] in players:
                         print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
                     elif words[1] in locations:
-                        print(f"{v['Username']} is not ready to {words[0]} {locations[words[1]]['Name']}")
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(300)
 
 async def pollforready():
@@ -221,10 +208,9 @@ async def pollforready():
     while True:
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
-        locations = await getlocationdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
-        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+        #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*3))
 
 
@@ -233,10 +219,9 @@ async def pollforqueue():
     while True:
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
-        locations = await getlocationdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
-        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+       #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*12))
 
 async def evaderest(authorid):
@@ -252,12 +237,11 @@ async def send_message(message : str, **kwargs):
             await user.send(message)
     if ('channel_id' in kwargs.keys()):
         for targetid in kwargs['channel_id']:
-            channel = await interactions.get(bot, interactions.Channel, object_id=targetid, guild_id=guildid, force='http')
+            channel = await interactions.get(bot, interactions.Channel, object_id=targetid, force='http')
             await channel.send(message)
 
 async def queuenext(ctx):
     players = await getplayerdata()
-    locations = await getlocationdata()
     #separate strings for printing to player and what we use (id)
     saveaction = f"{ctx.data.name}"
     displayaction = f"{ctx.data.name}"
@@ -282,17 +266,15 @@ async def queuenext(ctx):
 
 async def queuenexttarget(ctx, actiontargetid):
     players = await getplayerdata()
-    locations = await getlocationdata()
     #separate strings for printing to player and what we use (id)
     saveaction = f"{ctx.data.name} {actiontargetid}"
     displayaction = ""
     if actiontargetid in players:
         displayaction = f"{ctx.data.name} {players[actiontargetid]['Username']}"
+    #name here is a little misleading, but actiontargetid is actually the destination name in this context
     elif actiontargetid in locations:
-        displayaction = f"{ctx.data.name} {locations[actiontargetid]['Name']}"
-    else:
-        #TODO make this more specific
-        raise Exception()
+        displayaction = saveaction
+
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
@@ -300,7 +282,7 @@ async def queuenexttarget(ctx, actiontargetid):
         elif words[1] in players:
             await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: {words[0]} {locations[words[1]]['Name']}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
+            await ctx.send(f"You already have a queued action: {words[0]} {words[1]}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral = True)
 
@@ -326,8 +308,8 @@ async def join_command(ctx: interactions.CommandContext):
         return False
     elif  poison["firstpoisondate"] < int(time.time()) : #players who join late get reduced HP and SC
         current_time = int(time.time())
-        await ctx.author.add_role(crossroads, guildid)
-        await ctx.author.add_role(playing, guildid)
+        await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
+        await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
         if str(ctx.author.id) in bounties:
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
@@ -336,8 +318,10 @@ async def join_command(ctx: interactions.CommandContext):
             return
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
-        players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
         players[str(ctx.author.id)]["Location"] = "Crossroads"
+        players[str(ctx.author.id)]["HP"] = 10000
+        players[str(ctx.author.id)]["SC"] = 10
+        players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
         players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
@@ -365,8 +349,8 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
     else:
         current_time = int(time.time())
-        await ctx.author.add_role(crossroads, guildid)
-        await ctx.author.add_role(playing, guildid)
+        await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
+        await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
         if str(ctx.author.id) in bounties:
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
@@ -820,9 +804,7 @@ async def rest_command(ctx: interactions.CommandContext):
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #travelto
-async def dotravelto(authorid,targetid,channelid):
-    locations = await getlocationdata()
-    destination = locations[targetid]['Name']
+async def dotravelto(authorid,destination):
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
@@ -835,9 +817,9 @@ async def dotravelto(authorid,targetid,channelid):
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.remove_role(role=crossroads, guild_id=guildid)
-    await user.add_role(role=targetid, guild_id=guildid)
-    await send_message(f"<@{authorid}> traveled to {destination}! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[channelid])
+    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+    await user.add_role(role=locations[destination]["Role_ID"], guild_id=guildid)
+    await send_message(f"<@{authorid}> traveled to {destination}! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[locations[destination]["Channel_ID"]])
 
 @bot.command(
     name="travelto",
@@ -854,32 +836,25 @@ async def dotravelto(authorid,targetid,channelid):
     ]
 )
 async def travelto(ctx: interactions.CommandContext, destination: str):
-    locations = await getlocationdata()
     players = await getplayerdata()
     current_time = int(time.time())
     print(f"{destination} is the destination")
     channelid=ctx.channel_id
-    for k,v in locations.items():
-        if v['Name']==str(destination):
-            destinationid=k
-    print(f"{destinationid} is the player destination id")
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await queuenexttarget(ctx,destinationid)
+            await queuenexttarget(ctx,destination)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You travel!",ephemeral=True)
-            await dotravelto(ctx.author.id,destinationid,channelid)
+            await dotravelto(ctx.author.id,destination)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 
 @bot.autocomplete("travelto", "destination")
 async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    players = await getplayerdata()
-    locations = await getlocationdata()
-    sameLocationUsernames = [v["Name"] for v in locations.values()]
+    sameLocationUsernames = [k for k in locations.keys()]
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
@@ -901,13 +876,13 @@ async def dotraveltocrossroads(authorid):
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.remove_role(role=dungeon, guild_id=guildid)
-    await user.remove_role(role=farmland, guild_id=guildid)
-    await user.remove_role(role=keep, guild_id=guildid)
-    await user.remove_role(role=lichcastle, guild_id=guildid)
-    await user.remove_role(role=shop, guild_id=guildid)
-    await user.remove_role(role=tavern, guild_id=guildid)
-    await user.add_role(role=crossroads, guild_id=guildid)
+    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+    await user.add_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
     await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid])
     await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[general])
 
@@ -917,7 +892,6 @@ async def dotraveltocrossroads(authorid):
     scope = guildid ,
 )
 async def traveltocrossroads(ctx: interactions.CommandContext):
-    locations = await getlocationdata()
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
@@ -928,7 +902,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You travel!",ephemeral=True)
-            await dotraveltocrossroads(ctx.author.id, channelid)
+            await dotraveltocrossroads(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1006,10 +980,11 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    authorid=ctx.author.id
     if str(authorid) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
-        if crossroads not in ctx.author.roles:
+        if locations["Crossroads"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)  # golive
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
@@ -1052,11 +1027,11 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     await ctx.populate(choices)
 
 #farm is below
-async def dofarm(authorid,channelid):
+async def dofarm(authorid):
     players = await getplayerdata()
     current_time = int(time.time())
     UsedInventory_pull=players[str(authorid)]["UsedInventory"]
-    Lastaction_pull=player[str(authorid)]["Lastaction"]
+    Lastaction_pull=players[str(authorid)]["Lastaction"]
     farmSC = int(random.randint(0, 4)) + (UsedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
     cooldown = basecd * 1  # seconds in one day
@@ -1081,9 +1056,10 @@ async def farm(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    authorid=ctx.author.id
     if str(authorid) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if farmland not in ctx.author.roles:
+        if locations["Farmland"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
@@ -1139,9 +1115,10 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    authorid=ctx.author.id
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if keep not in ctx.author.roles:
+        if locations["Keep"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
@@ -1259,7 +1236,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        if tavern not in ctx.author.roles:
+        if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
@@ -1358,7 +1335,7 @@ async def battlelich(ctx: interactions.CommandContext):
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        if lichcastle not in ctx.author.roles:
+        if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
