@@ -884,7 +884,7 @@ async def dotraveltocrossroads(authorid):
     await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
     await user.add_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
     await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid])
-    await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[general])
+    await send_message(f"<@{authorid}> traveled to the Crossroads! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",user_id=[authorid],channel_id=[locations["Tavern"]["Channel_ID"]])
 
 @bot.command(
     name="traveltocrossroads",
