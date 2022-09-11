@@ -27,7 +27,7 @@ $RECYCLE.BIN/
 .gitignore2/*
 
 # ignore virual environment
-venv/*
+venv/**
 
 # playershidden
 players.json
