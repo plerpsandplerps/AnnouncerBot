@@ -224,10 +224,9 @@ async def pollforqueue():
        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*24))
 
-async def evaderest(authorid):
+async def lastactiontime(authorid):
     players = await getplayerdata()
-    players[str(authorid)]["Evade"]=False
-    players[str(authorid)]["Rest"]=False
+    players[str(authorid)]["Lastactiontime"]=int(time.time())
     return players
 
 async def send_message(message : str, **kwargs):
@@ -327,8 +326,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
-        players[str(ctx.author.id)]["Evade"] = False
-        players[str(ctx.author.id)]["Rest"] = False
+        players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
         players[str(ctx.author.id)]["Lastaction"] = "start"
         players[str(ctx.author.id)]["Nextaction"] = ""
         with open("players.json","w") as f:
@@ -342,8 +340,6 @@ async def join_command(ctx: interactions.CommandContext):
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
         UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        Evade_pull = players[str(ctx.author.id)]["Evade"]
-        Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         hpmoji = await hpmojiconv(hp_pull)
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
@@ -366,8 +362,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["ReadyInventory"] = ""
         players[str(ctx.author.id)]["UsedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
-        players[str(ctx.author.id)]["Evade"] = False
-        players[str(ctx.author.id)]["Rest"] = False
+        players[str(ctx.author.id)]["Lastactiontime"] = current_time
         players[str(ctx.author.id)]["Lastaction"] = "start"
         players[str(ctx.author.id)]["Nextaction"] = ""
         with open("players.json","w") as f:
@@ -382,8 +377,6 @@ async def join_command(ctx: interactions.CommandContext):
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
         UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-        Evade_pull = players[str(ctx.author.id)]["Evade"]
-        Rest_pull = players[str(ctx.author.id)]["Rest"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
 
@@ -391,7 +384,7 @@ async def join_command(ctx: interactions.CommandContext):
 async def dolightattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Evade"]:
+    if players[str(targetid)]["Lastaction"]="evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -401,7 +394,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -418,7 +411,7 @@ async def dolightattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -478,7 +471,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def donormalattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Evade"]:
+    if players[str(targetid)]["Lastaction"]="evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -488,7 +481,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -505,7 +498,7 @@ async def donormalattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "normalattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -564,7 +557,7 @@ async def normal_autocomplete(ctx: interactions.CommandContext, value: str = "")
 async def doheavyattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Evade"]:
+    if players[str(targetid)]["Lastaction"]="evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -574,7 +567,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -591,7 +584,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -652,7 +645,7 @@ async def dointerrupt(authorid,targetid,channelid):
     current_time = int(time.time())
     print(players[str(targetid)]["Evade"])
     print(players[str(targetid)]["Rest"])
-    if players[str(targetid)]["Evade"] or players[str(targetid)]["Rest"]:
+    if (players[str(targetid)]["Lastaction"]="evade" or players[str(targetid)]["Lastaction"]="rest") and players[str(targetid)]["Lastactiontime"]+86400<current_time:
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
@@ -660,7 +653,7 @@ async def dointerrupt(authorid,targetid,channelid):
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
-        await evaderest(authorid)
+        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -812,7 +805,7 @@ async def dotravelto(authorid,destination):
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -870,7 +863,7 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "travelto"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     players[str(authorid)]["Location"] = "Crossroads"
     await rage (authorid)
     with open("players.json", "w") as f:
@@ -943,7 +936,7 @@ async def doexchange(authorid, playertarget, readyitem, channelid):
     DelayDate_pull=current_time+cooldown
     await rage (authorid)
     players[str(authorid)]["Lastaction"] = "exchange"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
@@ -1039,7 +1032,7 @@ async def dofarm(authorid):
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "farm"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -1086,7 +1079,7 @@ async def doaid(authorid, playertarget,channelid):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "aid"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
     await rage (authorid)
     targethp=players[str(targetid)]["HP"]
@@ -1154,7 +1147,7 @@ async def dodrinkingchallenge(authorid,channelid):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "drinkingchallenge"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     await rage (authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1263,7 +1256,7 @@ async def dobattlelich(authorid,channelid):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "battlelich"
-    await evaderest(authorid)
+    await lastactiontime(authorid)
     await rage (authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
