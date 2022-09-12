@@ -1156,6 +1156,8 @@ async def dodrinkingchallenge(authorid,channelid):
     players[str(authorid)]["Lastaction"] = "drinkingchallenge"
     await evaderest(authorid)
     await rage (authorid)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
     if scores[str("NPC4")]["Scoreexpiry"] > current_time :
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
@@ -1263,6 +1265,8 @@ async def dobattlelich(authorid,channelid):
     players[str(authorid)]["Lastaction"] = "battlelich"
     await evaderest(authorid)
     await rage (authorid)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
     if scores[str("NPC2")]["Scoreexpiry"] > current_time :
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
