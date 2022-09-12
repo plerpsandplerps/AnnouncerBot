@@ -1340,6 +1340,75 @@ async def battlelich(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#lichitem is below
+
+async def dolichitem(authorid, playertarget,channelid):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    players[str(targetid)]["HP"]=4200
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "lichitem"
+    await lastactiontime(authorid)
+    await rage (authorid)
+    targethp=players[str(targetid)]["HP"]
+    hpmoji = await hpmojiconv(targethp)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
+    await send_message(f"<@{authorid}> used lichitem on <@{targetid}> to set their hp to 4200! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+
+@bot.command(
+    name="lichitem",
+    description="24h. set target player's HP to 4200.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to set to 4200",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def lichitem(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if str("lichitem") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /lichitem without a lichitem!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use the lichitem!",ephemeral=True)
+            await doaid(ctx.author.id, playertarget,channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+@bot.autocomplete("lichitem", "playertarget")
+async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    Usernames = [v["Username"] for v in players.values()]
+    print (Usernames)
+    items = Usernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+
 @bot.command(
     name="help",
     description="get the readme link",
