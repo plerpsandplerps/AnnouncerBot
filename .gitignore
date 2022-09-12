@@ -24,7 +24,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # gitignore
-.gitignore2/
+.gitignore2/*
+
+# ignore virual environment
+venv/**
 
 # playershidden
 players.json
