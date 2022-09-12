@@ -211,7 +211,7 @@ async def pollforready():
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
-        await asyncio.sleep(int(1*60*60*24))
+        await asyncio.sleep(int(1*60*60*22))
 
 
 async def pollforqueue():
@@ -222,7 +222,7 @@ async def pollforqueue():
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
-        await asyncio.sleep(int(1*60*60*24))
+        await asyncio.sleep(int(1*60*60*22))
 
 async def lastactiontime(authorid):
     players = await getplayerdata()
