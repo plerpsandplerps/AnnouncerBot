@@ -643,8 +643,6 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def dointerrupt(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    print(players[str(targetid)]["Evade"])
-    print(players[str(targetid)]["Rest"])
     if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+86400<current_time:
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
@@ -665,8 +663,7 @@ async def dointerrupt(authorid,targetid,channelid):
         await rage (authorid)
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
-        players[str(authorid)]["Evade"] = False
-        players[str(authorid)]["Rest"] = False
+        await lastactiontime(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was not damaged by an interrupt from <@{authorid}>!", user_id=[authorid,targetid])
