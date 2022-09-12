@@ -8,8 +8,7 @@
         "ReadyInventory": "\n        LichItem\n        LichItem",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
         "DelayDate": 1662915849,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "battlelich",
         "Nextaction": "battlelich"
     },
@@ -22,8 +21,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662755923,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "heavyattack",
         "Nextaction": ""
     },
@@ -36,8 +34,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662952663,
-        "Evade": true,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "lightattack",
         "Nextaction": "traveltocrossroads"
     },
@@ -50,8 +47,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662948787,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "interrupt",
         "Nextaction": ""
     },
@@ -64,8 +60,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662843197,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "travelto",
         "Nextaction": ""
     },
@@ -78,8 +73,7 @@
         "ReadyInventory": "",
         "UsedInventory": "\n        drinkingchallengemedal\n        drinkingchallengemedal",
         "DelayDate": 1662838261,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "travelto",
         "Nextaction": "battlelich"
     },
@@ -92,8 +86,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662124968,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "start",
         "Nextaction": ""
     },
@@ -106,8 +99,7 @@
         "ReadyInventory": "",
         "UsedInventory": "",
         "DelayDate": 1662756789,
-        "Evade": false,
-        "Rest": false,
+        "Lastactiontime": 1662990214,
         "Lastaction": "travelto",
         "Nextaction": ""
     }
