@@ -846,7 +846,8 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
 async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     sameLocationUsernames = [k for k in locations.keys()]
     print (sameLocationUsernames)
-    items = sameLocationUsernames
+    items = filter(lambda x: x!="Dead",sameLocationUsernames)
+    items = filter(lambda x: x!="Playing",items)
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
