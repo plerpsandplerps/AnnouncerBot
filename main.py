@@ -19,13 +19,9 @@ with open("locations.json", "r") as i:
 #how long the lowest cooldowns are
 basecd = tokens["basecooldown"]
 
-#general channel id
+#channel ids
 general = tokens["generalchannelid"]
-
-#serverid
 guildid= tokens["guildid"]
-
-#Replace with the channel_id where you would like to send your poison pings
 poisonchannel= tokens["poisonchannelid"]
 
 bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
