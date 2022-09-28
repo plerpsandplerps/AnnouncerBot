@@ -1188,10 +1188,10 @@ async def dodrinkingchallenge(authorid,channelid):
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[channelid])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[general])
     else:
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[channelid])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[general])
         players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1201,7 +1201,7 @@ async def dodrinkingchallenge(authorid,channelid):
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
         await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[general] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1242,7 +1242,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
 
 #battlelich is below
 
-async def dobattlelich(authorid,channelid):
+async def dobattlelich(authorid):
     players = await getplayerdata()
     scores = await getlichdata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
@@ -1297,10 +1297,10 @@ async def dobattlelich(authorid,channelid):
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[channelid])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[general])
     else:
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the lichitem." , channel_id=[channelid])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the lichitem." , channel_id=[general])
         players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+"lichitem"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1310,7 +1310,7 @@ async def dobattlelich(authorid,channelid):
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
         await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[channelid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[general] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1394,7 +1394,7 @@ async def lichitem(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the lichitem!",ephemeral=True)
-            await doaid(ctx.author.id, playertarget,channelid)
+            await dolichitem(ctx.author.id, playertarget,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1432,7 +1432,8 @@ functiondict = {'lightattack' : dolightattack,
                 'traveltocrossroads': dotraveltocrossroads,
                 'aid': doaid,
                 'drinkingchallenge': dodrinkingchallenge,
-                'battlelich': dobattlelich}
+                'battlelich': dobattlelich,
+                'lichitem': dolichitem}
 
 
 
