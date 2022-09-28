@@ -209,6 +209,27 @@ async def pollforready():
         #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*22))
 
+async def deadcheck(targethp,targetid,authorid):
+    print(f"\ndead?:{int(time.time())}")
+    print(deadplayers)
+    players = await getplayerdata()
+    if targethp <= 0:
+        print(f"\n the target died!")
+        await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
+        #give dead role
+        await targetid.add_role(role=locations[Dead]["Role_ID"], guild_id=guildid)
+        #remove all location roles
+        await targetid.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+        await targetid.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+        await targetid.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+        await targetid.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+        await targetid.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+        await targetid.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+        #change players.json location to dead
+        players[str(targetid)]["Location"]="Dead"
+    else:
+        print(f"\n the target didn't die!")
+
 
 async def pollforqueue():
     #run forever
