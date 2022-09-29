@@ -64,7 +64,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Tavern
   - /drinkingchallenge
-    - 24h. score 1d4. high score: gain a used drinking challenge medal. low score: lose 1/4 current health. otherwise heal 1/4 missing health.
+    - 24h. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.
 
 ## Items
 - Items fall into two broad categories:

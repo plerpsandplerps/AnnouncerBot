@@ -1227,8 +1227,8 @@ async def dodrinkingchallenge(authorid):
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[locations["Tavern"]["Channel_ID"]])
+        await send_message(f"<@{authorid}> your roll of {playerroll} is not the low roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is not the low roll. They heal for 1/4 of their missing health!" , channel_id=[locations["Tavern"]["Channel_ID"]])
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1237,7 +1237,7 @@ async def dodrinkingchallenge(authorid):
 
 @bot.command(
     name="drinkingchallenge",
-    description="24h.score 1d4.high:gain drinkingchallengemedal. low:lose 1/4 current hp. else:heal 1/4 missing hp.",
+    description="24h.score 1d4.high:gain drinkingchallengemedal. heal 1/4 missing hp except low score loses 1/4hp.",
     scope = guildid ,
 )
 async def drinkingchallenge(ctx: interactions.CommandContext):
