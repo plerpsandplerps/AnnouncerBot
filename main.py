@@ -1150,7 +1150,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #drinkingchallenge is below
 
-async def dodrinkingchallenge(authorid,channelid):
+async def dodrinkingchallenge(authorid):
     players = await getplayerdata()
     scores = await gettaverndata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
@@ -1205,10 +1205,10 @@ async def dodrinkingchallenge(authorid,channelid):
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[general])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Tavern"]["Channel_ID"]])
     else:
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[general])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
         players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1218,7 +1218,7 @@ async def dodrinkingchallenge(authorid,channelid):
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
         await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[general] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[locations["Tavern"]["Channel_ID"]] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1228,7 +1228,7 @@ async def dodrinkingchallenge(authorid,channelid):
         hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
         hpmoji = await hpmojiconv(hp_pull)
         await send_message(f"<@{authorid}> your roll of {playerroll} is neither the high nor low roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[channelid])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is neither the high nor low roll. They heal for 1/4 of their missing health!" , channel_id=[locations["Tavern"]["Channel_ID"]])
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
