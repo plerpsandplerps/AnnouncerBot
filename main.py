@@ -129,7 +129,7 @@ async def deadcheck(targethp,targetid,authorid):
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
         await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
         #give dead role
-        await user.add_role(role=locations[Dead]["Role_ID"], guild_id=guildid)
+        await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
         #remove all location roles and playing roles to hopefully block all commands?
         await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
