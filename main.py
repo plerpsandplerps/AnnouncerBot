@@ -1444,7 +1444,7 @@ async def help(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot", ephemeral = True) #golive
+    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot", ephemeral = False) #golive
 
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
