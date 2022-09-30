@@ -405,7 +405,7 @@ async def join_command(ctx: interactions.CommandContext):
 async def dolightattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -493,7 +493,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def donormalattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -580,7 +580,7 @@ async def normal_autocomplete(ctx: interactions.CommandContext, value: str = "")
 async def doheavyattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+86400<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -667,7 +667,7 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def dointerrupt(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
-    if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+86400<current_time:
+    if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
