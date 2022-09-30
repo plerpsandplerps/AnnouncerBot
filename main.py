@@ -936,8 +936,6 @@ async def status (ctx: interactions.CommandContext):
     ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
     UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
-    Evade_pull = players[str(ctx.author.id)]["Evade"]
-    Rest_pull = players[str(ctx.author.id)]["Rest"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     hpmoji = await hpmojiconv(hp_pull)
