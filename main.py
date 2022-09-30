@@ -227,7 +227,7 @@ async def pollforready():
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
-        await asyncio.sleep(int(1*60*60*22))
+        await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
 
 async def pollforqueue():
     #run forever
@@ -237,7 +237,7 @@ async def pollforqueue():
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
-        await asyncio.sleep(int(1*60*60*22))
+        await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
 
 async def lastactiontime(authorid):
     players = await getplayerdata()
@@ -1269,7 +1269,7 @@ async def dobattlelich(authorid):
     players = await getplayerdata()
     scores = await getlichdata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
-    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1))
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("battlelich") * 1))
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
@@ -1344,7 +1344,7 @@ async def dobattlelich(authorid):
 
 @bot.command(
     name="battlelich",
-    description="24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.",
+    description="24h. score 1d4. high score=5+: gain Lich's Item. low score: lose 1/4 current health.",
     scope = guildid ,
 )
 async def battlelich(ctx: interactions.CommandContext):
