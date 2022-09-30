@@ -422,6 +422,7 @@ async def dolightattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
+        await deadcheck(targethp,targetid,authorid)
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = basecd  # seconds in a day
@@ -509,6 +510,7 @@ async def donormalattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
+        await deadcheck(targethp,targetid,authorid)
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = basecd  # seconds in a day
@@ -595,6 +597,7 @@ async def doheavyattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
+        await deadcheck(targethp,targetid,authorid)
         await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = basecd  # seconds in a day
@@ -664,6 +667,7 @@ async def dointerrupt(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
         await rage (authorid)
+        await deadcheck(targethp,targetid,authorid)
         cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
