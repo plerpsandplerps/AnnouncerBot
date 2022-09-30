@@ -217,7 +217,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
                     elif words[1] in locations:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-        await asyncio.sleep(300)
+        await asyncio.sleep(120)
 
 async def pollforready():
     #run forever
@@ -226,6 +226,7 @@ async def pollforready():
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
+        #don't turn this on until the bot is not relaunching often
         #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
 
@@ -236,7 +237,8 @@ async def pollforqueue():
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
-       #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+        #don't turn this on until the bot is not relaunching often
+        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
 
 async def lastactiontime(authorid):
