@@ -361,7 +361,7 @@ async def join_command(ctx: interactions.CommandContext):
         hpmoji = await hpmojiconv(hp_pull)
         playingroleid=locations["Playing"]["Role_ID"]
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
-        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \nBeware <@{playingroleid}>")
+        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@{playingroleid}>")
     else:
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
@@ -399,7 +399,7 @@ async def join_command(ctx: interactions.CommandContext):
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         playingroleid=locations["Playing"]["Role_ID"]
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
-        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \nBeware <@{playingroleid}>")
+        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@{playingroleid}>")
 
 #light attack is below
 async def dolightattack(authorid,targetid,channelid):
