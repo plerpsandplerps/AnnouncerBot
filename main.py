@@ -123,7 +123,6 @@ async def listen(message: interactions.Message):
 
 async def deadcheck(targethp,targetid,authorid):
     print(f"\ndead?:{int(time.time())}")
-    print(deadplayers)
     players = await getplayerdata()
     if targethp <= 0:
         print(f"\n the target died!")
