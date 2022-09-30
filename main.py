@@ -1148,7 +1148,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
 @bot.autocomplete("aid", "playertarget")
 async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
-    Usernames = [v["Username"] for v in players.values()]
+    Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
     print (Usernames)
     items = Usernames
     choices = [
