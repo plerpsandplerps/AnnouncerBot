@@ -1390,6 +1390,9 @@ async def dolichitem(authorid, playertarget,channelid):
     await rage (authorid)
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
+    user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user.remove_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+    #target location is dead move them to crossroads
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
