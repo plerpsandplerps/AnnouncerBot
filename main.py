@@ -379,6 +379,7 @@ async def join_command(ctx: interactions.CommandContext):
             print("player doesn't exists in bounties")
             bounty_pull = 0
             return
+        players = await getplayerdata()
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
         players[str(ctx.author.id)]["HP"] = 10000
@@ -391,10 +392,10 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Lastactiontime"] = current_time
         players[str(ctx.author.id)]["Lastaction"] = "start"
         players[str(ctx.author.id)]["Nextaction"] = ""
+        print("writing to players.json")
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         print(f"Created {ctx.author.id} player in players.json")
-        players = await getplayerdata()
         hp_pull = players[str(ctx.author.id)]["HP"]
         hpmoji = await hpmojiconv(hp_pull)
         location_pull = players[str(ctx.author.id)]["Location"]
