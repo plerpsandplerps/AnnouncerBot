@@ -324,7 +324,7 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
         return False
     elif  poison["firstpoisondate"] < int(time.time()) : #players who join late get reduced HP and SC
-        print("player exists and first poison date has occurred")
+        print("player doesn't exist and first poison date has occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
@@ -335,7 +335,6 @@ async def join_command(ctx: interactions.CommandContext):
         else:
             print("player doesn't exists in bounties")
             bounty_pull = 0
-            return
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
         players[str(ctx.author.id)]["Location"] = "Crossroads"
@@ -378,7 +377,6 @@ async def join_command(ctx: interactions.CommandContext):
         else:
             print("player doesn't exists in bounties")
             bounty_pull = 0
-            return
         players = await getplayerdata()
         players[str(ctx.author.id)] = {}
         players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
