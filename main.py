@@ -140,7 +140,9 @@ async def deadcheck(targethp,targetid,authorid):
         await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
         #change players.json location to dead
-        players[str(targetid)]["Location"]="Dead"
+        players[str(targetid)]["Location"] = "Dead"
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
     else:
         print(f"\n the target didn't die!")
 
@@ -1392,9 +1394,12 @@ async def dolichitem(authorid, playertarget,channelid):
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
     await user.remove_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
-    if players[str(targetid)]["Location"] = "Dead"
-        
-    #target location is dead move them to crossroads
+    if players[str(targetid)]["Location"] == "Dead":
+        players[str(targetid)]["Location"] = "Crossroads"
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    else:
+        players[str(targetid)]["Location"] = players[str(targetid)]["Location"]
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
@@ -1403,7 +1408,7 @@ async def dolichitem(authorid, playertarget,channelid):
 
 @bot.command(
     name="lichitem",
-    description="24h. set target player's HP to 4200.",
+    description="24h. set target player's HP to 4200. if the target is dead, resurrect them.",
     scope = guildid ,
     options=[
         interactions.Option(
