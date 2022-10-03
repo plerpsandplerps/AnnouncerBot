@@ -138,6 +138,7 @@ async def deadcheck(targethp,targetid,authorid):
         await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
         #change players.json location to dead
         players[str(targetid)]["Location"]="Dead"
     else:
