@@ -127,3 +127,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 - A 7 day poison timer starts and the poison damage is set to 650 when the bot launches.
 - Whenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.
 - Then the poison timer restarts with 10% less time.
+
+## Rage
+- Whenever you take an action, you heal equal to your rage*420. Then you lose one rage.
