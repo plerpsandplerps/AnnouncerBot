@@ -788,7 +788,6 @@ async def evade_command(ctx: interactions.CommandContext):
 #rest is below
 async def dorest(authorid,channelid):
     players = await getplayerdata()
-    players[str(authorid)]["Rest"] = True
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
     cooldown = int(basecd * 1)  # seconds in one day
@@ -796,7 +795,6 @@ async def dorest(authorid,channelid):
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "rest"
     await rage (authorid)
-    players[str(authorid)]["Rest"] = True
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
     hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
