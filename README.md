@@ -6,8 +6,12 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ## Actions
 - Actions are what players do!
 - To get started take the /join action!
-- Most actions have a cooldown (such as 24h). That place the player on cooldown for the duration. The player can't take any actions with a cooldown until they are off cooldown.
-- The core actions are listed below.
+- Most actions place players on a cooldown (such as 24h). The player can't take any actions that would place them on cooldown until they are off cooldown.
+- When you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown. 
+- The core actions are listed below:
+### Join
+  - /Join
+    - Join the game!
 ### Light Attack
   - /lightattack
     - 24h.1rage. attack a player in your area for 950.
@@ -36,7 +40,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ## Locations
 - Every location has a location specific action
 - You can travel from any location to the Crossroads (/traveltocrossroads)
-- You can only travel from the Crossroads to any other location (/travelto)
+- You can only travel to locations other than the Crossroads, from the Crossroads (/travelto)
 
 ### Crossroads
 - /exchange
@@ -45,6 +49,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Dungeon
   - /loot
     - 24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.
+    - not live
 
 ### Farmland
   - /farm
@@ -61,6 +66,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Shop
   - /trade
     - 24h. exchange seed coins for a shop item.
+    - not live
 
 ### Tavern
   - /drinkingchallenge
