@@ -366,7 +366,7 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
     else:
-        print("player exists and first poison date has not occurred")
+        print("player doesn't exist and first poison date has not occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
