@@ -320,16 +320,20 @@ async def join_command(ctx: interactions.CommandContext):
     bounties = await getbountydata()
     poison = await getpoisondata()
     if str(ctx.author.id) in players:
+        print("player exists")
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
         return False
     elif  poison["firstpoisondate"] < int(time.time()) : #players who join late get reduced HP and SC
+        print("player exists and first poison date has occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
         if str(ctx.author.id) in bounties:
+            print("player exists in bounties")
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
         else:
+            print("player doesn't exists in bounties")
             bounty_pull = 0
             return
         players[str(ctx.author.id)] = {}
@@ -363,13 +367,16 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
     else:
+        print("player exists and first poison date has not occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
         if str(ctx.author.id) in bounties:
+            print("player exists in bounties")
             bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
             await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
         else:
+            print("player doesn't exists in bounties")
             bounty_pull = 0
             return
         players[str(ctx.author.id)] = {}
