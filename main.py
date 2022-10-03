@@ -1392,6 +1392,8 @@ async def dolichitem(authorid, playertarget,channelid):
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
     await user.remove_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+    if players[str(targetid)]["Location"] = "Dead"
+        
     #target location is dead move them to crossroads
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
