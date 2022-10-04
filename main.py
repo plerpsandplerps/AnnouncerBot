@@ -1452,6 +1452,50 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
+#drinkingchallengemedal is below
+
+async def dodrinkingchallengemedal(authorid,channelid):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    cooldown=basecd*2 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "drinkingchallengemedal"
+    await lastactiontime(authorid)
+    await rage (authorid)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingchallengemedal','',1)
+    #add the item to the user's usedinventory
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used drinkingchallengemedal to increase their lightattack damage by 420! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+
+@bot.command(
+    name="drinkingchallengemedal",
+    description="48h. increase the damage of your light attack by 420 for the rest of the game.",
+    scope = guildid ,
+)
+
+async def drinkingchallengemedal(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if str("drinkingchallengemedal") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /drinkingchallengemedal without a drinkingchallengemedal!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use the drinkingchallengemedal!",ephemeral=True)
+            await dodrinkingchallengemedal(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 @bot.command(
     name="help",
