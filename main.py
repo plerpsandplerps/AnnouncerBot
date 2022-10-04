@@ -1392,6 +1392,11 @@ async def dolichitem(authorid, playertarget,channelid):
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
     await user.remove_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        lichitem','',1)
+    #add the item to the user's usedinventory
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"lichitem"
     if players[str(targetid)]["Location"] == "Dead":
         players[str(targetid)]["Location"] = "Crossroads"
         with open("players.json","w") as f:
