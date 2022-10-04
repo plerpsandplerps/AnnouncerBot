@@ -1542,6 +1542,54 @@ async def tractor(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#beer-bandolier is below
+
+async def dobeerbando(authorid,channelid):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    cooldown=basecd*1
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "beerbando"
+    await lastactiontime(authorid)
+    await rage (authorid)
+    #increase user's rage by 3
+    players[str(authorid)]["Rage"]=players[str(authorid)]["Rage"]+3
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        beerbando','',1)
+    #add the item to the user's usedinventory
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"beerbando"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+
+@bot.command(
+    name="beerbando",
+    description="24h. you gain three rage.",
+    scope = guildid ,
+)
+
+async def beerbando(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if str("beerbando") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /beerbando without a beerbando!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use the beerbando!",ephemeral=True)
+            await dobeerbando(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+
 @bot.command(
     name="help",
     description="get the readme link",
