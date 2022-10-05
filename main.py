@@ -606,7 +606,7 @@ async def doheavyattack(authorid,targetid,channelid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = basecd*3  # seconds in a day
+        cooldown = max((basecd*3) - (UsedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
