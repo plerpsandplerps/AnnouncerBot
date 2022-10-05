@@ -277,11 +277,11 @@ async def queuenext(ctx):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: {words[0]}\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n{words[0]}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
         elif words[1] in players:
-            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n{words[0]} {players[words[1]]['Username']}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: {words[0]} {locations[words[1]]['Name']}\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n{words[0]} {locations[words[1]]['Name']}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral=True)
 
@@ -968,7 +968,7 @@ async def status (ctx: interactions.CommandContext):
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>\nNextaction: {Nextaction_pull}", ephemeral = True)
+    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {Nextaction_pull}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, playertarget, readyitem, channelid):
@@ -1979,14 +1979,44 @@ async def adventuringgear(ctx: interactions.CommandContext):
 
 @bot.command(
     name="help",
-    description="get the readme link",
+    description="get info on a topic",
     scope = guildid ,
+        options=[
+            interactions.Option(
+                type=interactions.OptionType.STRING,
+                name="topic",
+                description="what you want info about",
+                required=True,
+                autocomplete=True,
+            )
+        ]
 )
-async def help(ctx: interactions.CommandContext):
+async def help(ctx: interactions.CommandContext, topic: str):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot", ephemeral = False) #golive
+    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot#readme", ephemeral = True)
+    if topic == "Actions":
+        await ctx.send(f"**Actions**\nActions are what players do!\nTo get started take the **/join** action!\nMost actions place players on a cooldown (such as 24h). The player can't take any actions that would place them on cooldown until they are off cooldown.\nWhen you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.\nThe core actions are listed below:\n\n**Join**\n/Join\nJoin the game!\n\n**Light Attack**\n/lightattack\n24h.1rage. attack a player in your area for 950.\n\n**Normal Attack**\n/normalattack\n48h.3rage. attack a player in your area for 2300.\n\n**Heavy Attack**\n/heavyattack\n72h.6rage. attack a player in your area for 3650.\n\n**Interrupt**\n/interrupt\n24h. hit a player in your area for 4200 if they are resting or evading.\n\n**Evade**\n/evade\n24h. receive no damage from light normal or heavy attacks.\n\n**Rest**\n/rest\n24h. heal half your missing health rounded up unless you rested last action.\n\n**Area Action**\nsee /help Locations\n\n**Use Item**\n see /help Items \n", ephemeral = True)
+    elif topic == "Locations":
+        await ctx.send(f"**Locations**\nEvery location has a location specific action\nYou can travel from any location to the Crossroads (/traveltocrossroads)\nYou can only travel to locations other than the Crossroads, from the Crossroads (/travelto)\n\n**Crossroads**\n/exchange\n24h. give a player in your area a ready item from your inventory.\n\n**Dungeon**\n/loot\n24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.\n\n**Farmland**\n/farm\n24h. score 1d4. gain your score seed coins.\n\n**Keep**\n/aid\n24h. heal chosen player 1/4 of their missing health.\n\n**Lich's Castle**\n/battlelich\n24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.\n\n**Shop**\n/trade\n24h. exchange seed coins for a shop item.\n**Tavern**\n/drinkingchallenge\n24h. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral = True)
+    elif topic == "Poison":
+        await ctx.send(f"**Poison**\nWhen the game begins a seven day poison timer starts and the poison damage is set to 650.\nWhenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.\nThen the poison timer restarts with 10% less time.", ephemeral = True)
+    elif topic == "Rage":
+        await ctx.send(f"**Rage**\nWhenever you take an action, you heal equal to your Rage times 420hp. Then you lose one rage.", ephemeral = True)
+    elif topic == "Items":
+        await ctx.send(f"**Items**\nItems fall into two broad categories:\n**Ready items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nThe list of items is below.\n\n**Adventuring Gear**\n/adventuringgear\n48h. increase your loot score by 1 for the rest of the game.\n\n**Aim Training**\n/aimtrain\n72h. reduce heavy attacks to 24h cooldown. doesn't stack.\n\n**Crooked Abacus**\n/crookedabacus\n48h. whenever you exchange or trade, gain a seed coin for the rest of the game.\n\n**Goodie Bag**\n/goodiebag\n24h. add a random ready item to your inventory.\n\n**Tractor**\n/tractor\n48h. whenever you farm, gain an additional seed coin for the rest of the game.\n\n**Drinking Medal**\n/drinkingmedal\n48h. increase the damage of your light attack by 420 for the rest of the game.\n\n**Lich's Item**\n/lichitem\n24h. set target player's HP to 4200. if the target is dead, resurrect them.\n\n**Beer-bandolier**\n/beerbando\n24h. you gain three rage.", ephemeral = True)
+    else:
+        await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot#readme", ephemeral = True)
+
+@bot.autocomplete("help", "topic")
+async def help_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    topics = {"Actions","Locations","Items","Poison","Rage"}
+    items = topics
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
 
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
