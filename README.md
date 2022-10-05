@@ -119,11 +119,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
   - /drinkingmedal
     - 48h. increase the damage of your light attack by 420 for the rest of the game.
 
-### Uno Reverse
-  - /unoreverse
-    - 48h. choose a player in your area and note your current health. after this cooldown return your health to the noted health. The chosen player receives as much damage as you healed or receives as much healing as the damage you received when returning to the noted health.
-    - not live
-
 ### Lich's Item
   - /lichitem
     - 24h. set target player's HP to 4200. if the target is dead, resurrect them.
