@@ -1228,7 +1228,8 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
-        elif
+        elif players[str(authorid)]["SC"] >= shop[str(itemtarget)]["Cost"]:
+            await ctx.send(f"Your {players[str(authorid)]["SC"]} seed coins are not able to purchase an item that costs {shop[str(itemtarget)]["Cost"]} seed coins! ")
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
@@ -1240,9 +1241,10 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
 
 @bot.autocomplete("trade", "itemtarget")
 async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    print("tradetest")
     shop = await shopdata()
-    Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
-    print (Usernames)
+    itemnames = [k for v in shop.values()]
+    print (itemnames)
     items = Usernames
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value in item
