@@ -7,7 +7,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 - Actions are what players do!
 - To get started take the /join action!
 - Most actions place players on a cooldown (such as 24h). The player can't take any actions that would place them on cooldown until they are off cooldown.
-- When you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown. 
+- When you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.
 - The core actions are listed below:
 ### Join
   - /Join
@@ -86,7 +86,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
     - 48h. increase your loot score by 1 for the rest of the game.
 
 ### Aim Training
-  - /aimtraining
+  - /aimtrain
     - 72h. reduce heavy attacks to 24h cooldown. doesn't stack.
 
 ### Banish
