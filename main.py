@@ -187,8 +187,8 @@ async def gettaverndata():
     return scores
 
 async def getshopdata():
-    with open("shop.json","r") as s:
-        shop = json.load(s)
+    with open("shop.json","r") as m:
+        shop = json.load(m)
     return shop
 
 async def getlichdata():
@@ -1230,7 +1230,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
-        elif players[str(authorid)]["SC"] >= shop[str(itemtarget)]["Cost"]:
+        elif players[str(authorid)]["SC"] <= shop[str(itemtarget)]["Cost"]:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ")
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
@@ -1244,10 +1244,10 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
 @bot.autocomplete("trade", "itemtarget")
 async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print("tradetest")
-    shop = await shopdata()
-    itemnames = [k for v in shop.values()]
+    shop = await getshopdata()
+    itemnames = [v for v in shop.keys()]
     print (itemnames)
-    items = Usernames
+    items = itemnames
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value in item
     ]
