@@ -2069,7 +2069,7 @@ areactionhelpbutton = interactions.Button(
 @bot.component("AreaAction")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n You can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\n Click the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
 useitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2091,7 +2091,7 @@ locationhelpbutton = interactions.Button(
 @bot.component("Locations")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n You can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\n Click the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
 crossroadshelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
