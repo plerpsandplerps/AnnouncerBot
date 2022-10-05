@@ -2008,6 +2008,7 @@ functiondict = {'lightattack' : dolightattack,
                 'aimtrain':doaimtrain,
                 'crookedabacus':docrookedabacus,
                 'loot':doloot,
+                'adventuringgear':doadventuringgear,
                 'goodiebag':dogoodiebag,
                 'trade':dotrade}
 
