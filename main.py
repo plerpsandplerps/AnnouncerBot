@@ -1977,37 +1977,308 @@ async def adventuringgear(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+actionhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Actions",
+    custom_id="Actions",
+)
+
+@bot.component("Actions")
+async def button_response(ctx):
+    row = interactions.spread_to_rows(joinhelpbutton, lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton)
+    await ctx.send(f"**Actions**\nActions are what players do!\n\nTo get started take the **/join** action!\n\nMost actions place players on a cooldown (such as 24hours). The player can't take any actions that would place them on cooldown until they are off cooldown.\n\nWhen you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.\n\nFind out more:", components=row, ephemeral=True)
+
+joinhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Join",
+    custom_id="Join",
+)
+
+@bot.component("Join")
+async def button_response(ctx):
+    await ctx.send(f"**Join**\n/Join\nJoin the game!", ephemeral=True)
+
+lightattackhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Lightattack",
+    custom_id="Lightattack",
+)
+
+@bot.component("Lightattack")
+async def button_response(ctx):
+    await ctx.send(f"**Light Attack**\n/lightattack\n 24h cooldown. gain 1 rage. attack a player in your area for 950 damage.", ephemeral=True)
+
+normalattackhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Normalattack",
+    custom_id="Normalattack",
+)
+
+@bot.component("Normalattack")
+async def button_response(ctx):
+    await ctx.send(f"**Normal Attack**\n/normalattack\n 48h cooldown. gain 3 rage. attack a player in your area for 2300 damage.", ephemeral=True)
+
+heavyattackhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Heavyattack",
+    custom_id="Heavyattack",
+)
+
+@bot.component("Heavyattack")
+async def button_response(ctx):
+    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 72h cooldown. gain 6 rage. attack a player in your area for 3650 damage.", ephemeral=True)
+
+interrupthelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Interrupt",
+    custom_id="Interrupt",
+)
+
+@bot.component("Interrupt")
+async def button_response(ctx):
+    await ctx.send(f"**Interrupt**\n/interrupt\n 24h cooldown. hit a player in your area for 4200 if they are resting or evading.", ephemeral=True)
+
+
+evadehelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Evade",
+    custom_id="Evade",
+)
+
+@bot.component("Evade")
+async def button_response(ctx):
+    await ctx.send(f"**Evade**\n/evade\n 24h cooldown. Receive no damage from light, normal, or heavy attacks while you are on cooldown from evading.", ephemeral=True)
+
+
+resthelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Rest",
+    custom_id="Rest",
+)
+
+@bot.component("Rest")
+async def button_response(ctx):
+    await ctx.send(f"**Rest**\n/rest\n 24h cooldown. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
+
+areactionhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="AreaAction",
+    custom_id="AreaAction",
+)
+
+@bot.component("AreaAction")
+async def button_response(ctx):
+    row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n You can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\n Click the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+
+
+locationhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Locations",
+    custom_id="Locations",
+)
+
+@bot.component("Locations")
+async def button_response(ctx):
+    row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n You can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\n Click the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+
+crossroadshelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Crossroads",
+    custom_id="Crossroads",
+)
+
+@bot.component("Crossroads")
+async def button_response(ctx):
+    await ctx.send(f"**Crossroads**\n/exchange\n 24h cooldown. give a player in your area a ready item from your inventory.", ephemeral=True)
+
+dungeonhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Dungeon",
+    custom_id="Dungeon",
+)
+
+@bot.component("Dungeon")
+async def button_response(ctx):
+    await ctx.send(f"**Dungeon**\n/loot\n 24h cooldown. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
+
+farmlandhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Farmland",
+    custom_id="Farmland",
+)
+
+@bot.component("Farmland")
+async def button_response(ctx):
+    await ctx.send(f"**Farmland**\n/farm\n 24h cooldown. score 1d4. gain your score seed coins.", ephemeral=True)
+
+
+keephelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Keep",
+    custom_id="Keep",
+)
+
+@bot.component("Keep")
+async def button_response(ctx):
+    await ctx.send(f"**Keep**\n/aid\n 24h cooldown. heal the chosen player 1/4 of their missing health.", ephemeral=True)
+
+
+lichcastlehelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Lich's Castle",
+    custom_id="lichcastle",
+)
+
+@bot.component("lichcastle")
+async def button_response(ctx):
+    await ctx.send(f"**Lich's Castle**\n/battlelich\n 24h cooldown. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
+
+shophelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Shop",
+    custom_id="Shop",
+)
+
+@bot.component("Shop")
+async def button_response(ctx):
+    await ctx.send(f"**Shop**\n/trade\n 24h cooldown. exchange seed coins for a shop item.", ephemeral=True)
+
+tavernhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Tavern",
+    custom_id="Tavern",
+)
+
+@bot.component("Tavern")
+async def button_response(ctx):
+    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 24h cooldown. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+
+itemhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Items",
+    custom_id="Items",
+)
+
+@bot.component("Items")
+async def button_response(ctx):
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
+    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
+
+adventuringgearhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Adventuring Gear",
+    custom_id="adventuringgear",
+)
+
+@bot.component("adventuringgear")
+async def button_response(ctx):
+    await ctx.send(f"**Adventuring Gear**\n\n5 SC cost \n48 hour cooldown. increase your loot score by 1 for the rest of the game.", ephemeral=True)
+
+aimtraininghelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Aim Training",
+    custom_id="aimtraining",
+)
+
+@bot.component("aimtraining")
+async def button_response(ctx):
+    await ctx.send(f"**Aim Training**\n\n8 SC cost\n72 hour cooldown. Reduce heavy attacks to 24h cooldown. doesn't stack.", ephemeral=True)
+
+crookedabacushelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Crooked Abacus",
+    custom_id="crookedabacus",
+)
+
+@bot.component("crookedabacus")
+async def button_response(ctx):
+    await ctx.send(f"**Crooked Abacus**\n\n5 SC cost\n48 hour cooldown. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
+
+goodiebaghelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Goodie Bag",
+    custom_id="goodiebag",
+)
+
+@bot.component("goodiebag")
+async def button_response(ctx):
+    await ctx.send(f"**Goodie Bag**\n\n8 SC cost\n24 hour cooldown. Add a random ready item to your inventory.", ephemeral=True)
+
+tractorhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Tractor",
+    custom_id="tractor",
+)
+
+@bot.component("tractor")
+async def button_response(ctx):
+    await ctx.send(f"**Tractor**\n\n5 SC cost\n48 hour cooldown. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
+
+drinkingmedalhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Drinking Medal ",
+    custom_id="drinkingmedal",
+)
+
+@bot.component("drinkingmedal")
+async def button_response(ctx):
+    await ctx.send(f"**Drinking Medal**\n\n6 SC cost\n48 hour cooldown. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
+
+lichitemhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Lich's Item ",
+    custom_id="lichitem",
+)
+
+@bot.component("lichitem")
+async def button_response(ctx):
+    await ctx.send(f"**Lich's Item**\n\n15 SC cost\n24 hour cooldown. Set target player's HP to 4200. If the target is dead, resurrect them.", ephemeral=True)
+
+beerbandohelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Beer Bandolier",
+    custom_id="beerbando",
+)
+
+@bot.component("beerbando")
+async def button_response(ctx):
+    await ctx.send(f"**Beer Bandolier**\n\n3 SC cost\n24 hour cooldown. You gain three rage.", ephemeral=True)
+
+Poisonhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Poison",
+    custom_id="Poison",
+)
+
+@bot.component("Poison")
+async def button_response(ctx):
+    await ctx.send(f"**Poison**\n\n When the game starts A 7 day poison timer starts and the poison damage is set to 650.\n\n Whenever the poison timer ends, the poison damage increases by 100 then every player is damaged by the poison.\n\n Then the poison timer restarts with 10% less time.", ephemeral=True)
+
+Ragehelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Rage",
+    custom_id="Rage",
+)
+
+@bot.component("Rage")
+async def button_response(ctx):
+    await ctx.send(f"**Rage**\n\n Whenever you take an action, you heal equal to your Rage times 420hp. Then you lose one Rage.", ephemeral=True)
+
 @bot.command(
     name="help",
     description="get info on a topic",
     scope = guildid ,
-        options=[
-            interactions.Option(
-                type=interactions.OptionType.STRING,
-                name="topic",
-                description="what you want info about",
-                required=True,
-                autocomplete=True,
-            )
-        ]
 )
-async def help(ctx: interactions.CommandContext, topic: str):
+async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot#readme", ephemeral = True)
-    if topic == "Actions":
-        await ctx.send(f"**Actions**\nActions are what players do!\nTo get started take the **/join** action!\nMost actions place players on a cooldown (such as 24h). The player can't take any actions that would place them on cooldown until they are off cooldown.\nWhen you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.\nThe core actions are listed below:\n\n**Join**\n/Join\nJoin the game!\n\n**Light Attack**\n/lightattack\n24h.1rage. attack a player in your area for 950.\n\n**Normal Attack**\n/normalattack\n48h.3rage. attack a player in your area for 2300.\n\n**Heavy Attack**\n/heavyattack\n72h.6rage. attack a player in your area for 3650.\n\n**Interrupt**\n/interrupt\n24h. hit a player in your area for 4200 if they are resting or evading.\n\n**Evade**\n/evade\n24h. receive no damage from light normal or heavy attacks.\n\n**Rest**\n/rest\n24h. heal half your missing health rounded up unless you rested last action.\n\n**Area Action**\nsee /help Locations\n\n**Use Item**\n see /help Items \n", ephemeral = True)
-    elif topic == "Locations":
-        await ctx.send(f"**Locations**\nEvery location has a location specific action\nYou can travel from any location to the Crossroads (/traveltocrossroads)\nYou can only travel to locations other than the Crossroads, from the Crossroads (/travelto)\n\n**Crossroads**\n/exchange\n24h. give a player in your area a ready item from your inventory.\n\n**Dungeon**\n/loot\n24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.\n\n**Farmland**\n/farm\n24h. score 1d4. gain your score seed coins.\n\n**Keep**\n/aid\n24h. heal chosen player 1/4 of their missing health.\n\n**Lich's Castle**\n/battlelich\n24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.\n\n**Shop**\n/trade\n24h. exchange seed coins for a shop item.\n**Tavern**\n/drinkingchallenge\n24h. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral = True)
-    elif topic == "Poison":
-        await ctx.send(f"**Poison**\nWhen the game begins a seven day poison timer starts and the poison damage is set to 650.\nWhenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.\nThen the poison timer restarts with 10% less time.", ephemeral = True)
-    elif topic == "Rage":
-        await ctx.send(f"**Rage**\nWhenever you take an action, you heal equal to your Rage times 420hp. Then you lose one rage.", ephemeral = True)
-    elif topic == "Items":
-        await ctx.send(f"**Items**\nItems fall into two broad categories:\n**Ready items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nThe list of items is below.\n\n**Adventuring Gear**\n/adventuringgear\n48h. increase your loot score by 1 for the rest of the game.\n\n**Aim Training**\n/aimtrain\n72h. reduce heavy attacks to 24h cooldown. doesn't stack.\n\n**Crooked Abacus**\n/crookedabacus\n48h. whenever you exchange or trade, gain a seed coin for the rest of the game.\n\n**Goodie Bag**\n/goodiebag\n24h. add a random ready item to your inventory.\n\n**Tractor**\n/tractor\n48h. whenever you farm, gain an additional seed coin for the rest of the game.\n\n**Drinking Medal**\n/drinkingmedal\n48h. increase the damage of your light attack by 420 for the rest of the game.\n\n**Lich's Item**\n/lichitem\n24h. set target player's HP to 4200. if the target is dead, resurrect them.\n\n**Beer-bandolier**\n/beerbando\n24h. you gain three rage.", ephemeral = True)
-    else:
-        await ctx.send(f"Read the read me: https://github.com/plerpsandplerps/AnnouncerBot#readme", ephemeral = True)
+    row = interactions.ActionRow(
+    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
+)
+    await ctx.send(f"What would you like help with?", components = row, ephemeral = True)
 
 @bot.autocomplete("help", "topic")
 async def help_autocomplete(ctx: interactions.CommandContext, value: str = ""):
