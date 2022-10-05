@@ -1,37 +1,36 @@
 {
   "aimtraining": {
       "Description": "72h. reduce heavy attacks to 24h cooldown. doesn't stack.",
-      "Cooldown": 259200,
       "Cost": 8,
       "Role_ID":1018888489120575588
     },
+    "goodiebag": {
+        "Description": "24h. add a random ready item to your inventory.",
+        "Cost": 8,
+        "Role_ID":1018888489120575588
+      },
     "crookedabacus": {
         "Description": "48h. whenever you exchange or trade, gain a seed coin for the rest of the game.",
-        "Cooldown": 259200,
         "Cost": 5,
         "Role_ID":1018888489120575588
     },
   "drinkingmedal": {
         "Description": "48h. increase the damage of your light attack by 420 for the rest of the game.",
-        "Cooldown": 172800,
         "Cost": 6,
         "Role_ID":1018888602983333949
     },
   "tractor": {
       "Description": "48h. whenever you farm, gain an additional seed coin for the rest of the game.",
-      "Cooldown": 172800,
       "Cost": 5,
       "Role_ID":1018888742825640036
     },
   "beerbandolier": {
       "Description": "24h. you gain three rage.",
-      "Cooldown": 86400,
       "Cost": 3,
       "Role_ID":1018888840531951646
     },
     "lichitem": {
         "Description": "24h. set target player's HP to 4200.",
-        "Cooldown": 86400,
         "Cost": 15,
         "Role_ID":1018888864355590154
       }

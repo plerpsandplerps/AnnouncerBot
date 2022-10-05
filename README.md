@@ -109,10 +109,9 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
     - 48h. choose a player in your area. they cannot use the /traveltocrossroads or /travelto commands for the duration.
     - not live
 
-### Random Item
-  - /randomitem
+### Goodie Bag
+  - /goodiebag
     - 24h. add a random ready item to your inventory.
-    - not live
 
 ### Tractor
   - /tractor

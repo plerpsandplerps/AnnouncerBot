@@ -1702,6 +1702,55 @@ async def drinkingmedal(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#goodiebag is below
+
+async def dogoodiebag(authorid,channelid):
+    await rage(authorid)
+    players = await getplayerdata()
+    current_time = int(time.time())
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "goodiebag"
+    await lastactiontime(authorid)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #get a randomitem
+    shop = await getshopdata()
+    randomitem = random.choice(list(shop))
+    await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
+    players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
+    #add the item to the user's usedinventory
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"goodiebag"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used goodiebag to gain a random item! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+@bot.command(
+    name="goodiebag",
+    description="24h. add a random ready item to your inventory.",
+    scope = guildid ,
+)
+
+async def goodiebag(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if str("goodiebag") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /goodiebag without a goodiebag!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use the goodiebag!",ephemeral=True)
+            await dogoodiebag(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
 #tractor is below
 
 async def dotractor(authorid,channelid):
@@ -1914,6 +1963,7 @@ functiondict = {'lightattack' : dolightattack,
                 'aimtrain':doaimtrain,
                 'crookedabacus':docrookedabacus,
                 'loot':doloot,
+                'goodiebag':dogoodiebag,
                 'trade':dotrade}
 
 
