@@ -441,7 +441,7 @@ async def dolightattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
+        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -531,7 +531,7 @@ async def donormalattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
+        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -620,7 +620,7 @@ async def doheavyattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
+        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -1196,7 +1196,7 @@ async def dotrade(authorid, itemtarget,channelid):
     cost = shop[str(itemtarget)]["Cost"]
     players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (UsedInventory_pull.count("crookedabacus") * 1)
     #add item to inventory
-    players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+"drinkingchallengemedal"
+    players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+"drinkingmedal"
     await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1312,8 +1312,8 @@ async def dodrinkingchallenge(authorid):
         await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Tavern"]["Channel_ID"]])
     else:
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingchallengemedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
-        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingmedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
+        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingmedal"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
@@ -1341,7 +1341,7 @@ async def dodrinkingchallenge(authorid):
 
 @bot.command(
     name="drinkingchallenge",
-    description="24h.score 1d4.high:gain drinkingchallengemedal. heal 1/4 missing hp except low score loses 1/4hp.",
+    description="24h.score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
     scope = guildid ,
 )
 async def drinkingchallenge(ctx: interactions.CommandContext):
@@ -1543,48 +1543,48 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
-#drinkingchallengemedal is below
+#drinkingmedal is below
 
-async def dodrinkingchallengemedal(authorid,channelid):
+async def dodrinkingmedal(authorid,channelid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
-    players[str(authorid)]["Lastaction"] = "drinkingchallengemedal"
+    players[str(authorid)]["Lastaction"] = "drinkingmedal"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
-    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingchallengemedal','',1)
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingmedal','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingchallengemedal"
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingmedal"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used drinkingchallengemedal to increase their lightattack damage by 420! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+    await send_message(f"<@{authorid}> used drinkingmedal to increase their lightattack damage by 420! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
 @bot.command(
-    name="drinkingchallengemedal",
+    name="drinkingmedal",
     description="48h. increase the damage of your light attack by 420 for the rest of the game.",
     scope = guildid ,
 )
 
-async def drinkingchallengemedal(ctx: interactions.CommandContext):
+async def drinkingmedal(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("drinkingchallengemedal") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /drinkingchallengemedal without a drinkingchallengemedal!", ephemeral=True)  # golive
+        if str("drinkingmedal") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /drinkingmedal without a drinkingmedal!", ephemeral=True)  # golive
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You use the drinkingchallengemedal!",ephemeral=True)
-            await dodrinkingchallengemedal(ctx.author.id, channelid)
+            await ctx.send(f"You use the drinkingmedal!",ephemeral=True)
+            await dodrinkingmedal(ctx.author.id, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1749,10 +1749,11 @@ functiondict = {'lightattack' : dolightattack,
                 'drinkingchallenge': dodrinkingchallenge,
                 'battlelich': dobattlelich,
                 'lichitem': dolichitem,
-                'drinkingchallengemedal': dodrinkingchallengemedal,
+                'drinkingmedal': dodrinkingmedal,
                 'tractor':dotractor,
                 'beerbando':dobeerbando,
-                'aimtrain':doaimtrain}
+                'aimtrain':doaimtrain,
+                'trade':dotrade}
 
 
 

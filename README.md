@@ -113,8 +113,8 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
   - /tractor
     -48h. whenever you farm, gain an additional seed coin for the rest of the game.
 
-### Drinking Challenge Medal
-  - /drinkingchallengemedal
+### Drinking Medal
+  - /drinkingmedal
     -48h. increase the damage of your light attack by 420 for the rest of the game.
 
 ### Uno Reverse
