@@ -2,14 +2,14 @@
     "NPC3": {
         "Username": "Denny Punks",
         "Media": "https://tenor.com/view/what-the-fucks-up-fuck-gif-20824798",
-        "Score": 0,
-        "Scoreexpiry": 1664759488
+        "Score": 3,
+        "Scoreexpiry": 1665018871
     },
     "NPC4": {
         "Username": "Super Dancers",
         "Media": "https://tenor.com/view/super-hero-spiderman-batman-superman-gif-9940660",
-        "Score": 0,
-        "Scoreexpiry": 1664759488
+        "Score": 2,
+        "Scoreexpiry": 1665018871
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
@@ -26,7 +26,7 @@
     "189920974261583872": {
         "Username": "The old razzmataz",
         "Media": "",
-        "Score": 1,
-        "Scoreexpiry": 1664759488
+        "Score": 4,
+        "Scoreexpiry": 1665018871
     }
 }
