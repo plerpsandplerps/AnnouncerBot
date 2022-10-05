@@ -1224,12 +1224,14 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
+    SC_pull=players[str(authorid)]["SC"]
+    cost = shop[str(itemtarget)]["Cost"]
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
         elif players[str(authorid)]["SC"] >= shop[str(itemtarget)]["Cost"]:
-            await ctx.send(f"Your {players[str(authorid)]["SC"]} seed coins are not able to purchase an item that costs {shop[str(itemtarget)]["Cost"]} seed coins! ")
+            await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ")
         elif DelayDate_pull > current_time:
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
