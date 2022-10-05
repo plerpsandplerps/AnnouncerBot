@@ -148,10 +148,12 @@ async def deadcheck(targethp,targetid,authorid):
 
 #rage heals 420 for each rage stack then decreases by 1
 async def rage(authorid):
-    players = await getplayerdata()
-    players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + ((players[str(authorid)]["Rage"])*420),10000)
-    players[str(authorid)]["Rage"] = max(players[str(authorid)]["Rage"] -1,0)
-    return players
+    rageplayers = await getplayerdata()
+    rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + ((rageplayers[str(authorid)]["Rage"])*420),10000)
+    rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
+    with open("players.json","w") as f:
+        json.dump(rageplayers,f, indent=4)
+    return
 
 #hpmojiconv function converts an hp number into a string of hp squares
 async def hpmojiconv(hp):
