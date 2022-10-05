@@ -97,7 +97,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Crooked Abacus
   - /crookedabacus
     - 48h. whenever you exchange or trade, gain a seed coin for the rest of the game.
-    - not live
 
 ### I'll try spinning
   - /tryspinning
@@ -116,7 +115,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Tractor
   - /tractor
     - 48h. whenever you farm, gain an additional seed coin for the rest of the game.
-
 
 ### Drinking Medal
   - /drinkingmedal
