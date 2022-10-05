@@ -1725,6 +1725,51 @@ async def aimtrain(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
+#Crooked Abacus is below
+
+async def docrookedabacus(authorid,channelid):
+    await rage(authorid)
+    players = await getplayerdata()
+    current_time = int(time.time())
+    cooldown=basecd*2
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "aimtrain"
+    await lastactiontime(authorid)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aimtraining','',1)
+    #add the item to the user's usedinventory
+    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"aimtraining"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used aimtraining to decrease the time cost of their heavy attacks to 24h! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+
+@bot.command(
+    name="aimtrain",
+    description="72h. reduce heavy attacks to 24h cooldown. doesn't stack.",
+    scope = guildid ,
+)
+
+async def aimtrain(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if str("aimtraining") not in players[str(authorid)]["ReadyInventory"]:
+            await ctx.send(f"You cannot use /aimtrain without an aimtraining!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use the aimtraining!",ephemeral=True)
+            await dobeerbando(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
 @bot.command(
     name="help",
     description="get the readme link",
