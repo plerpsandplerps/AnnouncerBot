@@ -191,6 +191,11 @@ async def getshopdata():
         shop = json.load(m)
     return shop
 
+async def getdungeondata():
+    with open("dungeon.json","r") as o:
+        scores = json.load(o)
+    return scores
+
 async def getlichdata():
     with open("lichcastle.json","r") as l:
         scores = json.load(l)
@@ -1358,6 +1363,114 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You drink!",ephemeral=True)
+            await dodrinkingchallenge(ctx.author.id, channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+#loot is below
+
+async def doloot(authorid):
+    await rage(authorid)
+    players = await getplayerdata()
+    scores = await getdungeondata()
+    Lastaction_pull = players[str(authorid)]["Lastaction"]
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1))
+    print(f"playerroll = {playerroll}")
+    print(f"scores = \n{scores}\n")
+    current_time = int(time.time())
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "loot"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    if scores[str("NPC4")]["Scoreexpiry"] > current_time :
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC4 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    else:
+        scores[str("NPC4")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC4")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC4 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    if scores[str("NPC3")]["Scoreexpiry"] > current_time:
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print("NPC3 score is not expired, and has not been rewritten")
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    else:
+        scores[str("NPC3")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC3")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC3 score is expired, and has been rewritten")
+        highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
+        print(f"highscore is {highscore}")
+        print(f"lowscore is {lowscore}")
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    scores[str(authorid)]["Media"] = ""
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    with open("tavern.json","w") as t:
+        json.dump(scores,t, indent=4)
+    print("Player dungeon Score Saved")
+    #check if the max is greater than the player's roll
+    if highscore > playerroll:
+        print(f"playerscore is lower than highscore")
+        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Dungeon"]["Channel_ID"]])
+    else:
+        print(f"playerscore is the highscore")
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got a randomitem." , channel_id=[locations["Dungeon"]["Channel_ID"]])
+        shop = await getshopdata()
+        randomitem = random.choice(list(shop))
+        await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
+        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+randomitem
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    if lowscore == playerroll: #check if the min is equal to the player's roll
+        print(f"lowscore is equal to playerscore")
+        hp_pull = players[str(authorid)]["HP"]
+        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        hpmoji = await hpmojiconv(hp_pull)
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[locations["Dungeon"]["Channel_ID"]] )
+        players[str(authorid)]["HP"] = hp_pull
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    else :
+        print(f"lowscore is not equal to playerscore")
+        await send_message(f"<@{authorid}> your roll of {playerroll} is not the low roll.", user_id=[authorid] )
+        await send_message(f"<@{authorid}>'s roll of {playerroll} is not the low roll." , channel_id=[locations["Dungeon"]["Channel_ID"]])
+        players[str(authorid)]["HP"] = hp_pull
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+
+@bot.command(
+    name="loot",
+    description="24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.",
+    scope = guildid ,
+)
+async def loot(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
+        if locations["Dungeon"]["Role_ID"] not in ctx.author.roles:
+            await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)  # golive
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You loot!",ephemeral=True)
             await dodrinkingchallenge(ctx.author.id, channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
