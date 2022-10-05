@@ -5,6 +5,12 @@
       "Cost": 8,
       "Role_ID":1018888489120575588
     },
+    "crookedabacus": {
+        "Description": "48h. whenever you exchange or trade, gain a seed coin for the rest of the game.",
+        "Cooldown": 259200,
+        "Cost": 5,
+        "Role_ID":1018888489120575588
+    },
   "drinkingmedal": {
         "Description": "48h. increase the damage of your light attack by 420 for the rest of the game.",
         "Cooldown": 172800,
