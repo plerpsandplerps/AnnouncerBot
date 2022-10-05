@@ -1194,7 +1194,7 @@ async def dotrade(authorid, itemtarget,channelid):
     #spend SC and gain abacus money
     UsedInventory_pull = players[str(authorid)]["UsedInventory"]
     cost = shop[str(itemtarget)]["Cost"]
-    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (UsedInventory_pull.count("crookedabacus") * 1))
+    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (UsedInventory_pull.count("crookedabacus") * 1)
     #add item to inventory
     players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+"drinkingchallengemedal"
     await lastactiontime(authorid)
