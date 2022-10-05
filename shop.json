@@ -4,6 +4,11 @@
       "Cost": 8,
       "Role_ID":1018888489120575588
     },
+    "adventuringgear": {
+        "Description": "48h. increase your loot score by 1 for the rest of the game.",
+        "Cost": 5,
+        "Role_ID":1018888489120575588
+      },
     "goodiebag": {
         "Description": "24h. add a random ready item to your inventory.",
         "Cost": 8,

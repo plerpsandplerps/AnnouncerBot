@@ -83,7 +83,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Adventuring Gear
   - /adventuringgear
     - 48h. increase your loot score by 1 for the rest of the game.
-    - not live
 
 ### Aim Training
   - /aimtrain
