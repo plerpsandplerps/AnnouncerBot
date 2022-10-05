@@ -1985,7 +1985,7 @@ actionhelpbutton = interactions.Button(
 
 @bot.component("Actions")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(joinhelpbutton, lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton)
+    row = interactions.spread_to_rows(joinhelpbutton, lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
     await ctx.send(f"**Actions**\nActions are what players do!\n\nTo get started take the **/join** action!\n\nMost actions place players on a cooldown (such as 24hours). The player can't take any actions that would place them on cooldown until they are off cooldown.\n\nWhen you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.\n\nFind out more:", components=row, ephemeral=True)
 
 joinhelpbutton = interactions.Button(
@@ -2051,7 +2051,7 @@ async def button_response(ctx):
 
 
 resthelpbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Rest",
     custom_id="Rest",
 )
@@ -2071,6 +2071,16 @@ async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
     await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n You can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\n Click the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
+useitemhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Use an Item",
+    custom_id="useitem",
+)
+
+@bot.component("useitem")
+async def button_response(ctx):
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
+    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 locationhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
