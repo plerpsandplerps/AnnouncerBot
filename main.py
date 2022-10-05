@@ -417,10 +417,11 @@ async def dolightattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+        await rage(authorid)
+        players = await getplayerdata()
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await rage(authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -433,12 +434,13 @@ async def dolightattack(authorid,targetid,channelid):
         await send_message(f"<@{targetid}> evaded a light attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a light attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
+        await rage(authorid)
+        players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid)
-        await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -505,10 +507,11 @@ async def donormalattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+        await rage(authorid)
+        players = await getplayerdata()
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = basecd*2  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -521,12 +524,13 @@ async def donormalattack(authorid,targetid,channelid):
         await send_message(f"<@{targetid}> evaded a normal attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a normal attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
+        await rage(authorid)
+        players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid)
-        await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -592,10 +596,11 @@ async def doheavyattack(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+        await rage(authorid)
+        players = await getplayerdata()
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = basecd*3  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -608,12 +613,13 @@ async def doheavyattack(authorid,targetid,channelid):
         await send_message(f"<@{targetid}> evaded a heavy attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
     else:
+        await rage(authorid)
+        players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid)
-        await rage (authorid)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -679,9 +685,10 @@ async def dointerrupt(authorid,targetid,channelid):
     players = await getplayerdata()
     current_time = int(time.time())
     if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+        await rage(authorid)
+        players = await getplayerdata()
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
-        await rage (authorid)
         await deadcheck(targethp,targetid,authorid)
         cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -694,9 +701,10 @@ async def dointerrupt(authorid,targetid,channelid):
         await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message(f"<@{authorid}> used an interrupt on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>",channel_id=channelid)
     else:
+        await rage(authorid)
+        players = await getplayerdata()
         cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
-        await rage (authorid)
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "interrupt"
         await lastactiontime(authorid)
@@ -755,13 +763,14 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 
 #evade is below
 async def doevade(authorid,channelid):
+    await rage(authorid)
+    players = await getplayerdata()
     players = await getplayerdata()
     players[str(authorid)]["Evade"] = True
     cooldown = int(basecd * 1)  # seconds in one days
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "evade"
-    await rage (authorid)
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -789,6 +798,8 @@ async def evade_command(ctx: interactions.CommandContext):
 
 #rest is below
 async def dorest(authorid,channelid):
+    await rage(authorid)
+    players = await getplayerdata()
     players = await getplayerdata()
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
@@ -796,7 +807,6 @@ async def dorest(authorid,channelid):
     current_time = int(time.time())
     players[str(authorid)]["DelayDate"] = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "rest"
-    await rage (authorid)
     DelayDate_pull = players[str(authorid)]["DelayDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
     hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
@@ -829,6 +839,8 @@ async def rest_command(ctx: interactions.CommandContext):
 
 #travelto
 async def dotravelto(authorid,destination):
+    await rage(authorid)
+    players = await getplayerdata()
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
@@ -837,7 +849,6 @@ async def dotravelto(authorid,destination):
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
     await lastactiontime(authorid)
-    await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -889,6 +900,8 @@ async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = "
 
 #travelto
 async def dotraveltocrossroads(authorid):
+    await rage(authorid)
+    players = await getplayerdata()
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
@@ -897,7 +910,6 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["Lastaction"] = "travelto"
     await lastactiontime(authorid)
     players[str(authorid)]["Location"] = "Crossroads"
-    await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -952,6 +964,7 @@ async def status (ctx: interactions.CommandContext):
 
 #exchange is below
 async def doexchange(authorid, playertarget, readyitem, channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -964,7 +977,6 @@ async def doexchange(authorid, playertarget, readyitem, channelid):
     cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
-    await rage (authorid)
     players[str(authorid)]["Lastaction"] = "exchange"
     await lastactiontime(authorid)
     players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
@@ -1051,6 +1063,7 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
 
 #farm is below
 async def dofarm(authorid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     UsedInventory_pull=players[str(authorid)]["UsedInventory"]
@@ -1063,7 +1076,6 @@ async def dofarm(authorid):
     DelayDate_pull = current_time + cooldown
     players[str(authorid)]["Lastaction"] = "farm"
     await lastactiontime(authorid)
-    await rage (authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
@@ -1096,6 +1108,7 @@ async def farm(ctx: interactions.CommandContext):
 #aid is below
 
 async def doaid(authorid, playertarget,channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -1111,7 +1124,6 @@ async def doaid(authorid, playertarget,channelid):
     players[str(authorid)]["Lastaction"] = "aid"
     await lastactiontime(authorid)
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
-    await rage (authorid)
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
     with open("players.json","w") as f:
@@ -1166,6 +1178,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #drinkingchallenge is below
 
 async def dodrinkingchallenge(authorid):
+    await rage(authorid)
     players = await getplayerdata()
     scores = await gettaverndata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
@@ -1177,8 +1190,6 @@ async def dodrinkingchallenge(authorid):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "drinkingchallenge"
-    await lastactiontime(authorid)
-    await rage (authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     if scores[str("NPC4")]["Scoreexpiry"] > current_time :
@@ -1275,6 +1286,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
 #battlelich is below
 
 async def dobattlelich(authorid):
+    await rage(authorid)
     players = await getplayerdata()
     scores = await getlichdata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
@@ -1287,7 +1299,6 @@ async def dobattlelich(authorid):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "battlelich"
     await lastactiontime(authorid)
-    await rage (authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     if scores[str("NPC2")]["Scoreexpiry"] > current_time :
@@ -1376,6 +1387,7 @@ async def battlelich(ctx: interactions.CommandContext):
 #lichitem is below
 
 async def dolichitem(authorid, playertarget,channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
@@ -1389,7 +1401,6 @@ async def dolichitem(authorid, playertarget,channelid):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "lichitem"
     await lastactiontime(authorid)
-    await rage (authorid)
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
@@ -1457,6 +1468,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #drinkingchallengemedal is below
 
 async def dodrinkingchallengemedal(authorid,channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2 #seconds in one day
@@ -1464,7 +1476,6 @@ async def dodrinkingchallengemedal(authorid,channelid):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "drinkingchallengemedal"
     await lastactiontime(authorid)
-    await rage (authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingchallengemedal','',1)
@@ -1502,6 +1513,7 @@ async def drinkingchallengemedal(ctx: interactions.CommandContext):
 #tractor is below
 
 async def dotractor(authorid,channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2 #seconds in one day
@@ -1509,7 +1521,6 @@ async def dotractor(authorid,channelid):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "tractor"
     await lastactiontime(authorid)
-    await rage (authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        tractor','',1)
@@ -1547,6 +1558,7 @@ async def tractor(ctx: interactions.CommandContext):
 #beer-bandolier is below
 
 async def dobeerbando(authorid,channelid):
+    await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*1
@@ -1554,7 +1566,6 @@ async def dobeerbando(authorid,channelid):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "beerbando"
     await lastactiontime(authorid)
-    await rage (authorid)
     #increase user's rage by 3
     players[str(authorid)]["Rage"]=players[str(authorid)]["Rage"]+3
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
