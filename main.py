@@ -88,7 +88,6 @@ async def on_ready():
         await channel.send(f"The first poison damage occurs on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
     await asyncio.sleep(int(poisondate_pull-current_time))
     while poisondamage_pull < 500000:
-        #test successful!
         poisondamage_pull= min(poison["poisondamage"] +100, 1500)
         poisontimer_pull=max(math.ceil(poisontimer_pull*.9),basecd)
         nextpoisontime=int(current_time+poisontimer_pull)
