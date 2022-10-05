@@ -2069,7 +2069,7 @@ areactionhelpbutton = interactions.Button(
 @bot.component("AreaAction")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always have a 24 hour cooldown, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
 useitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2184,7 +2184,7 @@ adventuringgearhelpbutton = interactions.Button(
 
 @bot.component("adventuringgear")
 async def button_response(ctx):
-    await ctx.send(f"**Adventuring Gear**\n\n5 SC cost \n48 hour cooldown. increase your loot score by 1 for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Adventuring Gear**\n5 SC cost \n48 hour cooldown. increase your loot score by 1 for the rest of the game.", ephemeral=True)
 
 aimtraininghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2194,7 +2194,7 @@ aimtraininghelpbutton = interactions.Button(
 
 @bot.component("aimtraining")
 async def button_response(ctx):
-    await ctx.send(f"**Aim Training**\n\n8 SC cost\n72 hour cooldown. Reduce heavy attacks to 24h cooldown. doesn't stack.", ephemeral=True)
+    await ctx.send(f"**Aim Training**\n8 SC cost\n72 hour cooldown. Reduce heavy attacks to 24h cooldown for the rest of the game. doesn't stack.", ephemeral=True)
 
 crookedabacushelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2204,7 +2204,7 @@ crookedabacushelpbutton = interactions.Button(
 
 @bot.component("crookedabacus")
 async def button_response(ctx):
-    await ctx.send(f"**Crooked Abacus**\n\n5 SC cost\n48 hour cooldown. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Crooked Abacus**\n5 SC cost\n48 hour cooldown. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
 
 goodiebaghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2214,7 +2214,7 @@ goodiebaghelpbutton = interactions.Button(
 
 @bot.component("goodiebag")
 async def button_response(ctx):
-    await ctx.send(f"**Goodie Bag**\n\n8 SC cost\n24 hour cooldown. Add a random ready item to your inventory.", ephemeral=True)
+    await ctx.send(f"**Goodie Bag**\n8 SC cost\n24 hour cooldown. Add a random ready item to your inventory.", ephemeral=True)
 
 tractorhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2224,7 +2224,7 @@ tractorhelpbutton = interactions.Button(
 
 @bot.component("tractor")
 async def button_response(ctx):
-    await ctx.send(f"**Tractor**\n\n5 SC cost\n48 hour cooldown. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Tractor**\n5 SC cost\n48 hour cooldown. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
 
 drinkingmedalhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2234,7 +2234,7 @@ drinkingmedalhelpbutton = interactions.Button(
 
 @bot.component("drinkingmedal")
 async def button_response(ctx):
-    await ctx.send(f"**Drinking Medal**\n\n6 SC cost\n48 hour cooldown. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Drinking Medal**\n6 SC cost\n48 hour cooldown. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
 
 lichitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2244,7 +2244,7 @@ lichitemhelpbutton = interactions.Button(
 
 @bot.component("lichitem")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Item**\n\n15 SC cost\n24 hour cooldown. Set target player's HP to 4200. If the target is dead, resurrect them.", ephemeral=True)
+    await ctx.send(f"**Lich's Item**\n15 SC cost\n24 hour cooldown. Set target player's HP to 4200. If the target is dead, resurrect them.", ephemeral=True)
 
 beerbandohelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2254,7 +2254,7 @@ beerbandohelpbutton = interactions.Button(
 
 @bot.component("beerbando")
 async def button_response(ctx):
-    await ctx.send(f"**Beer Bandolier**\n\n3 SC cost\n24 hour cooldown. You gain three rage.", ephemeral=True)
+    await ctx.send(f"**Beer Bandolier**\n3 SC cost\n24 hour cooldown. You gain three rage.", ephemeral=True)
 
 Poisonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2264,7 +2264,7 @@ Poisonhelpbutton = interactions.Button(
 
 @bot.component("Poison")
 async def button_response(ctx):
-    await ctx.send(f"**Poison**\n\n When the game starts A 7 day poison timer starts and the poison damage is set to 650.\n\n Whenever the poison timer ends, the poison damage increases by 100 then every player is damaged by the poison.\n\n Then the poison timer restarts with 10% less time.", ephemeral=True)
+    await ctx.send(f"**Poison**\n\nWhen the game starts A 7 day poison timer starts and the poison damage is set to 650.\n\n Whenever the poison timer ends, the poison damage increases by 100 then every player is damaged by the poison.\n\n Then the poison timer restarts with 10% less time.", ephemeral=True)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
