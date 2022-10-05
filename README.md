@@ -88,11 +88,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
   - /aimtrain
     - 72h. reduce heavy attacks to 24h cooldown. doesn't stack.
 
-### Banish
-  - /banish
-    - 24h. choose a player in your area and an area. the chosen player travels to the chosen area.
-    - not live
-
 ### Crooked Abacus
   - /crookedabacus
     - 48h. whenever you exchange or trade, gain a seed coin for the rest of the game.
