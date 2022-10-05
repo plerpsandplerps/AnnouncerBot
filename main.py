@@ -186,6 +186,11 @@ async def gettaverndata():
         scores = json.load(j)
     return scores
 
+async def getshopdata():
+    with open("shop.json","r") as s:
+        shop = json.load(s)
+    return shop
+
 async def getlichdata():
     with open("lichcastle.json","r") as l:
         scores = json.load(l)
@@ -1166,6 +1171,76 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
 @bot.autocomplete("aid", "playertarget")
 async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
+    Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
+    print (Usernames)
+    items = Usernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
+
+#trade is below
+
+async def dotrade(authorid, itemtarget,channelid):
+    await rage(authorid)
+    players = await getplayerdata()
+    shop = await getshopdata()
+    current_time = int(time.time())
+    print(f"{itemtarget} is the player target")
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "trade"
+    #spend SC and gain abacus money
+    UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+    cost = shop[str(itemtarget)]["Cost"]
+    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (UsedInventory_pull.count("crookedabacus") * 1))
+    #add item to inventory
+    players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+"drinkingchallengemedal"
+    await lastactiontime(authorid)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"One {itemtarget} was purchased by <@{authorid}> from the shop!", channel_id=[channelid])
+    await send_message(f"<@{authorid}> purchased an item from the shop! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
+
+@bot.command(
+    name="trade",
+    description="24h. exchange seed coins for a shop item.",
+    scope = guildid ,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="itemtarget",
+            description="what you want to buy",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def trade(ctx: interactions.CommandContext, itemtarget: str):
+    players = await getplayerdata()
+    shop = await getshopdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    if str(ctx.author.id) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        if locations["Shop"]["Role_ID"] not in ctx.author.roles:
+            await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
+        elif
+        elif DelayDate_pull > current_time:
+            await queuenext(ctx)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You trade!",ephemeral=True)
+            await dotrade(ctx.author.id, itemtarget,channelid)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+@bot.autocomplete("trade", "itemtarget")
+async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    shop = await shopdata()
     Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
     print (Usernames)
     items = Usernames
