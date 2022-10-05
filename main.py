@@ -1672,7 +1672,8 @@ functiondict = {'lightattack' : dolightattack,
                 'lichitem': dolichitem,
                 'drinkingchallengemedal': dodrinkingchallengemedal,
                 'tractor':dotractor,
-                'beerbando':dobeerbando}
+                'beerbando':dobeerbando,
+                'aimtrain':doaimtrain}
 
 
 
