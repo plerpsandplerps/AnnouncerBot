@@ -3,12 +3,12 @@
         "Username": "Brodieeeee",
         "Media": "https://tenor.com/view/katakuri-one-piece-sweet-general-brodie-gif-22827892",
         "Score": 3,
-        "Scoreexpiry": "Never"
+        "Scoreexpiry": 1665018871
     },
     "NPC4": {
         "Username": "Kevin Jr",
         "Media": "https://tenor.com/view/kevin-hikevin-spongebob-gif-5236100",
         "Score": 2,
-        "Scoreexpiry": "Never"
-    },
+        "Scoreexpiry": 1665018871
+    }
 }

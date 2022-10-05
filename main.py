@@ -1363,7 +1363,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You drink!",ephemeral=True)
-            await dodrinkingchallenge(ctx.author.id, channelid)
+            await dodrinkingchallenge(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1430,7 +1430,7 @@ async def doloot(authorid):
         shop = await getshopdata()
         randomitem = random.choice(list(shop))
         await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
-        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+randomitem
+        players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
@@ -1471,7 +1471,7 @@ async def loot(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You loot!",ephemeral=True)
-            await dodrinkingchallenge(ctx.author.id, channelid)
+            await doloot(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1572,7 +1572,7 @@ async def battlelich(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You battle the lich!",ephemeral=True)
-            await dobattlelich(ctx.author.id, channelid)
+            await dobattlelich(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
