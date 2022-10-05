@@ -1800,6 +1800,7 @@ functiondict = {'lightattack' : dolightattack,
                 'beerbando':dobeerbando,
                 'aimtrain':doaimtrain,
                 'crookedabacus':docrookedabacus,
+                'loot':doloot,
                 'trade':dotrade}
 
 
