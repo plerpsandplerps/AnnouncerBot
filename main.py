@@ -121,9 +121,8 @@ async def listen(message: interactions.Message):
     #else:
     #    pass
 
-async def deadcheck(targethp,targetid,authorid):
+async def deadcheck(targethp,targetid,authorid,players):
     print(f"\ndead?:{int(time.time())}")
-    players = await getplayerdata()
     if targethp <= 0:
         print(f"\n the target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
@@ -440,7 +439,7 @@ async def dolightattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid)
+        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -530,7 +529,7 @@ async def donormalattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid)
+        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -619,7 +618,7 @@ async def doheavyattack(authorid,targetid,channelid):
         damage = 950 + (UsedInventory_pull.count("drinkingchallengemedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid)
+        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         cooldown = basecd  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -689,7 +688,7 @@ async def dointerrupt(authorid,targetid,channelid):
         players = await getplayerdata()
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid)
+        await deadcheck(targethp,targetid,authorid,players)
         cooldown = basecd * 1  # seconds in one day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
