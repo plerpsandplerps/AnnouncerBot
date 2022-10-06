@@ -381,7 +381,7 @@ async def join_command(ctx: interactions.CommandContext):
     )
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
-        await ctx.send(f"You can find out more about the game below:", components = row, ephemeral = True)
+        await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
     else:
         print("player doesn't exist and first poison date has not occurred")
         current_time = int(time.time())
@@ -426,7 +426,7 @@ async def join_command(ctx: interactions.CommandContext):
     )
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
-        await ctx.send(f"You can find out more about the game below:", components = row, ephemeral = True)
+        await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
 
 #light attack is below
 async def dolightattack(authorid,targetid,channelid):
