@@ -66,7 +66,8 @@ async def on_ready():
             with open("poison.json","w") as h:
                json.dump(poison,h, indent=4)
         else:
-            await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
+            print("hi")
+            #await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
@@ -637,7 +638,7 @@ async def doheavyattack(authorid,targetid,channelid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = basecd  # seconds in a day
+        cooldown = max((basecd*3) - (UsedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
