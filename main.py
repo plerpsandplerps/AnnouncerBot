@@ -7,6 +7,7 @@ import random
 import time
 import math
 import json
+from typing import List
 
 with open('.gitignore2/config.json', 'r') as cfg:
    tokens = json.load(cfg)
@@ -33,6 +34,9 @@ async def on_ready():
     print(f"We're online! We've logged in as {bot.me.name}.")
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
+    guild = await interactions.get(bot, interactions.Guild, object_id=guildid)
+    members = await guild.get_all_members()
+    print(members)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollforready())
