@@ -35,8 +35,13 @@ async def on_ready():
     print(f"Our latency is {round(bot.latency)} ms.")
     current_time = int(time.time())
     guild = await interactions.get(bot, interactions.Guild, object_id=guildid)
-    members = await guild.get_all_members()
-    print(members)
+    memberslist = await guild.get_all_members()
+    print(memberslist)
+    membersdict = {Member.id: Member for Member in memberslist}
+    print("membersdict")
+    print(membersdict)
+    #with open("playersbackup.json","w") as n:
+    #   json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollforready())
@@ -1429,8 +1434,8 @@ async def doloot(authorid):
     scores[str(authorid)]["Media"] = ""
     scores[str(authorid)]["Score"] = playerroll
     scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
-    with open("tavern.json","w") as t:
-        json.dump(scores,t, indent=4)
+    with open("dungeon.json","w") as o:
+        json.dump(scores,o, indent=4)
     print("Player dungeon Score Saved")
     #check if the max is greater than the player's roll
     if highscore > playerroll:
