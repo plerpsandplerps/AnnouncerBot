@@ -2308,6 +2308,165 @@ async def help(ctx: interactions.CommandContext,):
 )
     await ctx.send(f"What would you like help with?", components = row, ephemeral = True)
 
+gamblehpbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Gamble HP",
+    custom_id="gamblehp",
+)
+
+@bot.component("gamblehp")
+async def button_response(ctx):
+    row = interactions.ActionRow(
+    components=[button1hp, button5hp, button10hp, button15hp, button25hp]
+)
+    await ctx.send(f"How much of your HP would you like to wager?", components = row, ephemeral=True)
+
+button1hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="1 HP",
+    custom_id="button1hp",
+)
+
+@bot.component("button1hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -1
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled ribs!", ephemeral=False)
+        await ctx.send(f"You {tag} one health!", ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +1
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled loins!", ephemeral=False)
+        await ctx.send(f"You {tag} one health!", ephemeral=False)
+
+button5hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="5 HP",
+    custom_id="button5hp",
+)
+
+@bot.component("button5hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -5
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled ribs!", ephemeral=False)
+        await ctx.send(f"You {tag} five health!", ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +5
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled loins!", ephemeral=False)
+        await ctx.send(f"You {tag} five health!", ephemeral=False)
+
+button10hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="10 HP",
+    custom_id="button10hp",
+)
+
+@bot.component("button10hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -10
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled ribs!", ephemeral=False)
+        await ctx.send(f"You {tag} ten health!", ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +10
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled loins!", ephemeral=False)
+        await ctx.send(f"You {tag} ten health!", ephemeral=False)
+
+
+button15hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="15 HP",
+    custom_id="button15hp",
+)
+
+@bot.component("button15hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -15
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled ribs!", ephemeral=False)
+        await ctx.send(f"You {tag} fifteen health!", ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +15
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled loins!", ephemeral=False)
+        await ctx.send(f"You {tag} fifteen health!", ephemeral=False)
+
+button25hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="25 HP",
+    custom_id="button25hp",
+)
+
+@bot.component("button25hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -25
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled ribs!", ephemeral=False)
+        await ctx.send(f"You {tag} twenty-five health!", ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +25
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await ctx.send(f"You rolled loins!", ephemeral=False)
+        await ctx.send(f"You {tag} twenty-five health!", ephemeral=False)
+
+
+@bot.command(
+    name="gamble",
+    description="gamble to gain or lose health!",
+    scope = guildid ,
+)
+async def gamble(ctx: interactions.CommandContext,):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    authorid=ctx.author.id
+    channelid=ctx.channel_id
+    row = interactions.ActionRow(
+    components=[gamblehpbutton]
+)
+    await ctx.send(f"What would you like to gamble?", components = row, ephemeral = True)
 
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
