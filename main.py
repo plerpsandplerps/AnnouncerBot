@@ -123,12 +123,6 @@ async def listen(message: interactions.Message):
     print(
         f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n \nend content\n"
     )
-    #if interactions.ChannelType.DM == True :
-    #    print ("3")
-    #    channel = message.channel_id
-    #    await channel.send("join the test environment! \n test")
-    #else:
-    #    pass
 
 async def deadcheck(targethp,targetid,authorid,players):
     print(f"\ndead?:{int(time.time())}")
@@ -245,24 +239,26 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
+        await asyncio.sleep(int(1*60*60*48))
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
-        #await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
-        await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
+        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
+
 
 async def pollforqueue():
     #run forever
     while True:
+        await asyncio.sleep(int(1*60*60*48))
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
         #don't turn this on until the bot is not relaunching often
-        #await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
-        await asyncio.sleep(int(1*60*60*48)) #48 hour reminder
+        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
+
 
 async def lastactiontime(authorid):
     players = await getplayerdata()
