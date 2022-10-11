@@ -2317,35 +2317,9 @@ gamblehpbutton = interactions.Button(
 @bot.component("gamblehp")
 async def button_response(ctx):
     row = interactions.ActionRow(
-    components=[button1hp, button5hp, button10hp, button15hp, button25hp]
+    components=[button5hp, button25hp, button50hp, button75hp, button100hp]
 )
     await ctx.send(f"How much of your HP would you like to wager?", components = row, ephemeral=True)
-
-button1hp = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
-    label="1 HP",
-    custom_id="button1hp",
-)
-
-@bot.component("button1hp")
-async def button_response(ctx):
-    flip =  int(random.randint(1, 2))
-    if flip == 1:
-        tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -1
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} one health!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
-        tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +1
-        with open("players.json","w") as f:+
-            json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled loins!", channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} one health!", channel_id=[general], ephemeral=False)
 
 button5hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2362,69 +2336,16 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -5
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
-        await send_message(f"You rolled ribs!", channel_id=[general], ephemeral=False)
-        await send_message(f"You {tag} five health!",channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one health!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +5
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled loins!",channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} five health!", channel_id=[general],ephemeral=False)
-
-button10hp = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
-    label="10 HP",
-    custom_id="button10hp",
-)
-
-@bot.component("button10hp")
-async def button_response(ctx):
-    flip =  int(random.randint(1, 2))
-    if flip == 1:
-        tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -10
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} ten health!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
-        tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +10
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
         await send_message(f"<@{ctx.author.id}> rolled loins!", channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} ten health!", channel_id=[general], ephemeral=False)
-
-
-button15hp = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
-    label="15 HP",
-    custom_id="button15hp",
-)
-
-@bot.component("button15hp")
-async def button_response(ctx):
-    flip =  int(random.randint(1, 2))
-    if flip == 1:
-        tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -15
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled ribs!",channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} fifteen health!",channel_id=[general], ephemeral=False)
-    elif flip == 2:
-        tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +15
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await send_message(f"<@{ctx.author.id}> rolled loins!",channel_id=[general], ephemeral=False)
-        await send_message(f"<@{ctx.author.id}> {tag} fifteen health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one health!", channel_id=[general], ephemeral=False)
 
 button25hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2441,12 +2362,91 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -25
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        await send_message(f"You rolled ribs!", channel_id=[general], ephemeral=False)
+        await send_message(f"You {tag} five health!",channel_id=[general], ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +25
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await send_message(f"<@{ctx.author.id}> rolled loins!",channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} five health!", channel_id=[general],ephemeral=False)
+
+button50hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="50 HP",
+    custom_id="button50hp",
+)
+
+@bot.component("button50hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -50
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} ten health!", channel_id=[general], ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +50
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await send_message(f"<@{ctx.author.id}> rolled loins!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} ten health!", channel_id=[general], ephemeral=False)
+
+
+button75hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="75 HP",
+    custom_id="button75hp",
+)
+
+@bot.component("button75hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -75
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await send_message(f"<@{ctx.author.id}> rolled ribs!",channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} fifteen health!",channel_id=[general], ephemeral=False)
+    elif flip == 2:
+        tag = "won"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +75
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        await send_message(f"<@{ctx.author.id}> rolled loins!",channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} fifteen health!", channel_id=[general], ephemeral=False)
+
+button100hp = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="100 HP",
+    custom_id="button100hp",
+)
+
+@bot.component("button100hp")
+async def button_response(ctx):
+    flip =  int(random.randint(1, 2))
+    if flip == 1:
+        tag = "lost"
+        players = await getplayerdata()
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -100
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
         await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
         await send_message(f"<@{ctx.author.id}> {tag} twenty-five health!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +25
+        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +100
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await send_message(f"<@{ctx.author.id}> rolled loins!", channel_id=[general], ephemeral=False)
