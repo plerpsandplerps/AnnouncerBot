@@ -2339,6 +2339,10 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -5
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        targethp = players[str(ctx.author.id)]["HP"]
+        targetid = ctx.author.id
+        authorid = ctx.author.id
+        await deadcheck(targethp,targetid,authorid,players)
         await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
         await send_message(f"<@{ctx.author.id}> {tag} one health!", channel_id=[general], ephemeral=False)
     elif flip == 2:
@@ -2365,6 +2369,10 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -25
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        targethp = players[str(ctx.author.id)]["HP"]
+        targetid = ctx.author.id
+        authorid = ctx.author.id
+        await deadcheck(targethp,targetid,authorid,players)
         await send_message(f"You rolled ribs!", channel_id=[general], ephemeral=False)
         await send_message(f"You {tag} five health!",channel_id=[general], ephemeral=False)
     elif flip == 2:
@@ -2391,6 +2399,10 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -50
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        targethp = players[str(ctx.author.id)]["HP"]
+        targetid = ctx.author.id
+        authorid = ctx.author.id
+        await deadcheck(targethp,targetid,authorid,players)
         await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
         await send_message(f"<@{ctx.author.id}> {tag} ten health!", channel_id=[general], ephemeral=False)
     elif flip == 2:
@@ -2418,6 +2430,10 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -75
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        targethp = players[str(ctx.author.id)]["HP"]
+        targetid = ctx.author.id
+        authorid = ctx.author.id
+        await deadcheck(targethp,targetid,authorid,players)
         await send_message(f"<@{ctx.author.id}> rolled ribs!",channel_id=[general], ephemeral=False)
         await send_message(f"<@{ctx.author.id}> {tag} fifteen health!",channel_id=[general], ephemeral=False)
     elif flip == 2:
@@ -2444,6 +2460,10 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -100
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
+        targethp = players[str(ctx.author.id)]["HP"]
+        targetid = ctx.author.id
+        authorid = ctx.author.id
+        await deadcheck(targethp,targetid,authorid,players)
         await send_message(f"<@{ctx.author.id}> rolled ribs!", channel_id=[general], ephemeral=False)
         await send_message(f"<@{ctx.author.id}> {tag} twenty-five health!", channel_id=[general], ephemeral=False)
     elif flip == 2:
