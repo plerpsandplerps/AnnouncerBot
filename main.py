@@ -464,7 +464,9 @@ async def dolightattack(authorid,targetid,channelid):
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damageroll = random.randint(0, 300)
-        damage = 800 + damageroll + (UsedInventory_pull.count("drinkingmedal") * 420)
+        critroll = random.randint(0, 10)
+        critdmg = max(critroll-9,0)*950
+        damage = 800 + damageroll + (UsedInventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -477,6 +479,10 @@ async def dolightattack(authorid,targetid,channelid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
+        if critroll == 10:
+            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
+        else:
+            print("nocrit")
         await send_message(f"<@{targetid}> was hit by a light attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a light attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
@@ -555,7 +561,9 @@ async def donormalattack(authorid,targetid,channelid):
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damageroll = random.randint(0, 300)
-        damage = 2150 + damageroll
+        critroll = random.randint(0, 10)
+        critdmg = max(critroll-9,0)*2300
+        damage = 2150 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -568,6 +576,10 @@ async def donormalattack(authorid,targetid,channelid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
+        if critroll == 10:
+            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
+        else:
+            print("nocrit")
         await send_message(f"<@{targetid}> was hit by a normal attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a normal attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
@@ -645,7 +657,9 @@ async def doheavyattack(authorid,targetid,channelid):
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
         damageroll = random.randint(0, 300)
-        damage = 3500 + damageroll
+        critroll = random.randint(0, 10)
+        critdmg = max(critroll-9,0)*3650
+        damage = 3500 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -658,6 +672,10 @@ async def doheavyattack(authorid,targetid,channelid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
+        if critroll == 10:
+            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
+        else:
+            print("nocrit")
         await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 @bot.command(
