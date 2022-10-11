@@ -2,14 +2,14 @@
     "NPC1": {
         "Username": "Bagel Boss Bitch",
         "Media": "https://tenor.com/view/littleman-bagel-boss-midget-angry-pissed-gif-14552890",
-        "Score": 2,
-        "Scoreexpiry": 1663164548
+        "Score": 3,
+        "Scoreexpiry": 1665506038
     },
     "NPC2": {
         "Username": "Storm Coming Lady",
         "Media": "https://tenor.com/view/big-storm-coming-ready-warning-threat-gif-4223991",
         "Score": 2,
-        "Scoreexpiry": 1663164548
+        "Scoreexpiry": 1665506038
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
@@ -22,5 +22,11 @@
         "Media": "",
         "Score": 2,
         "Scoreexpiry": 1663164548
+    },
+    "189920974261583872": {
+        "Username": "The old razzmataz",
+        "Media": "",
+        "Score": 1,
+        "Scoreexpiry": 1665506038
     }
 }
