@@ -463,7 +463,8 @@ async def dolightattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
+        damageroll = random.randint(0, 300)
+        damage = 800 + damageroll + (UsedInventory_pull.count("drinkingmedal") * 420)
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -481,7 +482,7 @@ async def dolightattack(authorid,targetid,channelid):
 
 @bot.command(
     name="lightattack",
-    description="24h.1rage. attack a player in your area for 950.",
+    description="24h.1rage. attack a player in your area for 800 - 1100 damage.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -553,7 +554,8 @@ async def donormalattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
+        damageroll = random.randint(0, 300)
+        damage = 2150 + damageroll
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -571,7 +573,7 @@ async def donormalattack(authorid,targetid,channelid):
 
 @bot.command(
     name="normalattack",
-    description="48h.3rage. attack a player in your area for 2300.",
+    description="48h.3rage. attack a player in your area for 2150 - 2450 damage.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -642,7 +644,8 @@ async def doheavyattack(authorid,targetid,channelid):
         await rage(authorid)
         players = await getplayerdata()
         UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-        damage = 950 + (UsedInventory_pull.count("drinkingmedal") * 420)
+        damageroll = random.randint(0, 300)
+        damage = 3500 + damageroll
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -659,7 +662,7 @@ async def doheavyattack(authorid,targetid,channelid):
         await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 @bot.command(
     name="heavyattack",
-    description="72h.6rage. attack a player in your area for 3650.",
+    description="72h.6rage. attack a player in your area for 3500 - 3800 damage.",
     scope = guildid ,
     options=[
         interactions.Option(
@@ -2024,7 +2027,7 @@ lightattackhelpbutton = interactions.Button(
 
 @bot.component("Lightattack")
 async def button_response(ctx):
-    await ctx.send(f"**Light Attack**\n/lightattack\n 24h cooldown. gain 1 rage. attack a player in your area for 950 damage.", ephemeral=True)
+    await ctx.send(f"**Light Attack**\n/lightattack\n 24h cooldown. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
 
 normalattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2034,7 +2037,7 @@ normalattackhelpbutton = interactions.Button(
 
 @bot.component("Normalattack")
 async def button_response(ctx):
-    await ctx.send(f"**Normal Attack**\n/normalattack\n 48h cooldown. gain 3 rage. attack a player in your area for 2300 damage.", ephemeral=True)
+    await ctx.send(f"**Normal Attack**\n/normalattack\n 48h cooldown. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2044,7 +2047,7 @@ heavyattackhelpbutton = interactions.Button(
 
 @bot.component("Heavyattack")
 async def button_response(ctx):
-    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 72h cooldown. gain 6 rage. attack a player in your area for 3650 damage.", ephemeral=True)
+    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 72h cooldown. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
 
 interrupthelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
