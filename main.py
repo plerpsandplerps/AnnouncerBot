@@ -2647,7 +2647,7 @@ async def gamble(ctx: interactions.CommandContext,):
     authorid=ctx.author.id
     channelid=ctx.channel_id
     row = interactions.ActionRow(
-    components=[gamblehpbutton]
+    components=[gamblehpbutton, gamblescbutton]
 )
     await ctx.send(f"What would you like to gamble?", components = row, ephemeral = True)
 
