@@ -2492,7 +2492,7 @@ async def button_response(ctx):
         await send_message(f"<@{ctx.author.id}> {tag} one hundred health!", channel_id=[general], ephemeral=False)
 
 gamblescbutton = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Gamble SC",
     custom_id="gamblesc",
 )
@@ -2505,7 +2505,7 @@ async def button_response(ctx):
     await ctx.send(f"How many SC would you like to wager?", components = row, ephemeral=True)
 
 button1sc = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="1 SC",
     custom_id="button1sc",
 )
@@ -2532,7 +2532,7 @@ async def button_response(ctx):
 
 
 button2sc = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="2 SC",
     custom_id="button2sc",
 )
@@ -2559,7 +2559,7 @@ async def button_response(ctx):
 
 
 button3sc = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="3 SC",
     custom_id="button3sc",
 )
@@ -2585,7 +2585,7 @@ async def button_response(ctx):
         await send_message(f"<@{ctx.author.id}> {tag} three SC!", channel_id=[general], ephemeral=False)
 
 button4sc = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="4 SC",
     custom_id="button4sc",
 )
@@ -2611,7 +2611,7 @@ async def button_response(ctx):
         await send_message(f"<@{ctx.author.id}> {tag} four SC!", channel_id=[general], ephemeral=False)
 
 button5sc = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
+    style=interactions.ButtonStyle.PRIMARY,
     label="5 SC",
     custom_id="button5sc",
 )
