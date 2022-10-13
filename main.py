@@ -7,6 +7,7 @@ import random
 import time
 import math
 import json
+import pprint
 from typing import List
 
 with open('.gitignore2/config.json', 'r') as cfg:
@@ -40,6 +41,7 @@ async def on_ready():
     membersdict = {Member.id: Member for Member in memberslist}
     print("membersdict")
     print(membersdict)
+    print(type(membersdict))
     #with open("playersbackup.json","w") as n:
     #   json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
@@ -239,27 +241,27 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*23))
+        await asyncio.sleep(int(1*60*60*36))
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
-        await send_message(f"Your cooldown is over! You are ready to act!", user_id=readyplayers)
-        await asyncio.sleep(int(1*60*60*23))
+        await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
+
 
 
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*23))
+        await asyncio.sleep(int(1*60*60*36))
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
         #don't turn this on until the bot is not relaunching often
-        await send_message(f"You have no action queued! You can queue an action with a slash command!", user_id=noqueueplayers)
-        await asyncio.sleep(int(1*60*60*23))
+        await send_message(f"You have no action queued! You can queue an action with a slash command!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=noqueueplayers)
+
 
 
 async def lastactiontime(authorid):
@@ -334,6 +336,7 @@ async def queuenexttarget(ctx, actiontargetid):
 @bot.command(
     name="join",
     description="join the game!",
+    scope = guildid,
 )
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -486,6 +489,7 @@ async def dolightattack(authorid,targetid,channelid):
 @bot.command(
     name="lightattack",
     description="24h.1rage. attack a player in your area for 800 - 1100 damage.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -582,6 +586,7 @@ async def donormalattack(authorid,targetid,channelid):
 @bot.command(
     name="normalattack",
     description="48h.3rage. attack a player in your area for 2150 - 2450 damage.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -676,6 +681,7 @@ async def doheavyattack(authorid,targetid,channelid):
 @bot.command(
     name="heavyattack",
     description="72h.6rage. attack a player in your area for 3500 - 3800 damage.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -757,6 +763,7 @@ async def dointerrupt(authorid,targetid,channelid):
 @bot.command(
     name="interrupt",
     description="24h. hit a player in your area for 4200 if they are resting or evading.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -819,6 +826,7 @@ async def doevade(authorid,channelid):
 @bot.command(
     name="evade",
     description="24h. receive no damage from light normal or heavy attacks",
+    scope = guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -856,6 +864,7 @@ async def dorest(authorid,channelid):
 @bot.command(
     name="rest",
     description="24h. heal half your missing health rounded up unless you rested last action.",
+    scope = guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -897,6 +906,7 @@ async def dotravelto(authorid,destination):
 @bot.command(
     name="travelto",
     description="24h. travel to any location from the crossroads .",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -963,6 +973,7 @@ async def dotraveltocrossroads(authorid):
 @bot.command(
     name="traveltocrossroads",
     description="24h. travel to the crossroads from any location.",
+    scope = guildid,
 )
 async def traveltocrossroads(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -982,6 +993,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
 @bot.command(
     name="status",
     description="check your status.",
+    scope = guildid,
 )
 async def status (ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1029,6 +1041,7 @@ async def doexchange(authorid, playertarget, readyitem, channelid):
 @bot.command(
     name="exchange",
     description="24h. give a player in your area a ready item from your inventory.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -1120,6 +1133,7 @@ async def dofarm(authorid):
 @bot.command(
     name="farm",
     description="24h. roll 1d4 gain that many seed coins.",
+    scope = guildid,
 )
 async def farm(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1169,6 +1183,7 @@ async def doaid(authorid, playertarget,channelid):
 @bot.command(
     name="aid",
     description="24h. heal chosen player 1/4 of their missing health.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -1236,6 +1251,7 @@ async def dotrade(authorid, itemtarget,channelid):
 @bot.command(
     name="trade",
     description="24h. exchange seed coins for a shop item.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -1370,6 +1386,7 @@ async def dodrinkingchallenge(authorid):
 @bot.command(
     name="drinkingchallenge",
     description="24h.score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
+    scope = guildid,
 )
 async def drinkingchallenge(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1477,6 +1494,7 @@ async def doloot(authorid):
 @bot.command(
     name="loot",
     description="24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.",
+    scope = guildid,
 )
 async def loot(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1577,6 +1595,7 @@ async def dobattlelich(authorid):
 @bot.command(
     name="battlelich",
     description="24h. score 1d4. high score=5+: gain Lich's Item. low score: lose 1/4 current health.",
+    scope = guildid,
 )
 async def battlelich(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1636,6 +1655,7 @@ async def dolichitem(authorid, playertarget,channelid):
 @bot.command(
     name="lichitem",
     description="24h. set target player's HP to 4200. if the target is dead, resurrect them.",
+    scope = guildid,
     options=[
         interactions.Option(
             type=interactions.OptionType.STRING,
@@ -1699,6 +1719,7 @@ async def dodrinkingmedal(authorid,channelid):
 @bot.command(
     name="drinkingmedal",
     description="48h. increase the damage of your light attack by 420 for the rest of the game.",
+    scope = guildid,
 )
 
 async def drinkingmedal(ctx: interactions.CommandContext):
@@ -1748,6 +1769,7 @@ async def dogoodiebag(authorid,channelid):
 @bot.command(
     name="goodiebag",
     description="24h. add a random ready item to your inventory.",
+    scope = guildid,
 )
 
 async def goodiebag(ctx: interactions.CommandContext):
@@ -1792,6 +1814,7 @@ async def dotractor(authorid,channelid):
 @bot.command(
     name="tractor",
     description="48h. whenever you farm, gain an additional seed coin for the rest of the game.",
+    scope = guildid,
 )
 
 async def tractor(ctx: interactions.CommandContext):
@@ -1838,6 +1861,7 @@ async def dobeerbando(authorid,channelid):
 @bot.command(
     name="beerbando",
     description="24h. you gain three rage.",
+    scope = guildid,
 )
 
 async def beerbando(ctx: interactions.CommandContext):
@@ -1882,6 +1906,7 @@ async def doaimtrain(authorid,channelid):
 @bot.command(
     name="aimtrain",
     description="72h. reduce heavy attacks to 24h cooldown. doesn't stack.",
+    scope = guildid,
 )
 
 async def aimtrain(ctx: interactions.CommandContext):
@@ -1926,6 +1951,7 @@ async def docrookedabacus(authorid,channelid):
 @bot.command(
     name="crookedabacus",
     description="48h. whenever you exchange or trade, gain a seed coin for the rest of the game.",
+    scope = guildid,
 )
 
 async def crookedabacus(ctx: interactions.CommandContext):
@@ -1970,6 +1996,7 @@ async def doadventuringgear(authorid,channelid):
 @bot.command(
     name="adventuringgear",
     description="48h. increase your loot score by 1 for the rest of the game.",
+    scope = guildid,
 )
 
 async def adventuringgear(ctx: interactions.CommandContext):
@@ -2292,6 +2319,7 @@ async def button_response(ctx):
 @bot.command(
     name="help",
     description="get info on a topic",
+    scope = guildid,
 )
 async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
@@ -2614,6 +2642,7 @@ async def button_response(ctx):
 @bot.command(
     name="gamble",
     description="gamble to gain or lose health!",
+    scope = guildid,
 )
 async def gamble(ctx: interactions.CommandContext,):
     players = await getplayerdata()
