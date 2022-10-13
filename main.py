@@ -239,7 +239,7 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*1))
+        await asyncio.sleep(int(1*60*60*23))
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
@@ -252,7 +252,7 @@ async def pollforready():
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*1))
+        await asyncio.sleep(int(1*60*60*23))
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
@@ -285,11 +285,11 @@ async def queuenext(ctx):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: \n{words[0]}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]}**\n\nThis has been replaced by Next action:\n **{displayaction}**", ephemeral=True)
         elif words[1] in players:
-            await ctx.send(f"You already have a queued action: \n{words[0]} {players[words[1]]['Username']}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]} {players[words[1]]['Username']}**\n\nThis has been replaced by Next action:\n **{displayaction}**", ephemeral=True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: \n{words[0]} {locations[words[1]]['Name']}\n\nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]} {locations[words[1]]['Name']}**\n\nThis has been replaced by Next action:\n **{displayaction}**", ephemeral=True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral=True)
 
@@ -334,7 +334,6 @@ async def queuenexttarget(ctx, actiontargetid):
 @bot.command(
     name="join",
     description="join the game!",
-    scope=guildid,
 )
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -820,7 +819,6 @@ async def doevade(authorid,channelid):
 @bot.command(
     name="evade",
     description="24h. receive no damage from light normal or heavy attacks",
-    scope=guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -858,7 +856,6 @@ async def dorest(authorid,channelid):
 @bot.command(
     name="rest",
     description="24h. heal half your missing health rounded up unless you rested last action.",
-    scope=guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -985,7 +982,6 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
 @bot.command(
     name="status",
     description="check your status.",
-    scope=guildid,
 )
 async def status (ctx: interactions.CommandContext):
     players = await getplayerdata()
@@ -1739,7 +1735,8 @@ async def dogoodiebag(authorid,channelid):
     shop = await getshopdata()
     randomitem = random.choice(list(shop))
     await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
-    players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
+    players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+str(randomitem)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
     #add the item to the user's usedinventory
@@ -1979,7 +1976,7 @@ async def adventuringgear(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    authorid=ctx.author.id
+    authorid=str(ctx.author.id)
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         if str("adventuringgear") not in players[str(authorid)]["ReadyInventory"]:
