@@ -286,11 +286,11 @@ async def queuenext(ctx):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: \n**{words[0]}**\n\nThis has been replaced by Next action:\n**{displayaction}**", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
         elif words[1] in players:
-            await ctx.send(f"You already have a queued action: \n**{words[0]} {players[words[1]]['Username']}**\n\nThis has been replaced by Next action:\n**{displayaction}**", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]} {players[words[1]]['Username']}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: \n**{words[0]} {locations[words[1]]['Name']}**\n\nThis has been replaced by Next action:\n**{displayaction}**", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]} {locations[words[1]]['Name']}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral=True)
 
@@ -1029,6 +1029,7 @@ async def doexchange(authorid, playertarget, readyitem):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
+    UsedInventory_pull = players[str(authorid)]["UsedInventory"]
     print(f"{playertarget} is the player target")
     print(f"{readyitem} is the item target")
     for k,v in players.items():
@@ -1048,8 +1049,7 @@ async def doexchange(authorid, playertarget, readyitem):
     players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=authorid)
-    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=targetid)
+    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=[authorid,playertarget])
     await send_message(f"<@{authorid}> gave an item to <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid], ephemeral=False)
 
 
@@ -1091,7 +1091,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You exchange!",ephemeral=True)
-            await doexchange(ctx.author.id, playertarget,readyitem,channelid)
+            await doexchange(ctx.author.id, playertarget,readyitem)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -2712,6 +2712,8 @@ functiondict = {'lightattack' : dolightattack,
                 'travelto' : dotravelto,
                 'traveltocrossroads': dotraveltocrossroads,
                 'aid': doaid,
+                'exchange': doexchange,
+                'trade': doexchange,
                 'drinkingchallenge': dodrinkingchallenge,
                 'battlelich': dobattlelich,
                 'lichitem': dolichitem,
