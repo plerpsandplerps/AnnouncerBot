@@ -241,27 +241,28 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*23)) #timer
+        await asyncio.sleep(int(1*60*60*12)) #timer
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
+        await asyncio.sleep(int(1*60*60*12)) #timer
 
 
 
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*23)) #timer
+        await asyncio.sleep(int(1*60*60*12)) #timer
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"You have no action queued! You can queue an action with a slash command!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=noqueueplayers)
-
+        await asyncio.sleep(int(1*60*60*12)) #timer
 
 
 async def lastactiontime(authorid):
@@ -2417,7 +2418,7 @@ async def button_response(ctx):
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +5
+        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +5, 10000)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
@@ -2447,7 +2448,7 @@ async def button_response(ctx):
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +25
+        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +25, 10000)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
@@ -2477,7 +2478,7 @@ async def button_response(ctx):
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +50
+        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +50, 10000)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
@@ -2508,7 +2509,7 @@ async def button_response(ctx):
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +75
+        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +75, 10000)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
@@ -2538,7 +2539,7 @@ async def button_response(ctx):
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] +100
+        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +100, 10000)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
@@ -2555,7 +2556,7 @@ async def button_response(ctx):
     row = interactions.ActionRow(
     components=[button1sc, button2sc, button3sc, button4sc, button5sc]
 )
-    await ctx.send(f"How many SC would you like to wager?", components = row, ephemeral=True)
+    await ctx.send(f"How many SC would you like to wager?\n\n*p.s. beware, you can go negative*", components = row, ephemeral=True)
 
 button1sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
