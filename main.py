@@ -241,28 +241,26 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*12)) #timer
+        await asyncio.sleep(int(1*60*60*24)) #timer
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
-        await asyncio.sleep(int(1*60*60*12)) #timer
 
 
 
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*12)) #timer
+        await asyncio.sleep(int(1*60*60*24)) #timer
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"You have no action queued! You can queue an action with a slash command!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=noqueueplayers)
-        await asyncio.sleep(int(1*60*60*12)) #timer
 
 
 async def lastactiontime(authorid):
