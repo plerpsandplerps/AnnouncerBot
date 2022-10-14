@@ -1621,7 +1621,7 @@ async def dobattlelich(authorid):
 
 @bot.command(
     name="battlelich",
-    description="24h. score 1d4. high score=5+: gain Lich's Item. low score: lose 1/4 current health.",
+    description="24h. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.",
     scope = guildid,
 )
 async def battlelich(ctx: interactions.CommandContext):
@@ -2234,7 +2234,7 @@ lichcastlehelpbutton = interactions.Button(
 
 @bot.component("lichcastle")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Castle**\n/battlelich\n 24h cooldown. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
+    await ctx.send(f"**Lich's Castle**\n/battlelich\n 24h cooldown. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
 
 shophelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,

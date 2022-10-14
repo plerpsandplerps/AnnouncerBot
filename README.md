@@ -69,7 +69,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Lich's Castle
   - /battlelich
-    - 24h. score 1d4. high score of 5+: gain Lich's Item. low score: lose 1/4 current health.
+    - 24h. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.
 
 ### Shop
   - /trade
