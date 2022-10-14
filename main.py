@@ -241,7 +241,7 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*36))
+        await asyncio.sleep(int(1*60*60*23)) #timer
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
@@ -254,7 +254,7 @@ async def pollforready():
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*36))
+        await asyncio.sleep(int(1*60*60*23)) #timer
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
@@ -439,9 +439,12 @@ async def join_command(ctx: interactions.CommandContext):
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
 
 #light attack is below
-async def dolightattack(authorid,targetid,channelid):
+async def dolightattack(authorid,targetid):
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         await rage(authorid)
         players = await getplayerdata()
@@ -516,7 +519,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You light attack!",ephemeral=True)
-            await dolightattack(ctx.author.id,targetid,channelid)
+            await dolightattack(ctx.author.id,targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -536,9 +539,12 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     await ctx.populate(choices)
 
 #normal attack is below
-async def donormalattack(authorid,targetid,channelid):
+async def donormalattack(authorid,targetid):
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         await rage(authorid)
         players = await getplayerdata()
@@ -609,11 +615,11 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await queuenexttarget(ctx, targetid )
+            await queuenexttarget(ctx, targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
             await ctx.send(f"You normal attack!",ephemeral=True)
-            await donormalattack(ctx.author.id, targetid, channelid)
+            await donormalattack(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
 
@@ -632,9 +638,12 @@ async def normal_autocomplete(ctx: interactions.CommandContext, value: str = "")
     await ctx.populate(choices)
 
 #heavy attack is below
-async def doheavyattack(authorid,targetid,channelid):
+async def doheavyattack(authorid,targetid):
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         await rage(authorid)
         players = await getplayerdata()
@@ -704,11 +713,11 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await queuenexttarget(ctx, targetid )
+            await queuenexttarget(ctx, targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
             await ctx.send(f"You heavy attack!",ephemeral=True)
-            await doheavyattack(ctx.author.id, targetid, channelid)
+            await doheavyattack(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
 
@@ -728,9 +737,12 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     await ctx.populate(choices)
 
 #interrupt is below
-async def dointerrupt(authorid,targetid,channelid):
+async def dointerrupt(authorid,targetid):
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
         await rage(authorid)
         players = await getplayerdata()
@@ -790,7 +802,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
             await ctx.send(f"You interrupt!",ephemeral=True)
-            await dointerrupt(ctx.author.id, targetid, channelid)
+            await dointerrupt(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
 
@@ -809,10 +821,12 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     await ctx.populate(choices)
 
 #evade is below
-async def doevade(authorid,channelid):
+async def doevade(authorid):
     await rage(authorid)
     players = await getplayerdata()
-    players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Evade"] = True
     cooldown = int(basecd * 1)  # seconds in one days
     current_time = int(time.time())
@@ -839,15 +853,17 @@ async def evade_command(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
             await ctx.send(f"You evade!",ephemeral=True)
-            await doevade(ctx.author.id,channelid)
+            await doevade(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #rest is below
-async def dorest(authorid,channelid):
+async def dorest(authorid):
     await rage(authorid)
     players = await getplayerdata()
-    players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
     cooldown = int(basecd * 1)  # seconds in one day
@@ -880,14 +896,13 @@ async def rest_command(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
             await ctx.send(f"You rest!",ephemeral=True)
-            await dorest(ctx.author.id,channelid)
+            await dorest(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #travelto
 async def dotravelto(authorid,destination):
     await rage(authorid)
-    players = await getplayerdata()
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
@@ -949,7 +964,6 @@ async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = "
 async def dotraveltocrossroads(authorid):
     await rage(authorid)
     players = await getplayerdata()
-    players = await getplayerdata()
     current_time = int(time.time())
     cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["DelayDate"] = current_time + cooldown
@@ -1010,9 +1024,12 @@ async def status (ctx: interactions.CommandContext):
     await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {Nextaction_pull}", ephemeral = True)
 
 #exchange is below
-async def doexchange(authorid, playertarget, readyitem, channelid):
+async def doexchange(authorid, playertarget, readyitem):
     await rage(authorid)
     players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
     print(f"{readyitem} is the item target")
@@ -1115,6 +1132,9 @@ async def dofarm(authorid):
     players = await getplayerdata()
     current_time = int(time.time())
     UsedInventory_pull=players[str(authorid)]["UsedInventory"]
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     Lastaction_pull=players[str(authorid)]["Lastaction"]
     farmSC = int(random.randint(0, 4)) + (UsedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
@@ -1128,7 +1148,7 @@ async def dofarm(authorid):
         json.dump(players, f, indent=4)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
     await send_message(f"<@{authorid}> farmed {farmSC} from farming", user_id=[authorid]) #channel_id=[farmland])
-    await send_message(f"<@{authorid}> farmed! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", user_id=[authorid])
+    await send_message(f"<@{authorid}> farmed! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 @bot.command(
     name="farm",
@@ -1155,9 +1175,12 @@ async def farm(ctx: interactions.CommandContext):
 
 #aid is below
 
-async def doaid(authorid, playertarget,channelid):
+async def doaid(authorid, playertarget):
     await rage(authorid)
     players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
     for k,v in players.items():
@@ -1176,7 +1199,7 @@ async def doaid(authorid, playertarget,channelid):
     hpmoji = await hpmojiconv(targethp)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
+    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, playertarget])
     await send_message(f"<@{authorid}> used aid on <@{targetid}> to heal them! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
@@ -1225,11 +1248,14 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #trade is below
 
-async def dotrade(authorid, itemtarget,channelid):
+async def dotrade(authorid, itemtarget):
     await rage(authorid)
     players = await getplayerdata()
     shop = await getshopdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     print(f"{itemtarget} is the player target")
     cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
@@ -1244,7 +1270,7 @@ async def dotrade(authorid, itemtarget,channelid):
     await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"One {itemtarget} was purchased by <@{authorid}> from the shop!", channel_id=[channelid])
+    await send_message(f"One {itemtarget} was purchased by <@{authorid}> from the shop!", user_id=[authorid])
     await send_message(f"<@{authorid}> purchased an item from the shop! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
@@ -1412,7 +1438,8 @@ async def doloot(authorid):
     players = await getplayerdata()
     scores = await getdungeondata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
-    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1))
+    UsedInventory_pull=players[str(authorid)]["UsedInventory"]
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1)) + (UsedInventory_pull.count("adventuringgear") * 1)
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
@@ -1493,7 +1520,7 @@ async def doloot(authorid):
 
 @bot.command(
     name="loot",
-    description="24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.",
+    description="24h. score 1d4. on high score gain an item at random. lowest score: lose 1/4 of your current health.",
     scope = guildid,
 )
 async def loot(ctx: interactions.CommandContext):
@@ -1616,10 +1643,13 @@ async def battlelich(ctx: interactions.CommandContext):
 
 #lichitem is below
 
-async def dolichitem(authorid, playertarget,channelid):
+async def dolichitem(authorid, playertarget):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     print(f"{playertarget} is the player target")
     for k,v in players.items():
         if v['Username']==str(playertarget):
@@ -1648,7 +1678,7 @@ async def dolichitem(authorid, playertarget,channelid):
         players[str(targetid)]["Location"] = players[str(targetid)]["Location"]
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", channel_id=[channelid])
+    await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, playertarget])
     await send_message(f"<@{authorid}> used lichitem on <@{targetid}> to set their hp to 4200! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
@@ -1680,7 +1710,7 @@ async def lichitem(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the lichitem!",ephemeral=True)
-            await dolichitem(ctx.author.id, playertarget,channelid)
+            await dolichitem(ctx.author.id, playertarget)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1697,8 +1727,11 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #drinkingmedal is below
 
-async def dodrinkingmedal(authorid,channelid):
+async def dodrinkingmedal(authorid):
     await rage(authorid)
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2 #seconds in one day
@@ -1736,15 +1769,18 @@ async def drinkingmedal(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the drinkingmedal!",ephemeral=True)
-            await dodrinkingmedal(ctx.author.id, channelid)
+            await dodrinkingmedal(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #goodiebag is below
 
-async def dogoodiebag(authorid,channelid):
+async def dogoodiebag(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
@@ -1786,16 +1822,19 @@ async def goodiebag(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the goodiebag!",ephemeral=True)
-            await dogoodiebag(ctx.author.id, channelid)
+            await dogoodiebag(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #tractor is below
 
-async def dotractor(authorid,channelid):
+async def dotractor(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     cooldown=basecd*2 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
@@ -1831,13 +1870,13 @@ async def tractor(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the tractor!",ephemeral=True)
-            await dotractor(ctx.author.id, channelid)
+            await dotractor(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #beer-bandolier is below
 
-async def dobeerbando(authorid,channelid):
+async def dobeerbando(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
@@ -1845,6 +1884,9 @@ async def dobeerbando(authorid,channelid):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "beerbando"
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     await lastactiontime(authorid)
     #increase user's rage by 3
     players[str(authorid)]["Rage"]=players[str(authorid)]["Rage"]+3
@@ -1878,16 +1920,19 @@ async def beerbando(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the beerbando!",ephemeral=True)
-            await dobeerbando(ctx.author.id, channelid)
+            await dobeerbando(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #aimtraining is below
 
-async def doaimtrain(authorid,channelid):
+async def doaimtrain(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     cooldown=basecd*3
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
@@ -1923,17 +1968,20 @@ async def aimtrain(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the aimtraining!",ephemeral=True)
-            await doaimtrain(ctx.author.id, channelid)
+            await doaimtrain(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #Crooked Abacus is below
 
-async def docrookedabacus(authorid,channelid):
+async def docrookedabacus(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "crookedabacus"
@@ -1968,17 +2016,20 @@ async def crookedabacus(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You use the crookedabacus!",ephemeral=True)
-            await docrookedabacus(ctx.author.id, channelid)
+            await docrookedabacus(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #adventuringgear is below
 
-async def doadventuringgear(authorid,channelid):
+async def doadventuringgear(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     cooldown=basecd*2
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "adventuringgear"
@@ -2319,7 +2370,6 @@ async def button_response(ctx):
 @bot.command(
     name="help",
     description="get info on a topic",
-    scope = guildid,
 )
 async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
