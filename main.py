@@ -316,13 +316,13 @@ async def queuenexttarget(ctx, actiontargetid):
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
         if len(words) == 1:
-            await ctx.send(f"You already have a queued action: {words[0]} \nThis has been replaced by Next action: {displayaction}", ephemeral=True)
+            await ctx.send(f"You already have a queued action:\n**{words[0]}** \nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
         elif words[1] in players:
-            await ctx.send(f"You already have a queued action: {words[0]} {players[words[1]]['Username']}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
+            await ctx.send(f"You already have a queued action:\n**{words[0]} {players[words[1]]['Username']}**\nThis has been replaced by:\n**{displayaction}**", ephemeral = True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: {words[0]} {words[1]}\nThis has been replaced by Next action: {displayaction}", ephemeral = True)
+            await ctx.send(f"You already have a queued action:\n**{words[0]} {words[1]}**\nThis has been replaced by:\n**{displayaction}**", ephemeral = True)
     else:
-        await ctx.send(f"Next action: {displayaction}", ephemeral = True)
+        await ctx.send(f"Next action:\n**{displayaction}**", ephemeral = True)
 
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
@@ -514,7 +514,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
     if str(ctx.author.id) in players:
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         if DelayDate_pull > current_time:
-            await queuenexttarget(ctx,targetid,)
+            await queuenexttarget(ctx,targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You light attack!",ephemeral=True)
@@ -1022,7 +1022,7 @@ async def status (ctx: interactions.CommandContext):
     await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {Nextaction_pull}", ephemeral = True)
 
 #exchange is below
-async def doexchange(authorid, playertarget, readyitem):
+async def doexchange(authorid, targetid, readyitem):
     await rage(authorid)
     players = await getplayerdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1030,11 +1030,6 @@ async def doexchange(authorid, playertarget, readyitem):
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     UsedInventory_pull = players[str(authorid)]["UsedInventory"]
-    print(f"{playertarget} is the player target")
-    print(f"{readyitem} is the item target")
-    for k,v in players.items():
-        if v['Username']==str(playertarget):
-            targetid=k
     print(f"{targetid} is the player target id")
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     cooldown=basecd*1 #seconds in one day
@@ -1049,7 +1044,7 @@ async def doexchange(authorid, playertarget, readyitem):
     players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=[authorid,playertarget])
+    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=[authorid, targetid])
     await send_message(f"<@{authorid}> gave an item to <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid], ephemeral=False)
 
 
@@ -1074,11 +1069,16 @@ async def doexchange(authorid, playertarget, readyitem):
         )
     ]
 )
-async def exchange(ctx: interactions.CommandContext, playertarget: str, readyitem: str):
+async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: str):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
+    print(f"{playertarget} is the player target")
+    print(f"{readyitem} is the item target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
     if str(authorid) in players:
         DelayDate_pull = players[str(authorid)]["DelayDate"]
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
@@ -1087,11 +1087,11 @@ async def exchange(ctx: interactions.CommandContext, playertarget: str, readyite
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
         elif DelayDate_pull > current_time:
-            await queuenext(ctx)
+            await queuenexttarget(ctx,targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You exchange!",ephemeral=True)
-            await doexchange(ctx.author.id, playertarget,readyitem)
+            await doexchange(ctx.author.id, targetid,readyitem)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
@@ -1301,7 +1301,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         elif players[str(authorid)]["SC"] <= shop[str(itemtarget)]["Cost"]:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ", ephemeral = True)
         elif DelayDate_pull > current_time:
-            await queuenext(ctx)
+            await queuenexttarget(ctx, itemtarget)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You trade!",ephemeral=True)
