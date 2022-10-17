@@ -234,10 +234,16 @@ async def pollfornext():
                         loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
                     elif words[1] in players:
-                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'channelid':general}))
+                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
+                        if len(words) == 3:
+                            loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
+                        print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
                     elif words[1] in locations:
                         loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                    elif words[1] in shop:
+                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     players[k]['Nextaction'] = ""
                     with open("players.json", "w") as f:
