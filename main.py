@@ -237,6 +237,9 @@ async def pollfornext():
                     if len(words) == 1:
                         loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
+                    elif words[0] == "use"
+                        loop.create_task(functiondict[words[0]](**{'authorid': k, 'readyitem':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in players:
                         if len(words) == 3:
                             loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
