@@ -7,7 +7,7 @@ import random
 import time
 import math
 import json
-import pprint
+import pprint as pp
 from typing import List
 
 with open('.gitignore2/config.json', 'r') as cfg:
@@ -38,9 +38,9 @@ async def on_ready():
     guild = await interactions.get(bot, interactions.Guild, object_id=guildid)
     memberslist = await guild.get_all_members()
     print(memberslist)
-    membersdict = {Member.id: Member for Member in memberslist}
+    membersdict = [{Member.id: Member for Member in memberslist}]
     print("membersdict")
-    print(membersdict)
+    pp.pprint(membersdict)
     print(type(membersdict))
     #with open("playersbackup.json","w") as n:
     #   json.dump(membersdict,n, indent=4)
