@@ -227,6 +227,7 @@ async def pollfornext():
     while True:
         print(f"\npolling for next:{int(time.time())}")
         players = await getplayerdata()
+        shop = await getshopdata()
         for k,v in players.items():
             if v['Nextaction'] != "":
                 words = players[k]['Nextaction'].split()
