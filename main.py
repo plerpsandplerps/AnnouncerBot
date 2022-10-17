@@ -326,6 +326,7 @@ async def queuenext(ctx):
 
 async def queuenexttarget(ctx, actiontargetid, *argv):
     players = await getplayerdata()
+    shop = await getshopdata
     print(argv)
     print(len(argv))
     #separate strings for printing to player and what we use (id)
@@ -337,11 +338,11 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
         saveaction = f"{ctx.data.name} {actiontargetid}"
     displayactionnew = "displayerror"
     if actiontargetid in players:
-        displayactionnew = f"{ctx.data.name} {players[actiontargetid]['Username']}"
+        displayactionnew = f"{ctx.data.name} <@{actiontargetid}>"
         if len(argv) == 1:
             print("len argv = 1")
             print(argv[0])
-            displayactionnew = f"{ctx.data.name} {players[actiontargetid]['Username']} {argv[0]}"
+            displayactionnew = f"{ctx.data.name} <@{actiontargetid}> {argv[0]}"
     #name here is a little misleading, but actiontargetid is actually the destination name in this context
     elif actiontargetid in locations:
         displayactionnew = saveaction
@@ -352,12 +353,14 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
         if len(words) == 1:
             displayactionold = words[0]
         elif words[1] in players:
-            displayactionold = words[0] + " " + players[words[1]]['Username']
+            displayactionold = words[0] + " " + f"<@{words[1]}>"
             if len(words) == 3:
                 print(f"words len = 3 {words}")
-                displayactionold = words[0] + " " + players[words[1]]['Username'] + " " + words[2]
+                displayactionold = words[0] + " " + f"<@{words[1]}>" + " " + words[2]
         elif words[1] in locations:
-                displayactionold = words[0] + " " + [words[1]]
+                displayactionold = words[0] + " " + words[1]
+        elif words[1] in shop:
+                displayactionold = words[0] + " " + words[1]
         await ctx.send(f"You already have a queued action:\n**{displayactionold}**\nThis has been replaced by:\n**{displayactionnew}**", ephemeral = True)
     else:
         await ctx.send(f"Next action:\n**{displayaction}**", ephemeral = True)
@@ -1067,6 +1070,8 @@ async def status (ctx: interactions.CommandContext):
         if len(words) == 3:
             displayaction = displayaction + " " + words[2]
     elif words[1] in locations:
+        displayaction = f"{words}"
+    elif words[1] in shop:
         displayaction = f"{words}"
     print(displayaction)
     hpmoji = await hpmojiconv(hp_pull)
