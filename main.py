@@ -84,7 +84,10 @@ async def on_ready():
             print(f"announcementtime={announcementtime}")
             timeuntilannounce = announcementtime - currenttimeofday
             print(f"timeuntilannounce={timeuntilannounce}")
-            await asyncio.sleep(int(timeuntilannounce))
+            if announcementtime < currenttimeofday:
+                await asyncio.sleep(int(timeuntilannounce+86400))
+            else:
+                await asyncio.sleep(int(timeuntilannounce))
             await channel.send(f"The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
@@ -254,8 +257,11 @@ async def pollforready():
         announcementtime = int((1*60*60*10.5)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
-        await asyncio.sleep(int(timeuntilannounce)) #timer
         print(f"timeuntilannounce={timeuntilannounce}")
+        if announcementtime < currenttimeofday:
+            await asyncio.sleep(int(timeuntilannounce+86400))
+        else:
+            await asyncio.sleep(int(timeuntilannounce))
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
@@ -275,7 +281,11 @@ async def pollforqueue():
         announcementtime = int((1*60*60*10.5)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
-        await asyncio.sleep(int(timeuntilannounce)) #timer
+        print(f"timeuntilannounce={timeuntilannounce}")
+        if announcementtime < currenttimeofday:
+            await asyncio.sleep(int(timeuntilannounce+86400))
+        else:
+            await asyncio.sleep(int(timeuntilannounce))
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
