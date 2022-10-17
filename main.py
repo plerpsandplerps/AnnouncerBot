@@ -163,9 +163,9 @@ async def rage(authorid):
 #hpmojiconv function converts an hp number into a string of hp squares
 async def hpmojiconv(hp):
     players = await getplayerdata()
-    numofgreensqs = math.floor(hp/500)
-    numofredsqs = math.floor((10000-hp)/500)
-    yellowsq = math.ceil((hp-(numofgreensqs*500))/500)
+    numofgreensqs = math.floor(hp/1000)
+    numofredsqs = math.floor((10000-hp)/1000)
+    yellowsq = math.ceil((hp-(numofgreensqs*1000))/1000)
     hpmoji = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")
     return hpmoji
 
