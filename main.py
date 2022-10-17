@@ -78,8 +78,14 @@ async def on_ready():
                json.dump(poison,h, indent=4)
         else:
             print("hi")
-            await asyncio.sleep(int(60*60*24))
-            #await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
+            currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
+            print(f"currenttimeofday={currenttimeofday}")
+            announcementtime = int((1*60*60*10.5)) #10:30am
+            print(f"announcementtime={announcementtime}")
+            timeuntilannounce = announcementtime - currenttimeofday
+            print(f"timeuntilannounce={timeuntilannounce}")
+            await asyncio.sleep(int(timeuntilannounce))
+            await channel.send(f"The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
         smalltimeunit="days" #set to days on golive
@@ -242,26 +248,41 @@ async def pollfornext():
 async def pollforready():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*24)) #timer
+        current_time = int(time.time())
+        currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
+        print(f"currenttimeofday={currenttimeofday}")
+        announcementtime = int((1*60*60*10.5)) #10:30am
+        print(f"announcementtime={announcementtime}")
+        timeuntilannounce = announcementtime - currenttimeofday
+        await asyncio.sleep(int(timeuntilannounce)) #timer
+        print(f"timeuntilannounce={timeuntilannounce}")
         print(f"\npolling for ready:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['DelayDate'] < int(time.time()) and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
+        await asyncio.sleep(int(1*60*60*24)) #timer
 
 
 
 async def pollforqueue():
     #run forever
     while True:
-        await asyncio.sleep(int(1*60*60*24)) #timer
+        current_time = int(time.time())
+        currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
+        print(f"currenttimeofday={currenttimeofday}")
+        announcementtime = int((1*60*60*10.5)) #10:30am
+        print(f"announcementtime={announcementtime}")
+        timeuntilannounce = announcementtime - currenttimeofday
+        await asyncio.sleep(int(timeuntilannounce)) #timer
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         print(noqueueplayers)
         #don't turn this on until the bot is not relaunching often
         await send_message(f"You have no action queued! You can queue an action with a slash command!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=noqueueplayers)
+        await asyncio.sleep(int(1*60*60*48)) #timer
 
 
 async def lastactiontime(authorid):
