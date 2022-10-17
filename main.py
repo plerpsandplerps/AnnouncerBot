@@ -78,6 +78,7 @@ async def on_ready():
                json.dump(poison,h, indent=4)
         else:
             print("hi")
+            await asyncio.sleep(int(60*60*24))
             #await channel.send(f"I have awoken! \nThe next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
     else:
         smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
@@ -302,7 +303,7 @@ async def queuenext(ctx):
 
     return
 
-async def queuenexttarget(ctx, actiontargetid):
+async def queuenexttarget(ctx, actiontargetid, *argv):
     players = await getplayerdata()
     #separate strings for printing to player and what we use (id)
     saveaction = f"{ctx.data.name} {actiontargetid}"
@@ -1087,7 +1088,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
         elif DelayDate_pull > current_time:
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,targetid,readyitem)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You exchange!",ephemeral=True)
