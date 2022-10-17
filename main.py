@@ -42,9 +42,12 @@ async def on_ready():
     pp.pprint(membersdict)
     print(type(membersdict))
     print("membersdictpost")
-    membersdict = {str(k): v for k, v in membersdict.items()}
+    #membersdict = {str(k): v for k, v in membersdict.items()}
     pp.pprint(membersdict)
     print(type(membersdict))
+    #myNewDict = {Snowflake.id:{'username': Snowflake['member']['username']} for Snowflake in membersdict if not Snowflake['member']['bot']}
+    #pp.pprint(myNewDict)
+    #print(type(myNewDict))
     #with open("playersbackup.json","w") as n:
     #    json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
@@ -386,7 +389,7 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
                 displayactionold = words[0] + " " + words[1]
         await ctx.send(f"You already have a queued action:\n**{displayactionold}**\n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral = True)
     else:
-        await ctx.send(f"Next action:\n**{displayaction}**", ephemeral = True)
+        await ctx.send(f"Next action:\n**{displayactionnew}**", ephemeral = True)
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
     players[ctx.author.id]["Nextaction"]=saveaction
