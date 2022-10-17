@@ -518,11 +518,11 @@ async def dolightattack(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+        Equippedinventory_pull = players[str(authorid)]["Equippedinventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(0, 10)
         critdmg = max(critroll-9,0)*950
-        damage = 800 + damageroll + (UsedInventory_pull.count("drinkingmedal") * 420)+ critdmg
+        damage = 800 + damageroll + (Equippedinventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -1809,7 +1809,7 @@ async def dodrinkingmedal(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingmedal','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"drinkingmedal"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1863,7 +1863,7 @@ async def dogoodiebag(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"goodiebag"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1910,7 +1910,7 @@ async def dotractor(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        tractor','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"tractor"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1960,7 +1960,7 @@ async def dobeerbando(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        beerbando','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"beerbando"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -2008,7 +2008,7 @@ async def doaimtrain(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aimtraining','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"aimtraining"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -2056,7 +2056,7 @@ async def docrookedabacus(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        crookedabacus','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"crookedabacus"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -2104,7 +2104,7 @@ async def doadventuringgear(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        adventuringgear','',1)
-    #add the item to the user's usedinventory
+    #add the item to the user's Equippedinventory
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"adventuringgear"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
