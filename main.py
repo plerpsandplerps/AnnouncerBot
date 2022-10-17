@@ -420,7 +420,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
-        players[str(ctx.author.id)]["UsedInventory"] = ""
+        players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
         players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
         players[str(ctx.author.id)]["Lastaction"] = "start"
@@ -434,7 +434,7 @@ async def join_command(ctx: interactions.CommandContext):
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-        UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+        EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         hpmoji = await hpmojiconv(hp_pull)
@@ -442,7 +442,7 @@ async def join_command(ctx: interactions.CommandContext):
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
     else:
@@ -465,7 +465,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = ""
-        players[str(ctx.author.id)]["UsedInventory"] = ""
+        players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
         players[str(ctx.author.id)]["Lastactiontime"] = current_time
         players[str(ctx.author.id)]["Lastaction"] = "start"
@@ -480,14 +480,14 @@ async def join_command(ctx: interactions.CommandContext):
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
         ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-        UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+        EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
         DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         playingroleid=locations["Playing"]["Role_ID"]
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Used:{UsedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
 
@@ -618,7 +618,7 @@ async def donormalattack(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(0, 10)
         critdmg = max(critroll-9,0)*2300
@@ -704,7 +704,7 @@ async def doheavyattack(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = max((basecd*3) - (UsedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
+        cooldown = max((basecd*3) - (EquippedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -717,7 +717,7 @@ async def doheavyattack(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(0, 10)
         critdmg = max(critroll-9,0)*3650
@@ -726,7 +726,7 @@ async def doheavyattack(authorid,targetid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = max((basecd*3) - (UsedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
+        cooldown = max((basecd*3) - (EquippedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
         players[str(authorid)]["DelayDate"] = current_time + cooldown
         DelayDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -1069,7 +1069,7 @@ async def status (ctx: interactions.CommandContext):
     SC_pull = players[str(ctx.author.id)]["SC"]
     Rage_pull = players[str(ctx.author.id)]["Rage"]
     ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-    UsedInventory_pull = players[str(ctx.author.id)]["UsedInventory"]
+    EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
@@ -1088,7 +1088,7 @@ async def status (ctx: interactions.CommandContext):
         displayaction = f"{words}"
     print(displayaction)
     hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
+    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
@@ -1098,14 +1098,14 @@ async def doexchange(authorid, targetid, readyitem):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
-    UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+    EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
     print(f"{targetid} is the player target id")
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "exchange"
-    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + (UsedInventory_pull.count("crookedabacus") * 1)
+    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + (EquippedInventory_pull.count("crookedabacus") * 1)
     await lastactiontime(authorid)
     players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
@@ -1198,12 +1198,12 @@ async def dofarm(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    UsedInventory_pull=players[str(authorid)]["UsedInventory"]
+    EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     Lastaction_pull=players[str(authorid)]["Lastaction"]
-    farmSC = int(random.randint(0, 4)) + (UsedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
+    farmSC = int(random.randint(0, 4)) + (EquippedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
     cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["SC"] = SC_pull
@@ -1329,9 +1329,9 @@ async def dotrade(authorid, itemtarget):
     DelayDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "trade"
     #spend SC and gain abacus money
-    UsedInventory_pull = players[str(authorid)]["UsedInventory"]
+    EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
     cost = shop[str(itemtarget)]["Cost"]
-    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (UsedInventory_pull.count("crookedabacus") * 1)
+    players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (EquippedInventory_pull.count("crookedabacus") * 1)
     #add item to inventory
     players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+itemtarget
     await lastactiontime(authorid)
@@ -1450,7 +1450,7 @@ async def dodrinkingchallenge(authorid):
     else:
         print(f"playerscore is the highscore")
         await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingmedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
-        players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingmedal"
+        players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"drinkingmedal"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
@@ -1505,8 +1505,8 @@ async def doloot(authorid):
     players = await getplayerdata()
     scores = await getdungeondata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
-    UsedInventory_pull=players[str(authorid)]["UsedInventory"]
-    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1)) + (UsedInventory_pull.count("adventuringgear") * 1)
+    EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1)) + (EquippedInventory_pull.count("adventuringgear") * 1)
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
@@ -1735,8 +1735,8 @@ async def dolichitem(authorid, playertarget):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        lichitem','',1)
-    #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"lichitem"
+    #add the item to the user's Equippedinventory
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"lichitem"
     if players[str(targetid)]["Location"] == "Dead":
         players[str(targetid)]["Location"] = "Crossroads"
         with open("players.json","w") as f:
@@ -1810,7 +1810,7 @@ async def dodrinkingmedal(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingmedal','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"drinkingmedal"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"drinkingmedal"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used drinkingmedal to increase their lightattack damage by 420! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -1864,7 +1864,7 @@ async def dogoodiebag(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"goodiebag"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"goodiebag"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used goodiebag to gain a random item! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -1911,7 +1911,7 @@ async def dotractor(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        tractor','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"tractor"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"tractor"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used tractor to increase their farm profit by 1! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -1961,7 +1961,7 @@ async def dobeerbando(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        beerbando','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"beerbando"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"beerbando"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -2009,7 +2009,7 @@ async def doaimtrain(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aimtraining','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"aimtraining"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"aimtraining"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used aimtraining to decrease the time cost of their heavy attacks to 24h! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -2057,7 +2057,7 @@ async def docrookedabacus(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        crookedabacus','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"crookedabacus"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"crookedabacus"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used a crookedabacus to gain a seedcoin whenever they /trade or /exchange for the rest of the game! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -2105,7 +2105,7 @@ async def doadventuringgear(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        adventuringgear','',1)
     #add the item to the user's usedinventory
-    players[str(authorid)]["UsedInventory"]=players[str(authorid)]["UsedInventory"] + "\n        "+"adventuringgear"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"adventuringgear"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used adventuringgear to score one higher whenever they /loot for the rest of the game! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
@@ -2238,7 +2238,7 @@ useitemhelpbutton = interactions.Button(
 @bot.component("useitem")
 async def button_response(ctx):
     row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
-    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
+    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n**Equipped items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 locationhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2321,7 +2321,7 @@ tavernhelpbutton = interactions.Button(
 
 @bot.component("Tavern")
 async def button_response(ctx):
-    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 24h cooldown. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 24h cooldown. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2332,7 +2332,7 @@ itemhelpbutton = interactions.Button(
 @bot.component("Items")
 async def button_response(ctx):
     row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
-    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Used Items.\n**Used items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
+    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n**Equipped items**\nItems you have used in the past that may or may not be providing you a benefit.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 adventuringgearhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,

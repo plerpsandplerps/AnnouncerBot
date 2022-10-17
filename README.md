@@ -77,15 +77,15 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Tavern
   - /drinkingchallenge
-    - 24h. score 1d4. high score: gain a used drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.
+    - 24h. score 1d4. high score: equip a drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.
 
 ## Items
 - Items fall into two broad categories:
   - Ready items
     - Items you can use for benefits that can be instantaneous, duration, or permanent in nature.
-    - When you use a Ready Item it moves to your Used Items.
-  - Used items
-    - Items you have used in the past that may or may not be providing you a benefit.
+    - When you use a Ready Item it moves to your Equipped Items.
+  - Equipped items
+    - Items you have equipped in the past that may or may not be providing you a benefit.
 - The list of items is below.
 
 ### Adventuring Gear
