@@ -1736,7 +1736,6 @@ async def dolichitem(authorid, playertarget):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        lichitem','',1)
     #add the item to the user's Equippedinventory
-    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"lichitem"
     if players[str(targetid)]["Location"] == "Dead":
         players[str(targetid)]["Location"] = "Crossroads"
         with open("players.json","w") as f:
@@ -1961,7 +1960,6 @@ async def dobeerbando(authorid):
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        beerbando','',1)
     #add the item to the user's Equippedinventory
-    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"beerbando"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
