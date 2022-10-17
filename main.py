@@ -312,7 +312,7 @@ async def queuenext(ctx):
         elif words[1] in players:
             await ctx.send(f"You already have a queued action: \n**{words[0]} {players[words[1]]['Username']}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
         elif words[1] in locations:
-            await ctx.send(f"You already have a queued action: \n**{words[0]} {locations[words[1]]['Name']}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
+            await ctx.send(f"You already have a queued action: \n**{words[0]} {words[1]}**\n\nThis has been replaced by:\n**{displayaction}**", ephemeral=True)
     else:
         await ctx.send(f"Next action: {displayaction}", ephemeral=True)
 
