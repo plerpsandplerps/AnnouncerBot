@@ -1010,6 +1010,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
 )
 async def status (ctx: interactions.CommandContext):
     players = await getplayerdata()
+    shop = await getshopdata()
     hp_pull = players[str(ctx.author.id)]["HP"]
     location_pull = players[str(ctx.author.id)]["Location"]
     SC_pull = players[str(ctx.author.id)]["SC"]
@@ -1019,8 +1020,21 @@ async def status (ctx: interactions.CommandContext):
     DelayDate_pull = players[str(ctx.author.id)]["DelayDate"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
+    words = players[ctx.author.id]['Nextaction'].split()
+    displayaction = "displayerror"
+    if len(words) == 1:
+        displayaction = f"{words}"
+    elif words[1] in players:
+        actiontargetid = words[1]
+        displayaction = f"{words[0]} {players[actiontargetid]['Username']}"
+
+        if len(words) == 3:
+            displayaction = displayaction + " " + words[2]
+    elif words[1] in locations:
+        displayaction = f"{words}"
+    print(displayaction)
     hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {Nextaction_pull}", ephemeral = True)
+    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Used:**{UsedInventory_pull} \n**Cooldown:** <t:{DelayDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
@@ -1168,7 +1182,7 @@ async def farm(ctx: interactions.CommandContext):
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
             await ctx.send(f"You farm!",ephemeral=True)
-            await dofarm(ctx.author.id,channelid)
+            await dofarm(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
