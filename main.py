@@ -1063,7 +1063,7 @@ async def status (ctx: interactions.CommandContext):
         displayaction = f"{words}"
     elif words[1] in players:
         actiontargetid = words[1]
-        displayaction = f"{words[0]} {players[actiontargetid]['Username']}"
+        displayaction = f"{words[0]} <@{actiontargetid}>"
         if len(words) == 3:
             displayaction = displayaction + " " + words[2]
     elif words[1] in locations:
