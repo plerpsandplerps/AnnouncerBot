@@ -37,13 +37,16 @@ async def on_ready():
     current_time = int(time.time())
     guild = await interactions.get(bot, interactions.Guild, object_id=guildid)
     memberslist = await guild.get_all_members()
-    print(memberslist)
-    membersdict = [{Member.id: Member for Member in memberslist}]
+    membersdict = {Member.id: Member for Member in memberslist}
     print("membersdict")
     pp.pprint(membersdict)
     print(type(membersdict))
+    print("membersdictpost")
+    membersdict = {str(k): v for k, v in membersdict.items()}
+    pp.pprint(membersdict)
+    print(type(membersdict))
     #with open("playersbackup.json","w") as n:
-    #   json.dump(membersdict,n, indent=4)
+    #    json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollforready())
@@ -336,7 +339,7 @@ async def queuenext(ctx):
 
 async def queuenexttarget(ctx, actiontargetid, *argv):
     players = await getplayerdata()
-    shop = await getshopdata
+    shop = await getshopdata ()
     print(argv)
     print(len(argv))
     #separate strings for printing to player and what we use (id)
@@ -371,13 +374,13 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
                 displayactionold = words[0] + " " + words[1]
         elif words[1] in shop:
                 displayactionold = words[0] + " " + words[1]
-        await ctx.send(f"You already have a queued action:\n**{displayactionold}**\nThis has been replaced by:\n**{displayactionnew}**", ephemeral = True)
+        await ctx.send(f"You already have a queued action:\n**{displayactionold}**\n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral = True)
     else:
         await ctx.send(f"Next action:\n**{displayaction}**", ephemeral = True)
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
     players[ctx.author.id]["Nextaction"]=saveaction
-    await ctx.send(f"You already have a queued action:\n**{displayactionold}** \nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
+    await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
 
