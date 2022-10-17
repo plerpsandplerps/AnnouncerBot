@@ -364,13 +364,16 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
         saveaction = f"{ctx.data.name} {actiontargetid}"
     displayactionnew = "displayerror"
     if actiontargetid in players:
-        displayactionnew = f"{ctx.data.name} <@{actiontargetid}>"
         if len(argv) == 1:
             print("len argv = 1")
             print(argv[0])
             displayactionnew = f"{ctx.data.name} <@{actiontargetid}> {argv[0]}"
+        else:
+            displayactionnew = f"{ctx.data.name} <@{actiontargetid}>"
     #name here is a little misleading, but actiontargetid is actually the destination name in this context
     elif actiontargetid in locations:
+        displayactionnew = saveaction
+    elif actiontargetid in shop:
         displayactionnew = saveaction
     if players[ctx.author.id]["Nextaction"] != "":
         words = players[ctx.author.id]['Nextaction'].split()
@@ -378,22 +381,27 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
         print(f"New action is {displayactionnew}")
         if len(words) == 1:
             displayactionold = words[0]
+            await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
         elif words[1] in players:
-            displayactionold = words[0] + " " + f"<@{words[1]}>"
+
             if len(words) == 3:
                 print(f"words len = 3 {words}")
                 displayactionold = words[0] + " " + f"<@{words[1]}>" + " " + words[2]
+                await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
+            else:
+                displayactionold = words[0] + " " + f"<@{words[1]}>"
+                await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
         elif words[1] in locations:
                 displayactionold = words[0] + " " + words[1]
+                await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
         elif words[1] in shop:
                 displayactionold = words[0] + " " + words[1]
-        await ctx.send(f"You already have a queued action:\n**{displayactionold}**\n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral = True)
+                await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
     else:
         await ctx.send(f"Next action:\n**{displayactionnew}**", ephemeral = True)
     #write and dump the new playerdata
     #TODO combine this dump with into a single dump with the caller functions somehow
     players[ctx.author.id]["Nextaction"]=saveaction
-    await ctx.send(f"You already have a queued action:\n**{displayactionold}** \n\nThis has been replaced by:\n**{displayactionnew}**", ephemeral=True)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
 
