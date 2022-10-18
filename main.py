@@ -141,7 +141,7 @@ async def on_ready():
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
-        f"We've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n \nend content\n"
+        f"\nWe've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n \nend content\n"
     )
 
 async def deadcheck(targethp,targetid,authorid,players):
