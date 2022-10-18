@@ -553,7 +553,7 @@ async def dolightattack(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        Equippedinventory_pull = players[str(authorid)]["Equippedinventory"]
+        Equippedinventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(0, 10)
         critdmg = max(critroll-9,0)*950
