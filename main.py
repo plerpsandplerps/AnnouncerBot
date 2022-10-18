@@ -136,6 +136,8 @@ async def on_ready():
           json.dump(poison,h, indent=4)
         await asyncio.sleep(nextpoisontime-current_time)
 
+
+
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
@@ -238,7 +240,7 @@ async def pollfornext():
                         loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
                     elif words[0] == "use":
-                        loop.create_task(functiondict[words[0]](**{'authorid': k, 'readyitem':words[1]}))
+                        loop.create_task(functiondict[words[1]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in players:
                         if len(words) == 3:
@@ -1099,8 +1101,11 @@ async def status (ctx: interactions.CommandContext):
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     words = players[ctx.author.id]['Nextaction'].split()
+    print(words)
     displayaction = "displayerror"
-    if len(words) == 1:
+    if len(words) == 0:
+        displayaction = "No queued action"
+    elif len(words) == 1:
         displayaction = f"{words}"
     elif words[1] in players:
         actiontargetid = words[1]
@@ -1405,7 +1410,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
 
 @bot.autocomplete("trade", "itemtarget")
 async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    print("tradetest")
+    print("trade")
     shop = await getshopdata()
     itemnames = [v for v in shop.keys()]
     print (itemnames)
@@ -1710,6 +1715,72 @@ async def dobattlelich(authorid):
         return
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+
+async def douse(authorid, readyitem):
+    players = await getplayerdata()
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
+    current_time = int(time.time())
+    loop = asyncio.get_running_loop()
+    loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
+    ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
+    cooldown=basecd*1 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    await lastactiontime(authorid)
+    ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
+    ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
+    players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+
+@bot.command(
+    name="use",
+    description="use or equip an item in your inventory",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="readyitem",
+            description="the item you want to use",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def use(ctx: interactions.CommandContext, readyitem: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    print(f"{readyitem} is the item target")
+    if str(authorid) in players:
+        DelayDate_pull = players[str(authorid)]["DelayDate"]
+        ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+        if ReadyInventory_pull=="":
+            await ctx.send(f"You don't have any items to use in your Inventory!", ephemeral = True)
+        elif DelayDate_pull > current_time:
+            await queuenexttarget(ctx,readyitem)
+            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
+        else:
+            await ctx.send(f"You use an item!",ephemeral=True)
+            await douse(ctx.author.id, readyitem)
+    else:
+        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+
+@bot.autocomplete("use", "readyitem")
+async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
+    print(ReadyInventory_pull)
+    readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
+    print (readyitems)
+    items = readyitems
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value in item
+    ]
+    await ctx.populate(choices)
 
 @bot.command(
     name="battlelich",
