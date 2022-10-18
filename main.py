@@ -146,25 +146,32 @@ async def listen(message: interactions.Message):
 
 async def deadcheck(targethp,targetid,authorid,players):
     print(f"\ndead?:{int(time.time())}")
+    Equippedinventory_pull = players[targetid]["EquippedInventory"]
+    targetlichprot = Equippedinventory_pull.count("lichitem")
     if targethp <= 0:
         print(f"\n the target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-        await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
-        #give dead role
-        await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
-        #remove all location roles and playing roles to hopefully block all commands?
-        await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
-        await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-        #change players.json location to dead
-        players[str(targetid)]["Location"] = "Dead"
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
+            if targetlichprot > 0:
+                targethp = 4200
+                players[targetid]["HP"] = 4200
+                await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their lich item!", channel_id=[general])
+            else:
+                await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
+                #give dead role
+                await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+                #remove all location roles and playing roles to hopefully block all commands?
+                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+                #change players.json location to dead
+                players[str(targetid)]["Location"] = "Dead"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
     else:
         print(f"\n the target didn't die!")
 
@@ -2277,7 +2284,7 @@ lichitemhelpbutton = interactions.Button(
 
 @bot.component("lichitem")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Item**\n15 SC cost\n24 hour cooldown. Set target player's HP to 4200. If the target is dead, resurrect them.", ephemeral=True)
+    await ctx.send(f"**Lich's Item**\n15 SC cost\n48 hour cooldown. The next time you would die, set your HP to 4200 instead.", ephemeral=True)
 
 beerbandohelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
