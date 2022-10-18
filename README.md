@@ -57,7 +57,6 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Dungeon
   - /loot
     - 24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.
-    - not live
 
 ### Farmland
   - /farm
@@ -115,6 +114,10 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 ### Lich's Item
   - /lichitem
     - 48h. The next time you would die, set your HP to 4200 instead.
+
+### Critter? I Hardly Know Her
+  - /lichitem
+    - 48h. increase your crit rolls by 1 for the rest of the game.
 
 ### Beer-bandolier
   - /beerbando
