@@ -2320,7 +2320,7 @@ critterihardlyknowherhelpbutton = interactions.Button(
 
 @bot.component("critterihardlyknowher")
 async def button_response(ctx):
-    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n48 hour cooldown. increase your crit rolls by 1 for the rest of the game.(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)", ephemeral=True)
+    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n48 hour cooldown. increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*", ephemeral=True)
 
 Poisonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
