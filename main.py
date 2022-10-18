@@ -151,27 +151,28 @@ async def deadcheck(targethp,targetid,authorid,players):
     if targethp <= 0:
         print(f"\n the target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-            if targetlichprot > 0:
-                targethp = 4200
-                players[targetid]["HP"] = 4200
-                await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their lich item!", channel_id=[general])
-            else:
-                await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
-                #give dead role
-                await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
-                #remove all location roles and playing roles to hopefully block all commands?
-                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-                #change players.json location to dead
-                players[str(targetid)]["Location"] = "Dead"
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
+        if targetlichprot > 0:
+            players[targetid]["HP"] = 4200
+            #replace first instance of item in user's readyinventory
+            players[str(authorid)]["EquippedInventory"]=Equippedinventory_pull.replace('\n        lichitem','',1)
+            await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
+        else:
+            await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
+            #give dead role
+            await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+            #remove all location roles and playing roles to hopefully block all commands?
+            await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+            await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+            #change players.json location to dead
+            players[str(targetid)]["Location"] = "Dead"
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
     else:
         print(f"\n the target didn't die!")
 
