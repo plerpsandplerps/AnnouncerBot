@@ -269,12 +269,16 @@ async def pollfornext():
                 else:
                     if len(words) == 1:
                         print(f"{v['Username']} is not ready to {words[0]}")
+                    elif words[0] == "use":
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                     elif words[1] in players:
                         if len(words) == 3:
                             print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']} {words[2]}")
                         else:
                             print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
                     elif words[1] in locations:
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                    elif words[1] in shop:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(120)
 
