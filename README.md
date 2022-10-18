@@ -114,7 +114,7 @@ Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties 
 
 ### Lich's Item
   - /lichitem
-    - 24h. set target player's HP to 4200. if the target is dead, resurrect them.
+    - 48h. The next time you would die, set your HP to 4200 instead.
 
 ### Beer-bandolier
   - /beerbando
