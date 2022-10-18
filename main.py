@@ -154,7 +154,7 @@ async def deadcheck(targethp,targetid,authorid,players):
         if targetlichprot > 0:
             players[targetid]["HP"] = 4200
             #replace first instance of item in user's readyinventory
-            players[str(authorid)]["EquippedInventory"]=Equippedinventory_pull.replace('\n        lichitem','',1)
+            players[str(targetid)]["EquippedInventory"]=Equippedinventory_pull.replace('\n        lichitem','',1)
             await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
         else:
             await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
