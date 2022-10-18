@@ -38,5 +38,10 @@
         "Description": "48h. when you would die, set your hp to 4200 instead.",
         "Cost": 15,
         "Role_ID":1018888864355590154
+      },
+    "critterihardlyknowher": {
+        "Description": "48h. increase your crit rolls by 1 for the rest of the game.",
+        "Cost": 6,
+        "Role_ID":1018888864355590154
       }
 }

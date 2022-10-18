@@ -559,7 +559,7 @@ async def dolightattack(authorid,targetid):
         players = await getplayerdata()
         Equippedinventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10)
+        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*950
         damage = 800 + damageroll + (Equippedinventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
@@ -574,7 +574,7 @@ async def dolightattack(authorid,targetid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        if critroll == 10:
+        if critroll >= 10:
             send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
         else:
             print("nocrit")
@@ -659,7 +659,7 @@ async def donormalattack(authorid,targetid):
         players = await getplayerdata()
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10)
+        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*2300
         damage = 2150 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
@@ -674,7 +674,7 @@ async def donormalattack(authorid,targetid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        if critroll == 10:
+        if critroll >= 10:
             send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
         else:
             print("nocrit")
@@ -758,7 +758,7 @@ async def doheavyattack(authorid,targetid):
         players = await getplayerdata()
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10)
+        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*3650
         damage = 3500 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
@@ -773,7 +773,7 @@ async def doheavyattack(authorid,targetid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        if critroll == 10:
+        if critroll >= 10:
             send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
         else:
             print("nocrit")
@@ -1917,6 +1917,29 @@ async def dotractor(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used tractor to increase their farm profit by 1! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
+#critterihardlyknowher is below
+
+async def docritterihardlyknowher(authorid):
+    await rage(authorid)
+    players = await getplayerdata()
+    current_time = int(time.time())
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
+    cooldown=basecd*2 #seconds in one day
+    players[str(authorid)]["DelayDate"] = current_time+cooldown
+    DelayDate_pull=current_time+cooldown
+    players[str(authorid)]["Lastaction"] = "critterihardlyknowher"
+    await lastactiontime(authorid)
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        critterihardlyknowher','',1)
+    #add the item to the user's Equippedinventory
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"critterihardlyknowher"
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used critterihardlyknowher to increase their crit rolls by 1 for the rest of the game!\n(Crit is a 1d10 roll, a 10 or higher is a crit that increases damage by 50%) \n\n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
 #beer-bandolier is below
 
 async def dobeerbando(authorid):
@@ -2112,7 +2135,7 @@ useitemhelpbutton = interactions.Button(
 
 @bot.component("useitem")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
     await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 locationhelpbutton = interactions.Button(
@@ -2206,7 +2229,7 @@ itemhelpbutton = interactions.Button(
 
 @bot.component("Items")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
     await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 adventuringgearhelpbutton = interactions.Button(
@@ -2288,6 +2311,16 @@ beerbandohelpbutton = interactions.Button(
 @bot.component("beerbando")
 async def button_response(ctx):
     await ctx.send(f"**Beer Bandolier**\n3 SC cost\n24 hour cooldown. You gain three rage.", ephemeral=True)
+
+critterihardlyknowherhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Critter? I hardly know her",
+    custom_id="critterihardlyknowher",
+)
+
+@bot.component("critterihardlyknowher")
+async def button_response(ctx):
+    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n48 hour cooldown. increase your crit rolls by 1 for the rest of the game.(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)", ephemeral=True)
 
 Poisonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2669,6 +2702,7 @@ functiondict = {'lightattack' : dolightattack,
                 'loot':doloot,
                 'adventuringgear':doadventuringgear,
                 'goodiebag':dogoodiebag,
+                'critterihardlyknowher':docritterihardlyknowher,
                 'trade':dotrade}
 
 
