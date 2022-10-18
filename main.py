@@ -1810,19 +1810,13 @@ async def battlelich(ctx: interactions.CommandContext):
 
 #lichitem is below
 
-async def dolichitem(authorid, playertarget):
+async def dolichitem(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    print(f"{playertarget} is the player target")
-    for k,v in players.items():
-        if v['Username']==str(playertarget):
-            targetid=k
-    print(f"{targetid} is the player target id")
-    players[str(targetid)]["HP"]=4200
     cooldown=basecd*1 #seconds in one day
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
@@ -1831,21 +1825,14 @@ async def dolichitem(authorid, playertarget):
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user.remove_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        lichitem','',1)
     #add the item to the user's Equippedinventory
-    if players[str(targetid)]["Location"] == "Dead":
-        players[str(targetid)]["Location"] = "Crossroads"
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-    else:
-        players[str(targetid)]["Location"] = players[str(targetid)]["Location"]
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"]+"\n        lichitem"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was affected by a lichitem from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, playertarget])
-    await send_message(f"<@{authorid}> used lichitem on <@{targetid}> to set their hp to 4200! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+    await send_message(f"<@{authorid}> equipped a lichitem to protect themselves from their next death! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
 #drinkingmedal is below
