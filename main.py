@@ -237,7 +237,7 @@ async def pollfornext():
                     if len(words) == 1:
                         loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
-                    elif words[0] == "use"
+                    elif words[0] == "use":
                         loop.create_task(functiondict[words[0]](**{'authorid': k, 'readyitem':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in players:
@@ -444,7 +444,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
         players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
-        players[str(ctx.author.id)]["ReadyInventory"] = ""
+        players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
         players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
         players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
@@ -489,7 +489,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
-        players[str(ctx.author.id)]["ReadyInventory"] = ""
+        players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
         players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["DelayDate"] = current_time
         players[str(ctx.author.id)]["Lastactiontime"] = current_time
