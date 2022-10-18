@@ -35,7 +35,7 @@
       "Role_ID":1018888840531951646
     },
     "lichitem": {
-        "Description": "24h. set target player's HP to 4200.",
+        "Description": "48h. when you would die, set your hp to 4200 instead.",
         "Cost": 15,
         "Role_ID":1018888864355590154
       }

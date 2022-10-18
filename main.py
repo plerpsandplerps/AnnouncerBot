@@ -1729,9 +1729,6 @@ async def douse(authorid, readyitem):
     players[str(authorid)]["DelayDate"] = current_time+cooldown
     DelayDate_pull=current_time+cooldown
     await lastactiontime(authorid)
-    ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
-    players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
 
@@ -1844,49 +1841,6 @@ async def dolichitem(authorid, playertarget):
     await send_message(f"<@{authorid}> used lichitem on <@{targetid}> to set their hp to 4200! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
 
-@bot.command(
-    name="lichitem",
-    description="24h. set target player's HP to 4200. if the target is dead, resurrect them.",
-    scope = guildid,
-    options=[
-        interactions.Option(
-            type=interactions.OptionType.STRING,
-            name="playertarget",
-            description="who you want to set to 4200",
-            required=True,
-            autocomplete=True,
-        )
-    ]
-)
-async def lichitem(ctx: interactions.CommandContext, playertarget: str):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("lichitem") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /lichitem without a lichitem!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the lichitem!",ephemeral=True)
-            await dolichitem(ctx.author.id, playertarget)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
-
-@bot.autocomplete("lichitem", "playertarget")
-async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    players = await getplayerdata()
-    Usernames = [v["Username"] for v in players.values()]
-    print (Usernames)
-    items = Usernames
-    choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
-    ]
-    await ctx.populate(choices)
-
 #drinkingmedal is below
 
 async def dodrinkingmedal(authorid):
@@ -1910,30 +1864,6 @@ async def dodrinkingmedal(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used drinkingmedal to increase their lightattack damage by 420! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
-
-@bot.command(
-    name="drinkingmedal",
-    description="48h. increase the damage of your light attack by 420 for the rest of the game.",
-    scope = guildid,
-)
-
-async def drinkingmedal(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("drinkingmedal") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /drinkingmedal without a drinkingmedal!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the drinkingmedal!",ephemeral=True)
-            await dodrinkingmedal(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #goodiebag is below
 
@@ -1964,30 +1894,6 @@ async def dogoodiebag(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used goodiebag to gain a random item! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
-@bot.command(
-    name="goodiebag",
-    description="24h. add a random ready item to your inventory.",
-    scope = guildid,
-)
-
-async def goodiebag(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("goodiebag") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /goodiebag without a goodiebag!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the goodiebag!",ephemeral=True)
-            await dogoodiebag(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
-
 #tractor is below
 
 async def dotractor(authorid):
@@ -2010,31 +1916,6 @@ async def dotractor(authorid):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used tractor to increase their farm profit by 1! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
-
-
-@bot.command(
-    name="tractor",
-    description="48h. whenever you farm, gain an additional seed coin for the rest of the game.",
-    scope = guildid,
-)
-
-async def tractor(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("tractor") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /tractor without a tractor!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the tractor!",ephemeral=True)
-            await dotractor(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #beer-bandolier is below
 
@@ -2060,31 +1941,6 @@ async def dobeerbando(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
-
-@bot.command(
-    name="beerbando",
-    description="24h. you gain three rage.",
-    scope = guildid,
-)
-
-async def beerbando(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("beerbando") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /beerbando without a beerbando!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the beerbando!",ephemeral=True)
-            await dobeerbando(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
-
 #aimtraining is below
 
 async def doaimtrain(authorid):
@@ -2107,31 +1963,6 @@ async def doaimtrain(authorid):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used aimtraining to decrease the time cost of their heavy attacks to 24h! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
-
-
-@bot.command(
-    name="aimtrain",
-    description="72h. reduce heavy attacks to 24h cooldown. doesn't stack.",
-    scope = guildid,
-)
-
-async def aimtrain(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("aimtraining") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /aimtrain without an aimtraining!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the aimtraining!",ephemeral=True)
-            await doaimtrain(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 #Crooked Abacus is below
 
@@ -2156,31 +1987,6 @@ async def docrookedabacus(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used a crookedabacus to gain a seedcoin whenever they /trade or /exchange for the rest of the game! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
 
-
-@bot.command(
-    name="crookedabacus",
-    description="48h. whenever you exchange or trade, gain a seed coin for the rest of the game.",
-    scope = guildid,
-)
-
-async def crookedabacus(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=ctx.author.id
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("crookedabacus") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /crookedabacus without a crookedabacus!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the crookedabacus!",ephemeral=True)
-            await docrookedabacus(ctx.author.id)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
-
 #adventuringgear is below
 
 async def doadventuringgear(authorid):
@@ -2203,31 +2009,6 @@ async def doadventuringgear(authorid):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used adventuringgear to score one higher whenever they /loot for the rest of the game! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
-
-
-@bot.command(
-    name="adventuringgear",
-    description="48h. increase your loot score by 1 for the rest of the game.",
-    scope = guildid,
-)
-
-async def adventuringgear(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    authorid=str(ctx.author.id)
-    if str(ctx.author.id) in players:
-        DelayDate_pull = players[str(authorid)]["DelayDate"]
-        if str("adventuringgear") not in players[str(authorid)]["ReadyInventory"]:
-            await ctx.send(f"You cannot use /adventuringgear without adventuringgear!", ephemeral=True)  # golive
-        elif DelayDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
-        else:
-            await ctx.send(f"You use the adventuringgear!",ephemeral=True)
-            await doadventuringgear(ctx.author.id, channelid)
-    else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
 
 actionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
