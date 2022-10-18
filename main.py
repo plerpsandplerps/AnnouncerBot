@@ -280,7 +280,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                     elif words[1] in shop:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-        await asyncio.sleep(120)
+        await asyncio.sleep(45)
 
 async def pollforready():
     #run forever
@@ -610,7 +610,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx,targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You light attack!",ephemeral=True)
+            await ctx.send(f"You light attack!\n\nSubmit another action!",ephemeral=True)
             await dolightattack(ctx.author.id,targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -710,7 +710,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
-            await ctx.send(f"You normal attack!",ephemeral=True)
+            await ctx.send(f"You normal attack!\n\nSubmit another action!",ephemeral=True)
             await donormalattack(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -779,6 +779,7 @@ async def doheavyattack(authorid,targetid):
             print("nocrit")
         await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
         await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! \n<@{authorid}> is on cooldown until <t:{DelayDate_pull}>", channel_id=[channelid])
+
 @bot.command(
     name="heavyattack",
     description="72h.6rage. attack a player in your area for 3500 - 3800 damage.",
@@ -808,7 +809,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
-            await ctx.send(f"You heavy attack!",ephemeral=True)
+            await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
             await doheavyattack(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -893,7 +894,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget(ctx, targetid )
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral=True)  # golive
         else:
-            await ctx.send(f"You interrupt!",ephemeral=True)
+            await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
             await dointerrupt(ctx.author.id, targetid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
@@ -944,7 +945,7 @@ async def evade_command(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-            await ctx.send(f"You evade!",ephemeral=True)
+            await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
             await doevade(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -987,7 +988,7 @@ async def rest_command(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True)
         else:
-            await ctx.send(f"You rest!",ephemeral=True)
+            await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
             await dorest(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1035,7 +1036,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
             await queuenexttarget(ctx,destination)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You travel!",ephemeral=True)
+            await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotravelto(ctx.author.id,destination)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1090,7 +1091,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You travel!",ephemeral=True)
+            await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotraveltocrossroads(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1201,7 +1202,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             await queuenexttarget(ctx,targetid,readyitem)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You exchange!",ephemeral=True)
+            await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
             await doexchange(ctx.author.id, targetid,readyitem)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1277,7 +1278,7 @@ async def farm(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You farm!",ephemeral=True)
+            await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
             await dofarm(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1415,7 +1416,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             await queuenexttarget(ctx, itemtarget)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You trade!",ephemeral=True)
+            await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
             await dotrade(ctx.author.id, itemtarget,channelid)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1535,7 +1536,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You drink!",ephemeral=True)
+            await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
             await dodrinkingchallenge(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1644,7 +1645,7 @@ async def loot(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You loot!",ephemeral=True)
+            await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
             await doloot(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1773,7 +1774,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             await queuenexttarget(ctx,readyitem)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You use an item!",ephemeral=True)
+            await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
             await douse(ctx.author.id, readyitem)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
@@ -1808,7 +1809,7 @@ async def battlelich(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You cannot act yet! You are delayed until <t:{DelayDate_pull}>.", ephemeral = True) #golive
         else:
-            await ctx.send(f"You battle the lich!",ephemeral=True)
+            await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
             await dobattlelich(ctx.author.id)
     else:
         await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
