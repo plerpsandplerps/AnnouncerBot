@@ -146,15 +146,15 @@ async def listen(message: interactions.Message):
 
 async def deadcheck(targethp,targetid,authorid,players):
     print(f"\ndead?:{int(time.time())}")
-    Equippedinventory_pull = players[targetid]["EquippedInventory"]
-    targetlichprot = Equippedinventory_pull.count("lichitem")
+    EquippedInventory_pull = players[targetid]["EquippedInventory"]
+    targetlichprot = EquippedInventory_pull.count("lichitem")
     if targethp <= 0:
         print(f"\n the target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
         if targetlichprot > 0:
             players[targetid]["HP"] = 4200
             #replace first instance of item in user's readyinventory
-            players[str(targetid)]["EquippedInventory"]=Equippedinventory_pull.replace('\n        lichitem','',1)
+            players[str(targetid)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
             await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
         else:
             await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
@@ -557,11 +557,11 @@ async def dolightattack(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        Equippedinventory_pull = players[str(authorid)]["EquippedInventory"]
+        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
+        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*950
-        damage = 800 + damageroll + (Equippedinventory_pull.count("drinkingmedal") * 420)+ critdmg
+        damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
@@ -659,7 +659,7 @@ async def donormalattack(authorid,targetid):
         players = await getplayerdata()
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
+        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*2300
         damage = 2150 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
@@ -758,7 +758,7 @@ async def doheavyattack(authorid,targetid):
         players = await getplayerdata()
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (Equippedinventory_pull.count("critterihardlyknowher") * 1)
+        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
         critdmg = max(critroll-9,0)*3650
         damage = 3500 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
