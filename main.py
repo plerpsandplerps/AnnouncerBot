@@ -1119,7 +1119,7 @@ async def status (ctx: interactions.CommandContext):
     if len(words) == 0:
         displayaction = "No queued action"
     elif len(words) == 1:
-        displayaction = f"{words}"
+        displayaction = f"{words[0]}"
     elif words[1] in players:
         actiontargetid = words[1]
         displayaction = f"{words[0]} <@{actiontargetid}>"
