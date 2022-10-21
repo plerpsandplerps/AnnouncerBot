@@ -1845,6 +1845,7 @@ async def dolichitem(authorid):
 
 async def dodrinkingmedal(authorid):
     await rage(authorid)
+    players = await getplayerdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
