@@ -480,6 +480,7 @@ async def join_command(ctx: interactions.CommandContext):
         print(f"Created {ctx.author.id} player in players.json")
         players = await getplayerdata()
         mana_pull = players[str(ctx.author.id)]["Mana"]
+        manamoji = await manamojiconv(mana_pull)
         hp_pull = players[str(ctx.author.id)]["HP"]
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
@@ -493,7 +494,7 @@ async def join_command(ctx: interactions.CommandContext):
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {mana_pull}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
     else:
@@ -529,6 +530,7 @@ async def join_command(ctx: interactions.CommandContext):
         hp_pull = players[str(ctx.author.id)]["HP"]
         hpmoji = await hpmojiconv(hp_pull)
         mana_pull = players[str(ctx.author.id)]["Mana"]
+        manamoji = await manamojiconv(mana_pull)
         location_pull = players[str(ctx.author.id)]["Location"]
         SC_pull = players[str(ctx.author.id)]["SC"]
         Rage_pull = players[str(ctx.author.id)]["Rage"]
@@ -540,7 +542,7 @@ async def join_command(ctx: interactions.CommandContext):
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {mana_pull}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{DelayDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
 
