@@ -1537,7 +1537,7 @@ async def dodrinkingchallenge(authorid):
 
 @bot.command(
     name="drinkingchallenge",
-    description="1mana.score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
+    description="1mana. score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
     scope = guildid,
 )
 async def drinkingchallenge(ctx: interactions.CommandContext):
@@ -1646,7 +1646,7 @@ async def doloot(authorid):
 
 @bot.command(
     name="loot",
-    description="1mana. score 1d4. on high score gain an item at random. lowest score: lose 1/4 of your current health.",
+    description="1mana.score 1d4. on high score gain an item at random. low score: lose 1/4 of your current health.",
     scope = guildid,
 )
 async def loot(ctx: interactions.CommandContext):
