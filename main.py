@@ -1617,10 +1617,10 @@ async def doloot(authorid):
         await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Dungeon"]["Channel_ID"]])
     else:
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got a randomitem." , channel_id=[locations["Dungeon"]["Channel_ID"]])
+        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got a random item." , channel_id=[locations["Dungeon"]["Channel_ID"]])
         shop = await getshopdata()
         randomitem = random.choice(list(shop))
-        await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
+        await send_message(f"<@{authorid}> you gained {randomitem} as a random item.", user_id=[authorid])
         players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1900,7 +1900,7 @@ async def dogoodiebag(authorid):
     #get a randomitem
     shop = await getshopdata()
     randomitem = random.choice(list(shop))
-    await send_message(f"<@{authorid}> you gained {randomitem} as a randomitem.", user_id=[authorid])
+    await send_message(f"<@{authorid}> you gained {randomitem} as a random item.", user_id=[authorid])
     players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+str(randomitem)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
