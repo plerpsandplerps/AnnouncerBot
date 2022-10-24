@@ -24,12 +24,12 @@ basecd = tokens["basecooldown"]
 #channel ids
 general = tokens["generalchannelid"]
 guildid= tokens["guildid"]
-poisonchannel= tokens["poisonchannelid"]
+ligmachannel= tokens["ligmachannelid"]
 
 bot = interactions.Client(token=tokens["token"], intents=interactions.Intents.DEFAULT | interactions.Intents.GUILD_MESSAGE_CONTENT)
 
-#new poison
-#poison to poison.json to keep it consistent between script reboots
+#new ligma
+#ligma to ligma.json to keep it consistent between script reboots
 @bot.event
 async def on_ready():
     print(f"We're online! We've logged in as {bot.me.name}.")
@@ -55,33 +55,33 @@ async def on_ready():
     loop.create_task(pollforready())
     loop.create_task(pollforqueue())
     print(f"Started at {current_time}")
-    poison = await getpoisondata()
-    channel = await interactions.get(bot, interactions.Channel, object_id=poisonchannel)
-    if str("poisondate") in poison:
-        print(f"poison date already exists!")
-        with open("poison.json", "r") as h:
-            poisondate_pull = poison["poisondate"]
-            poisondamage_pull = poison["poisondamage"]
-            poisontimer_pull = poison["poisontimer"]
-        print (f"poison date pulled as {poisondate_pull}, poison timer pulled as {poisontimer_pull}, and poisondamage pulled as {poisondamage_pull}")
-        if poisondate_pull < current_time :
-            poisontimer_pull=max(math.ceil(poisontimer_pull*.9),basecd)
-            nextpoisontime=int(current_time+poisontimer_pull)
-            print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} days till next poison")
+    ligma = await getligmadata()
+    channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
+    if str("ligmadate") in ligma:
+        print(f"ligma date already exists!")
+        with open("ligma.json", "r") as h:
+            ligmadate_pull = ligma["ligmadate"]
+            ligmadamage_pull = ligma["ligmadamage"]
+            ligmatimer_pull = ligma["ligmatimer"]
+        print (f"ligma date pulled as {ligmadate_pull}, ligma timer pulled as {ligmatimer_pull}, and ligmadamage pulled as {ligmadamage_pull}")
+        if ligmadate_pull < current_time :
+            ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
+            nextligmatime=int(current_time+ligmatimer_pull)
+            print(f"{ligmadamage_pull} ligma damage at {nextligmatime} and {ligmatimer_pull} days till next ligma")
             players = await getplayerdata ()
             print ("before")
             print (players)
-            players = {key:{key2:value2-poisondamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+            players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
             print ("after")
             print (players)
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe poison timer decreases by 10%! \nThe next poison damage occurs on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
-            poison["poisondate"] = nextpoisontime
-            poison["poisondamage"] = poisondamage_pull
-            poison["poisontimer"] = poisontimer_pull
-            with open("poison.json","w") as h:
-               json.dump(poison,h, indent=4)
+            await channel.send(f"Ligma damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma timer decreases by 10%! \nThe next ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
+            ligma["ligmadate"] = nextligmatime
+            ligma["ligmadamage"] = ligmadamage_pull
+            ligma["ligmatimer"] = ligmatimer_pull
+            with open("ligma.json","w") as h:
+               json.dump(ligma,h, indent=4)
         else:
             print("hi")
             currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
@@ -94,47 +94,47 @@ async def on_ready():
                 await asyncio.sleep(int(timeuntilannounce+86400))
             else:
                 await asyncio.sleep(int(timeuntilannounce))
-            await channel.send(f"The next poison comes <t:{poisondate_pull}> ({int(poisondate_pull-current_time)} seconds) to deal {int(poisondamage_pull+100)} damage.")
+            await channel.send(f"The next ligma comes <t:{ligmadate_pull}> ({int(ligmadate_pull-current_time)} seconds) to deal {int(ligmadamage_pull+100)} damage.")
     else:
-        smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank poison.json
+        smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank ligma.json
         smalltimeunit="days" #set to days on golive
         firstcountdown=int(7*smalltime)
-        nextpoisontime=current_time+firstcountdown
-        poison = {}
-        poison["poisondate"] = nextpoisontime
-        poison["firstpoisondate"] = nextpoisontime
-        poison["poisondamage"] = 650
-        poison["poisontimer"] = firstcountdown
-        poisondamage_pull = poison["poisondamage"]
-        poisontimer_pull = firstcountdown
-        with open("poison.json","w") as h:
-            json.dump(poison,h, indent=4)
-        poison = await getpoisondata()
-        poisondate_pull = poison["poisondate"]
-        poisondamage_pull = poison["poisondamage"]
-        poisontimer_pull = poison["poisontimer"]
-        await channel.send(f"The first poison damage occurs on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
-    await asyncio.sleep(int(poisondate_pull-current_time))
-    while poisondamage_pull < 500000:
-        poisondamage_pull= min(poison["poisondamage"] +100, 1500)
-        poisontimer_pull=max(math.ceil(poisontimer_pull*.9),basecd)
-        nextpoisontime=int(current_time+poisontimer_pull)
-        print(f"{poisondamage_pull} poison damage at {nextpoisontime} and {poisontimer_pull} seconds till next poison")
-        await channel.send(f"Poison damage increased by 100 then dealt **{poisondamage_pull} damage** to everyone! \nThe time between poison damage decreases by 10%! \nThe next poison damage occurs on <t:{nextpoisontime}> (in {poisontimer_pull} seconds) to deal {min(poisondamage_pull +100, 1500)} damage." )
+        nextligmatime=current_time+firstcountdown
+        ligma = {}
+        ligma["ligmadate"] = nextligmatime
+        ligma["firstligmadate"] = nextligmatime
+        ligma["ligmadamage"] = 650
+        ligma["ligmatimer"] = firstcountdown
+        ligmadamage_pull = ligma["ligmadamage"]
+        ligmatimer_pull = firstcountdown
+        with open("ligma.json","w") as h:
+            json.dump(ligma,h, indent=4)
+        ligma = await getligmadata()
+        ligmadate_pull = ligma["ligmadate"]
+        ligmadamage_pull = ligma["ligmadamage"]
+        ligmatimer_pull = ligma["ligmatimer"]
+        await channel.send(f"The first ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
+    await asyncio.sleep(int(ligmadate_pull-current_time))
+    while ligmadamage_pull < 500000:
+        ligmadamage_pull= min(ligma["ligmadamage"] +100, 1500)
+        ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
+        nextligmatime=int(current_time+ligmatimer_pull)
+        print(f"{ligmadamage_pull} ligma damage at {nextligmatime} and {ligmatimer_pull} seconds till next ligma")
+        await channel.send(f"Ligma damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe time between ligma damage decreases by 10%! \nThe next ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
         players = await getplayerdata ()
         print ("before")
         print (players)
-        players = {key:{key2:value2-poisondamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+        players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
         print ("after")
         print (players)
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
-        poison["poisondate"] = nextpoisontime
-        poison["poisondamage"] = poisondamage_pull
-        poison["poisontimer"] = poisontimer_pull
-        with open("poison.json","w") as h:
-          json.dump(poison,h, indent=4)
-        await asyncio.sleep(nextpoisontime-current_time)
+        ligma["ligmadate"] = nextligmatime
+        ligma["ligmadamage"] = ligmadamage_pull
+        ligma["ligmatimer"] = ligmatimer_pull
+        with open("ligma.json","w") as h:
+          json.dump(ligma,h, indent=4)
+        await asyncio.sleep(nextligmatime-current_time)
 
 
 
@@ -214,11 +214,11 @@ async def getbountydata():
         bounties = json.load(g)
     return bounties
 
-#pulls poison.json into dict
-async def getpoisondata():
-    with open("poison.json","r") as h:
-        poison = json.load(h)
-    return poison
+#pulls ligma.json into dict
+async def getligmadata():
+    with open("ligma.json","r") as h:
+        ligma = json.load(h)
+    return ligma
 
 async def gettaverndata():
     with open("tavern.json","r") as j:
@@ -443,13 +443,13 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
 async def join_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     bounties = await getbountydata()
-    poison = await getpoisondata()
+    ligma = await getligmadata()
     if str(ctx.author.id) in players:
         print("player exists")
         await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
         return False
-    elif  poison["firstpoisondate"] < int(time.time()) : #players who join late get reduced HP and SC
-        print("player doesn't exist and first poison date has occurred")
+    elif  ligma["firstligmadate"] < int(time.time()) : #players who join late get reduced HP and SC
+        print("player doesn't exist and first ligma date has occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
@@ -492,13 +492,13 @@ async def join_command(ctx: interactions.CommandContext):
         hpmoji = await hpmojiconv(hp_pull)
         playingroleid=locations["Playing"]["Role_ID"]
         row = interactions.ActionRow(
-        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
+        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
     )
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{ReadyDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
     else:
-        print("player doesn't exist and first poison date has not occurred")
+        print("player doesn't exist and first ligma date has not occurred")
         current_time = int(time.time())
         await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
         await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
@@ -540,7 +540,7 @@ async def join_command(ctx: interactions.CommandContext):
         Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
         playingroleid=locations["Playing"]["Role_ID"]
         row = interactions.ActionRow(
-        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
+        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
     )
         await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{ReadyDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
@@ -2339,15 +2339,15 @@ critterihardlyknowherhelpbutton = interactions.Button(
 async def button_response(ctx):
     await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n2 mana. increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*", ephemeral=True)
 
-Poisonhelpbutton = interactions.Button(
+Ligmahelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
-    label="Poison",
-    custom_id="Poison",
+    label="Ligma",
+    custom_id="Ligma",
 )
 
-@bot.component("Poison")
+@bot.component("Ligma")
 async def button_response(ctx):
-    await ctx.send(f"**Poison**\n\nWhen the game starts A 7 day poison timer starts and the poison damage is set to 650.\n\n Whenever the poison timer ends, the poison damage increases by 100 then every player is damaged by the poison.\n\n Then the poison timer restarts with 10% less time.", ephemeral=True)
+    await ctx.send(f"**Ligma**\n\nWhen the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\n Whenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\n Then the ligma timer restarts with 10% less time.", ephemeral=True)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2368,7 +2368,7 @@ async def help(ctx: interactions.CommandContext,):
     current_time = int(time.time())
     channelid=ctx.channel_id
     row = interactions.ActionRow(
-    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Poisonhelpbutton, Ragehelpbutton ]
+    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
 )
     await ctx.send(f"What would you like help with?", components = row, ephemeral = True)
 
