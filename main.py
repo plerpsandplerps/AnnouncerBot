@@ -455,6 +455,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["HP"] = 10000
         players[str(ctx.author.id)]["SC"] = 10
+        players[str(ctx.author.id)]["Mana"] = 3
         players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
         players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
