@@ -194,6 +194,14 @@ async def hpmojiconv(hp):
     hpmoji = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")
     return hpmoji
 
+#manamojiconv
+async def manamojiconv(mana):
+    players = await getplayerdata()
+    numofbluesq = math.floor(mana/1)
+    numofpurpsq = math.floor((3-mana)/1)
+    manamoji = str(numofgreensqs*":blue_square:")+str(numofpurpsq*":purple_square:")
+    return manamoji
+
 #pulls player.json into dict
 async def getplayerdata():
     with open("players.json","r") as f:
@@ -332,6 +340,8 @@ async def pollforqueue():
 async def lastactiontime(authorid):
     players = await getplayerdata()
     players[str(authorid)]["Lastactiontime"]=int(time.time())
+    with open("players.json","w") as f:
+        json.dump(rageplayers,f, indent=4)
     return players
 
 async def send_message(message : str, **kwargs):
