@@ -587,7 +587,7 @@ async def dolightattack(authorid,targetid):
 
 @bot.command(
     name="lightattack",
-    description="24h.1rage. attack a player in your area for 800 - 1100 damage.",
+    description="1mana.1rage. attack a player in your area for 800 - 1100 damage.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -687,7 +687,7 @@ async def donormalattack(authorid,targetid):
 
 @bot.command(
     name="normalattack",
-    description="48h.3rage. attack a player in your area for 2150 - 2450 damage.",
+    description="2mana.3rage. attack a player in your area for 2150 - 2450 damage.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -786,7 +786,7 @@ async def doheavyattack(authorid,targetid):
 
 @bot.command(
     name="heavyattack",
-    description="72h.6rage. attack a player in your area for 3500 - 3800 damage.",
+    description="3mana.6rage. attack a player in your area for 3500 - 3800 damage.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -871,7 +871,7 @@ async def dointerrupt(authorid,targetid):
 
 @bot.command(
     name="interrupt",
-    description="24h. hit a player in your area for 4200 if they are resting or evading.",
+    description="1mana. hit a player in your area for 4200 if they are resting or evading.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -936,7 +936,7 @@ async def doevade(authorid):
 
 @bot.command(
     name="evade",
-    description="24h. receive no damage from light normal or heavy attacks",
+    description="1mana. receive no damage from light normal or heavy attacks",
     scope = guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
@@ -976,7 +976,7 @@ async def dorest(authorid):
 
 @bot.command(
     name="rest",
-    description="24h. heal half your missing health rounded up unless you rested last action.",
+    description="1mana. heal half your missing health rounded up unless you rested last action.",
     scope = guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
@@ -1017,7 +1017,7 @@ async def dotravelto(authorid,destination):
 
 @bot.command(
     name="travelto",
-    description="24h. travel to any location from the crossroads .",
+    description="1mana. travel to any location from the crossroads .",
     scope = guildid,
     options=[
         interactions.Option(
@@ -1082,7 +1082,7 @@ async def dotraveltocrossroads(authorid):
 
 @bot.command(
     name="traveltocrossroads",
-    description="24h. travel to the crossroads from any location.",
+    description="1mana. travel to the crossroads from any location.",
     scope = guildid,
 )
 async def traveltocrossroads(ctx: interactions.CommandContext):
@@ -1166,7 +1166,7 @@ async def doexchange(authorid, targetid, readyitem):
 
 @bot.command(
     name="exchange",
-    description="24h. give a player in your area a ready item from your inventory.",
+    description="1mana. give a player in your area a ready item from your inventory.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -1266,7 +1266,7 @@ async def dofarm(authorid):
 
 @bot.command(
     name="farm",
-    description="24h. roll 1d4 gain that many seed coins.",
+    description="1mana. roll 1d4 gain that many seed coins.",
     scope = guildid,
 )
 async def farm(ctx: interactions.CommandContext):
@@ -1319,7 +1319,7 @@ async def doaid(authorid, playertarget):
 
 @bot.command(
     name="aid",
-    description="24h. heal chosen player 1/4 of their missing health.",
+    description="1mana. heal chosen player 1/4 of their missing health.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -1390,7 +1390,7 @@ async def dotrade(authorid, itemtarget):
 
 @bot.command(
     name="trade",
-    description="24h. exchange seed coins for a shop item.",
+    description="1mana. exchange seed coins for a shop item.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -1525,7 +1525,7 @@ async def dodrinkingchallenge(authorid):
 
 @bot.command(
     name="drinkingchallenge",
-    description="24h.score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
+    description="1mana.score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
     scope = guildid,
 )
 async def drinkingchallenge(ctx: interactions.CommandContext):
@@ -1634,7 +1634,7 @@ async def doloot(authorid):
 
 @bot.command(
     name="loot",
-    description="24h. score 1d4. on high score gain an item at random. lowest score: lose 1/4 of your current health.",
+    description="1mana. score 1d4. on high score gain an item at random. lowest score: lose 1/4 of your current health.",
     scope = guildid,
 )
 async def loot(ctx: interactions.CommandContext):
@@ -1751,7 +1751,7 @@ async def douse(authorid, readyitem):
 
 @bot.command(
     name="use",
-    description="use or equip an item in your inventory",
+    description="Xmana. use or equip an item in your inventory",
     scope = guildid,
     options=[
         interactions.Option(
@@ -1798,7 +1798,7 @@ async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 @bot.command(
     name="battlelich",
-    description="24h. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.",
+    description="1mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.",
     scope = guildid,
 )
 async def battlelich(ctx: interactions.CommandContext):
@@ -2047,7 +2047,7 @@ actionhelpbutton = interactions.Button(
 @bot.component("Actions")
 async def button_response(ctx):
     row = interactions.spread_to_rows(joinhelpbutton, lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
-    await ctx.send(f"**Actions**\nActions are what players do!\n\nTo get started take the **/join** action!\n\nMost actions place players on a cooldown (such as 24hours). The player can't take any actions that would place them on cooldown until they are off cooldown.\n\nWhen you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.\n\nFind out more:", components=row, ephemeral=True)
+    await ctx.send(f"**Actions**\nActions are what players do!\n\nTo get started take the **/join** action!\n\nMost actions cost mana. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
 
 joinhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2067,7 +2067,7 @@ lightattackhelpbutton = interactions.Button(
 
 @bot.component("Lightattack")
 async def button_response(ctx):
-    await ctx.send(f"**Light Attack**\n/lightattack\n 24h cooldown. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
+    await ctx.send(f"**Light Attack**\n/lightattack\n 1 mana. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
 
 normalattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2077,7 +2077,7 @@ normalattackhelpbutton = interactions.Button(
 
 @bot.component("Normalattack")
 async def button_response(ctx):
-    await ctx.send(f"**Normal Attack**\n/normalattack\n 48h cooldown. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
+    await ctx.send(f"**Normal Attack**\n/normalattack\n 2 mana. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2087,7 +2087,7 @@ heavyattackhelpbutton = interactions.Button(
 
 @bot.component("Heavyattack")
 async def button_response(ctx):
-    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 72h cooldown. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
+    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 3 mana. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
 
 interrupthelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2097,7 +2097,7 @@ interrupthelpbutton = interactions.Button(
 
 @bot.component("Interrupt")
 async def button_response(ctx):
-    await ctx.send(f"**Interrupt**\n/interrupt\n 24h cooldown. hit a player in your area for 4200 if they are resting or evading.", ephemeral=True)
+    await ctx.send(f"**Interrupt**\n/interrupt\n 1 mana. hit a player in your area for 4200 if they are resting or evading.", ephemeral=True)
 
 
 evadehelpbutton = interactions.Button(
@@ -2108,7 +2108,7 @@ evadehelpbutton = interactions.Button(
 
 @bot.component("Evade")
 async def button_response(ctx):
-    await ctx.send(f"**Evade**\n/evade\n 24h cooldown. Receive no damage from light, normal, or heavy attacks while you are on cooldown from evading.", ephemeral=True)
+    await ctx.send(f"**Evade**\n/evade\n 1 mana. Receive no damage from light, normal, or heavy attacks while you are on cooldown from evading.", ephemeral=True)
 
 
 resthelpbutton = interactions.Button(
@@ -2119,7 +2119,7 @@ resthelpbutton = interactions.Button(
 
 @bot.component("Rest")
 async def button_response(ctx):
-    await ctx.send(f"**Rest**\n/rest\n 24h cooldown. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
+    await ctx.send(f"**Rest**\n/rest\n 1 mana. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
