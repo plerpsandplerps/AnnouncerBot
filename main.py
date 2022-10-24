@@ -2162,7 +2162,7 @@ crossroadshelpbutton = interactions.Button(
 
 @bot.component("Crossroads")
 async def button_response(ctx):
-    await ctx.send(f"**Crossroads**\n/exchange\n 24h cooldown. give a player in your area a ready item from your inventory.", ephemeral=True)
+    await ctx.send(f"**Crossroads**\n/exchange\n 1 mana. give a player in your area a ready item from your inventory.", ephemeral=True)
 
 dungeonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2172,7 +2172,7 @@ dungeonhelpbutton = interactions.Button(
 
 @bot.component("Dungeon")
 async def button_response(ctx):
-    await ctx.send(f"**Dungeon**\n/loot\n 24h cooldown. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
+    await ctx.send(f"**Dungeon**\n/loot\n 1 mana. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
 
 farmlandhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2182,7 +2182,7 @@ farmlandhelpbutton = interactions.Button(
 
 @bot.component("Farmland")
 async def button_response(ctx):
-    await ctx.send(f"**Farmland**\n/farm\n 24h cooldown. score 1d4. gain your score seed coins.", ephemeral=True)
+    await ctx.send(f"**Farmland**\n/farm\n 1 mana. score 1d4. gain your score seed coins.", ephemeral=True)
 
 
 keephelpbutton = interactions.Button(
@@ -2193,7 +2193,7 @@ keephelpbutton = interactions.Button(
 
 @bot.component("Keep")
 async def button_response(ctx):
-    await ctx.send(f"**Keep**\n/aid\n 24h cooldown. heal the chosen player 1/4 of their missing health.", ephemeral=True)
+    await ctx.send(f"**Keep**\n/aid\n 1 mana. heal the chosen player 1/4 of their missing health.", ephemeral=True)
 
 
 lichcastlehelpbutton = interactions.Button(
@@ -2204,7 +2204,7 @@ lichcastlehelpbutton = interactions.Button(
 
 @bot.component("lichcastle")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Castle**\n/battlelich\n 24h cooldown. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
+    await ctx.send(f"**Lich's Castle**\n/battlelich\n 1 mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
 
 shophelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2214,7 +2214,7 @@ shophelpbutton = interactions.Button(
 
 @bot.component("Shop")
 async def button_response(ctx):
-    await ctx.send(f"**Shop**\n/trade\n 24h cooldown. exchange seed coins for a shop item.", ephemeral=True)
+    await ctx.send(f"**Shop**\n/trade\n 1 mana. exchange seed coins for a shop item.", ephemeral=True)
 
 tavernhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2224,7 +2224,7 @@ tavernhelpbutton = interactions.Button(
 
 @bot.component("Tavern")
 async def button_response(ctx):
-    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 24h cooldown. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 1 mana. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2245,7 +2245,7 @@ adventuringgearhelpbutton = interactions.Button(
 
 @bot.component("adventuringgear")
 async def button_response(ctx):
-    await ctx.send(f"**Adventuring Gear**\n5 SC cost \n48 hour cooldown. increase your loot score by 1 for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Adventuring Gear**\n5 SC cost \n2 mana. increase your loot score by 1 for the rest of the game.", ephemeral=True)
 
 aimtraininghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2255,7 +2255,7 @@ aimtraininghelpbutton = interactions.Button(
 
 @bot.component("aimtraining")
 async def button_response(ctx):
-    await ctx.send(f"**Aim Training**\n8 SC cost\n72 hour cooldown. Reduce heavy attacks to 24h cooldown for the rest of the game. doesn't stack.", ephemeral=True)
+    await ctx.send(f"**Aim Training**\n8 SC cost\n3 mana. Reduce heavy attacks to 24h cooldown for the rest of the game. doesn't stack.", ephemeral=True)
 
 crookedabacushelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2265,7 +2265,7 @@ crookedabacushelpbutton = interactions.Button(
 
 @bot.component("crookedabacus")
 async def button_response(ctx):
-    await ctx.send(f"**Crooked Abacus**\n5 SC cost\n48 hour cooldown. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Crooked Abacus**\n5 SC cost\n2 mana. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
 
 goodiebaghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2275,7 +2275,7 @@ goodiebaghelpbutton = interactions.Button(
 
 @bot.component("goodiebag")
 async def button_response(ctx):
-    await ctx.send(f"**Goodie Bag**\n8 SC cost\n24 hour cooldown. Add a random ready item to your inventory.", ephemeral=True)
+    await ctx.send(f"**Goodie Bag**\n8 SC cost\n1 mana. Add a random ready item to your inventory.", ephemeral=True)
 
 tractorhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2285,7 +2285,7 @@ tractorhelpbutton = interactions.Button(
 
 @bot.component("tractor")
 async def button_response(ctx):
-    await ctx.send(f"**Tractor**\n5 SC cost\n48 hour cooldown. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Tractor**\n5 SC cost\n2 mana. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
 
 drinkingmedalhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2295,7 +2295,7 @@ drinkingmedalhelpbutton = interactions.Button(
 
 @bot.component("drinkingmedal")
 async def button_response(ctx):
-    await ctx.send(f"**Drinking Medal**\n6 SC cost\n48 hour cooldown. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
+    await ctx.send(f"**Drinking Medal**\n6 SC cost\n2 mana. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
 
 lichitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2305,7 +2305,7 @@ lichitemhelpbutton = interactions.Button(
 
 @bot.component("lichitem")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Item**\n15 SC cost\n48 hour cooldown. The next time you would die, set your HP to 4200 instead.", ephemeral=True)
+    await ctx.send(f"**Lich's Item**\n15 SC cost\n2 mana. The next time you would die, set your HP to 4200 instead.", ephemeral=True)
 
 beerbandohelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2315,7 +2315,7 @@ beerbandohelpbutton = interactions.Button(
 
 @bot.component("beerbando")
 async def button_response(ctx):
-    await ctx.send(f"**Beer Bandolier**\n3 SC cost\n24 hour cooldown. You gain three rage.", ephemeral=True)
+    await ctx.send(f"**Beer Bandolier**\n3 SC cost\n1 mana. You gain three rage.", ephemeral=True)
 
 critterihardlyknowherhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2325,7 +2325,7 @@ critterihardlyknowherhelpbutton = interactions.Button(
 
 @bot.component("critterihardlyknowher")
 async def button_response(ctx):
-    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n48 hour cooldown. increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*", ephemeral=True)
+    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n2 mana. increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*", ephemeral=True)
 
 Poisonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
