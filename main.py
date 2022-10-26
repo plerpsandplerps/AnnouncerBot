@@ -582,7 +582,6 @@ async def dolightattack(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        cooldown = basecd  # seconds in a day
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "lightattack"
         await lastactiontime(authorid)
@@ -603,9 +602,7 @@ async def dolightattack(authorid,targetid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        cooldown = basecd  # seconds in a day
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-        ReadyDate_pull = current_time + cooldown
         players[str(authorid)]["Lastaction"] = "lightattack"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -686,9 +683,7 @@ async def donormalattack(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        cooldown = basecd*2  # seconds in a day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
         players[str(authorid)]["Lastaction"] = "normalattack"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -708,9 +703,7 @@ async def donormalattack(authorid,targetid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        cooldown = basecd  # seconds in a day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
         players[str(authorid)]["Lastaction"] = "normalattack"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -790,9 +783,7 @@ async def doheavyattack(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = max((basecd*3) - (EquippedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -812,9 +803,7 @@ async def doheavyattack(authorid,targetid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        cooldown = max((basecd*3) - (EquippedInventory_pull.count("aimtraining")*2*basecd),basecd)  # seconds in a day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -894,9 +883,7 @@ async def dointerrupt(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - 4200
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
-        cooldown = basecd * 1  # seconds in one day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "interrupt"
         await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
@@ -907,9 +894,7 @@ async def dointerrupt(authorid,targetid):
     else:
         await rage(authorid)
         players = await getplayerdata()
-        cooldown = basecd * 1  # seconds in one day
-        players[str(authorid)]["ReadyDate"] = current_time + cooldown
-        ReadyDate_pull = current_time + cooldown
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "interrupt"
         await lastactiontime(authorid)
         with open("players.json", "w") as f:
@@ -978,11 +963,8 @@ async def doevade(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Evade"] = True
-    cooldown = int(basecd * 1)  # seconds in one days
-    current_time = int(time.time())
-    players[str(authorid)]["ReadyDate"] = current_time + cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "evade"
-    ReadyDate_pull = players[str(authorid)]["ReadyDate"]
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     await send_message(f"<@{authorid}> used evade! ",user_id=[authorid])
@@ -1020,11 +1002,8 @@ async def dorest(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
-    cooldown = int(basecd * 1)  # seconds in one day
-    current_time = int(time.time())
-    players[str(authorid)]["ReadyDate"] = current_time + cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "rest"
-    ReadyDate_pull = players[str(authorid)]["ReadyDate"]
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
     hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
     with open("players.json", "w") as f:
@@ -1040,7 +1019,6 @@ async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
         current_time = int(time.time())
         Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
         cost = 1
@@ -1065,9 +1043,7 @@ async def dotravelto(authorid,destination):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown = basecd * 1  # seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time + cooldown
-    ReadyDate_pull = current_time + cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
     await lastactiontime(authorid)
@@ -1130,9 +1106,7 @@ async def dotraveltocrossroads(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown = basecd * 1  # seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time + cooldown
-    ReadyDate_pull = current_time + cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
     await lastactiontime(authorid)
     players[str(authorid)]["Location"] = "Crossroads"
@@ -1223,9 +1197,7 @@ async def doexchange(authorid, targetid, readyitem):
     EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
     print(f"{targetid} is the player target id")
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "exchange"
     players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + (EquippedInventory_pull.count("crookedabacus") * 1)
     await lastactiontime(authorid)
@@ -1273,7 +1245,6 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
         if v['Username']==str(playertarget):
             targetid=k
     if str(authorid) in players:
-        ReadyDate_pull = players[str(authorid)]["ReadyDate"]
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
         if locations["Crossroads"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)  # golive
@@ -1334,9 +1305,7 @@ async def dofarm(authorid):
     farmSC = int(random.randint(0, 4)) + (EquippedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
     cooldown = basecd * 1  # seconds in one day
-    players[str(authorid)]["SC"] = SC_pull
-    players[str(authorid)]["ReadyDate"] = current_time + cooldown
-    ReadyDate_pull = current_time + cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "farm"
     await lastactiontime(authorid)
     with open("players.json", "w") as f:
@@ -1355,10 +1324,9 @@ async def farm(ctx: interactions.CommandContext):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
-    cost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(authorid) in players:
-        ReadyDate_pull = players[str(authorid)]["ReadyDate"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Farmland"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
@@ -1390,9 +1358,7 @@ async def doaid(authorid, playertarget):
     print(f"{targetid} is the player target id")
     targethp=players[str(targetid)]["HP"]
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "aid"
     await lastactiontime(authorid)
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
@@ -1423,10 +1389,9 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
-    cost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(authorid)]["ReadyDate"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Keep"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
@@ -1464,9 +1429,7 @@ async def dotrade(authorid, itemtarget):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     print(f"{itemtarget} is the player target")
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "trade"
     #spend SC and gain abacus money
     EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
@@ -1503,10 +1466,9 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
     authorid=ctx.author.id
     SC_pull=players[str(authorid)]["SC"]
     cost = shop[str(itemtarget)]["Cost"]
-    manacost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(authorid)]["ReadyDate"]
+        manacost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
         elif players[str(authorid)]["SC"] <= shop[str(itemtarget)]["Cost"]:
@@ -1547,9 +1509,7 @@ async def dodrinkingchallenge(authorid):
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "drinkingchallenge"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1631,10 +1591,9 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    cost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
@@ -1662,9 +1621,7 @@ async def doloot(authorid):
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "loot"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1746,10 +1703,9 @@ async def loot(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    cost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Dungeon"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
@@ -1776,9 +1732,7 @@ async def dobattlelich(authorid):
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     current_time = int(time.time())
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "battlelich"
     await lastactiontime(authorid)
     with open("players.json","w") as f:
@@ -1846,6 +1800,7 @@ async def dobattlelich(authorid):
 
 async def douse(authorid, readyitem):
     players = await getplayerdata()
+    shop = await getshopdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -1853,9 +1808,7 @@ async def douse(authorid, readyitem):
     loop = asyncio.get_running_loop()
     loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[readyitem]["ManaCost"]
     await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -1881,10 +1834,9 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
     channelid=ctx.channel_id
     authorid=ctx.author.id
     print(f"{readyitem} is the item target")
-    cost = shop[readyitem]["ManaCost"]
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(authorid) in players:
-        ReadyDate_pull = players[str(authorid)]["ReadyDate"]
+        cost = shop[readyitem]["ManaCost"]
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
         if ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items to use in your Inventory!", ephemeral = True)
@@ -1923,10 +1875,9 @@ async def battlelich(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    cost = 1
-    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
@@ -1951,9 +1902,7 @@ async def dolichitem(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "lichitem"
     await lastactiontime(authorid)
     targethp=players[str(targetid)]["HP"]
@@ -1979,9 +1928,6 @@ async def dodrinkingmedal(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown=basecd*2 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "drinkingmedal"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2003,9 +1949,6 @@ async def dogoodiebag(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
-    cooldown=basecd*1 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "goodiebag"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2032,9 +1975,6 @@ async def dotractor(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    cooldown=basecd*2 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "tractor"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2055,9 +1995,6 @@ async def docritterihardlyknowher(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    cooldown=basecd*2 #seconds in one day
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "critterihardlyknowher"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2075,9 +2012,6 @@ async def dobeerbando(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown=basecd*1
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "beerbando"
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -2102,9 +2036,6 @@ async def doaimtrain(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    cooldown=basecd*3
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "aimtrain"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2122,12 +2053,9 @@ async def docrookedabacus(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown=basecd*2
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "crookedabacus"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2145,12 +2073,9 @@ async def doadventuringgear(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    cooldown=basecd*2
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    players[str(authorid)]["ReadyDate"] = current_time+cooldown
-    ReadyDate_pull=current_time+cooldown
     players[str(authorid)]["Lastaction"] = "adventuringgear"
     await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
