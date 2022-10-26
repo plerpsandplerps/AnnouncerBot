@@ -297,7 +297,7 @@ async def pollformana():
         print(f"\npolling for mana:{int(time.time())}")
         players = await getplayerdata()
         for k,v in players.items():
-                if v['ManaDate'] < int(time.time()):
+                if v['ManaDate'] < int(time.time()) and v['Location'] != "Dead":
                     #give mana
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['ManaDate'] = v['ManaDate'] + basecd
