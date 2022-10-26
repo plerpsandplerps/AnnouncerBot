@@ -8,6 +8,7 @@ import time
 import math
 import json
 import pprint as pp
+import re
 from typing import List
 
 with open('.gitignore2/config.json', 'r') as cfg:
@@ -42,17 +43,19 @@ async def on_ready():
     pp.pprint(membersdict)
     print(type(membersdict))
     print("membersdictpost")
-    #membersdict = {str(k): v for k, v in membersdict.items()}
-    pp.pprint(membersdict)
+    membersdict = str(membersdict)
+    print(membersdict)
     print(type(membersdict))
-    #myNewDict = {Snowflake.id:{'username': Snowflake['member']['username']} for Snowflake in membersdict if not Snowflake['member']['bot']}
-    #pp.pprint(myNewDict)
-    #print(type(myNewDict))
-    #with open("playersbackup.json","w") as n:
+    membersdict = re.sub(re.escape("Snowflake("),"",membersdict)
+    membersdict = re.sub(re.escape("Member(user=User("),"",membersdict)
+    membersdict = re.sub(re.escape(")"),"",membersdict)
+    print(membersdict)
+    print(type(membersdict))
+    #with open("addplayers.json","w") as n:
     #    json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
-    loop.create_task(pollformangain())
+    loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
     print(f"Started at {current_time}")
@@ -306,13 +309,13 @@ async def pollformanagain():
                         json.dump(players,f, indent=4)
         await asyncio.sleep(45)
 
-async def pollforready():
+async def pollformana():
     #run forever
     while True:
         current_time = int(time.time())
-        currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
+        currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone (eastern)
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*10.5)) #10:30am
+        announcementtime = int((1*60*60*12.8)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -320,12 +323,12 @@ async def pollforready():
             await asyncio.sleep(int(timeuntilannounce+86400))
         else:
             await asyncio.sleep(int(timeuntilannounce))
-        print(f"\npolling for ready:{int(time.time())}")
+        print(f"\npolling for mana:{int(time.time())}")
         players = await getplayerdata()
-        readyplayers = [k for k, v in players.items() if v['ReadyDate'] < int(time.time()) and v['Location'] != "Dead"]
+        readyplayers = [k for k, v in players.items() if v['Mana'] > 0 and v['Location'] != "Dead"]
         print(readyplayers)
         #don't turn this on until the bot is not relaunching often
-        await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
+        await send_message(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*24)) #timer
 
 
@@ -487,6 +490,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
         players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["ReadyDate"] = current_time
+        players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["ManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
         players[str(ctx.author.id)]["Lastaction"] = "start"
@@ -533,6 +537,8 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["Location"] = "Crossroads"
         players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
+        players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
+        players[str(ctx.author.id)]["ManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
         players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["ReadyDate"] = current_time
