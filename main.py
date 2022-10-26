@@ -747,10 +747,15 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
     print(f"{targetid} is the player target id")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        if ReadyDate_pull > current_time:
-            await queuenexttarget(ctx, targetid)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral=True)  # golive
+        cost = 2
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You normal attack!\n\nSubmit another action!",ephemeral=True)
             await donormalattack(ctx.author.id, targetid)
@@ -846,10 +851,15 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     print(f"{targetid} is the player target id")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        if ReadyDate_pull > current_time:
-            await queuenexttarget(ctx, targetid)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral=True)  # golive
+        cost = 3 - min((EquippedInventory_pull.count("aimtraining")),1)
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
             await doheavyattack(ctx.author.id, targetid)
@@ -931,10 +941,15 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
     print(f"{targetid} is the player target id")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        if ReadyDate_pull > current_time:
-            await queuenexttarget(ctx, targetid )
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral=True)  # golive
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
             await dointerrupt(ctx.author.id, targetid)
@@ -981,11 +996,15 @@ async def evade_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        current_time = int(time.time())
-        if ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True)
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
             await doevade(ctx.author.id)
@@ -1024,11 +1043,17 @@ async def rest_command(ctx: interactions.CommandContext):
         ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
         current_time = int(time.time())
         Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
         if Lastaction_pull == "rest":
                 await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True)
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
             await dorest(ctx.author.id)
@@ -1073,10 +1098,15 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
     print(f"{destination} is the destination")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        if ReadyDate_pull > current_time:
-            await queuenexttarget(ctx,destination)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotravelto(ctx.author.id,destination)
@@ -1128,10 +1158,15 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
     current_time = int(time.time())
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        if ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotraveltocrossroads(ctx.author.id)
@@ -1232,6 +1267,8 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
     authorid=ctx.author.id
     print(f"{playertarget} is the player target")
     print(f"{readyitem} is the item target")
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     for k,v in players.items():
         if v['Username']==str(playertarget):
             targetid=k
@@ -1242,9 +1279,13 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)  # golive
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
-        elif ReadyDate_pull > current_time:
-            await queuenexttarget(ctx,targetid,readyitem)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
             await doexchange(ctx.author.id, targetid,readyitem)
@@ -1314,13 +1355,19 @@ async def farm(ctx: interactions.CommandContext):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(authorid) in players:
         ReadyDate_pull = players[str(authorid)]["ReadyDate"]
         if locations["Farmland"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
             await dofarm(ctx.author.id)
@@ -1376,13 +1423,19 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
         ReadyDate_pull = players[str(authorid)]["ReadyDate"]
         if locations["Keep"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)  # golive
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You aid!",ephemeral=True)
             await doaid(ctx.author.id, playertarget,channelid)
@@ -1450,15 +1503,21 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
     authorid=ctx.author.id
     SC_pull=players[str(authorid)]["SC"]
     cost = shop[str(itemtarget)]["Cost"]
+    manacost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
         ReadyDate_pull = players[str(authorid)]["ReadyDate"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
         elif players[str(authorid)]["SC"] <= shop[str(itemtarget)]["Cost"]:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ", ephemeral = True)
-        elif ReadyDate_pull > current_time:
-            await queuenexttarget(ctx, itemtarget)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif manacost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((manacost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
             await dotrade(ctx.author.id, itemtarget,channelid)
@@ -1572,13 +1631,19 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
         ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
         if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
             await dodrinkingchallenge(ctx.author.id)
@@ -1681,13 +1746,19 @@ async def loot(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
         ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
         if locations["Dungeon"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)  # golive
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
             await doloot(ctx.author.id)
@@ -1805,18 +1876,25 @@ async def douse(authorid, readyitem):
 )
 async def use(ctx: interactions.CommandContext, readyitem: str):
     players = await getplayerdata()
+    shop = await getshopdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
     print(f"{readyitem} is the item target")
+    cost = shop[readyitem]["ManaCost"]
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(authorid) in players:
         ReadyDate_pull = players[str(authorid)]["ReadyDate"]
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
         if ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items to use in your Inventory!", ephemeral = True)
-        elif ReadyDate_pull > current_time:
-            await queuenexttarget(ctx,readyitem)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
             await douse(ctx.author.id, readyitem)
@@ -1845,13 +1923,19 @@ async def battlelich(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
     if str(ctx.author.id) in players:
         ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
         if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
-        elif ReadyDate_pull > current_time:
-            await queuenext(ctx)
-            await ctx.send(f"You cannot act yet! You are delayed until <t:{ReadyDate_pull}>.", ephemeral = True) #golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenexttarget(ctx,targetid)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
             await dobattlelich(ctx.author.id)
