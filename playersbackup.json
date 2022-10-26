@@ -1,3 +1,34 @@
 {
-
+    "192697820875194368": {
+        "Username": "Sabrina the Teenage Lich",
+        "Mana": 0,
+        "HP": 5323,
+        "Location": "Crossroads",
+        "SC": 11,
+        "Rage": 1,
+        "InitManaDate": 1666871876,
+        "NextMana": 1666871876,
+        "ReadyInventory": "\n        goodiebag",
+        "EquippedInventory": "",
+        "ReadyDate": 1666871876,
+        "Lastactiontime": 1666814276,
+        "Lastaction": "lightattack",
+        "Nextaction": "lightattack 192697820875194368"
+    },
+    "189920974261583872": {
+        "Username": "The old razzmataz",
+        "Mana": 0,
+        "HP": 10000,
+        "Location": "Crossroads",
+        "SC": 12,
+        "Rage": 1,
+        "InitManaDate": 1666872782,
+        "NextMana": 1666872782,
+        "ReadyInventory": "\n        goodiebag",
+        "EquippedInventory": "",
+        "ReadyDate": 1666872782,
+        "Lastactiontime": 1666815182,
+        "Lastaction": "lightattack",
+        "Nextaction": "lightattack 192697820875194368"
+    }
 }

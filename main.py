@@ -49,10 +49,18 @@ async def on_ready():
     membersdict = re.sub(re.escape("Snowflake("),"",membersdict)
     membersdict = re.sub(re.escape("Member(user=User("),"",membersdict)
     membersdict = re.sub(re.escape(")"),"",membersdict)
-    print(membersdict)
-    print(type(membersdict))
-    #with open("addplayers.json","w") as n:
-    #    json.dump(membersdict,n, indent=4)
+    membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)'\s*,.*?,\s*bot=(\w+),"
+    membersdict = re.findall(membersdictfind, membersdict)
+    membersdict = dict([(a, (b, c)) for a, b, c in membersdict])
+    membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"" } for k, v in membersdict.items() if v[1] != 'True'}
+    players = await getplayerdata()
+    players = membersdict | players
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    #give roles to all members who are not bots
+    #await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
+    #await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
+
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollformanagain())
@@ -359,7 +367,7 @@ async def lastactiontime(authorid):
     players = await getplayerdata()
     players[str(authorid)]["Lastactiontime"]=int(time.time())
     with open("players.json","w") as f:
-        json.dump(rageplayers,f, indent=4)
+        json.dump(players,f, indent=4)
     return players
 
 async def send_message(message : str, **kwargs):
@@ -488,7 +496,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
         players[str(ctx.author.id)]["Rage"] = 0
         players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
-        players[str(ctx.author.id)]["EquippedInventory"] = ""
+        players[str(ctx.author.id)]["EquippedInventory"] = " "
         players[str(ctx.author.id)]["ReadyDate"] = current_time
         players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["NextMana"] = current_time + basecd
@@ -540,7 +548,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["NextMana"] = current_time + basecd
         players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
-        players[str(ctx.author.id)]["EquippedInventory"] = ""
+        players[str(ctx.author.id)]["EquippedInventory"] = " "
         players[str(ctx.author.id)]["ReadyDate"] = current_time
         players[str(ctx.author.id)]["Lastactiontime"] = current_time
         players[str(ctx.author.id)]["Lastaction"] = "start"
