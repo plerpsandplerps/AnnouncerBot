@@ -39,13 +39,7 @@ async def on_ready():
     guild = await interactions.get(bot, interactions.Guild, object_id=guildid)
     memberslist = await guild.get_all_members()
     membersdict = {Member.id: Member for Member in memberslist}
-    print("membersdict")
-    pp.pprint(membersdict)
-    print(type(membersdict))
-    print("membersdictpost")
     membersdict = str(membersdict)
-    print(membersdict)
-    print(type(membersdict))
     membersdict = re.sub(re.escape("Snowflake("),"",membersdict)
     membersdict = re.sub(re.escape("Member(user=User("),"",membersdict)
     membersdict = re.sub(re.escape(")"),"",membersdict)
@@ -54,13 +48,20 @@ async def on_ready():
     membersdict = dict([(a, (b, c)) for a, b, c in membersdict])
     membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"" } for k, v in membersdict.items() if v[1] != 'True'}
     players = await getplayerdata()
-    players = membersdict | players
+    bounty = await getbountydata()
+    print(bounty)
+    print(membersdict)
+    for key in bounty.keys():
+      if key in membersdict.keys():
+        membersdict[key]['SC']+=bounty[key]['SC']
+    newplayers = membersdict | players
     with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    #give roles to all members who are not bots
-    #await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
-    #await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
-
+        json.dump(newplayers,f, indent=4)
+    for key in newplayers.keys():
+        if key not in players.keys():
+            user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
+            await user.add_role(locations["Crossroads"]["Role_ID"], guildid)
+            await user.add_role(locations["Playing"]["Role_ID"], guildid)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollformanagain())
@@ -193,6 +194,7 @@ async def rage(authorid):
     rageplayers = await getplayerdata()
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + ((rageplayers[str(authorid)]["Rage"])*420),10000)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
+    #await send_message(f"You healed {(((rageplayers[str(authorid)]["Rage"])*420),10000))} from :fire:Rage!", user_id=authorid)
     with open("players.json","w") as f:
         json.dump(rageplayers,f, indent=4)
     return
