@@ -52,6 +52,7 @@ async def on_ready():
     #    json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
+    loop.create_task(pollformana())
     loop.create_task(pollforready())
     loop.create_task(pollforqueue())
     print(f"Started at {current_time}")
@@ -191,7 +192,7 @@ async def hpmojiconv(hp):
     numofgreensqs = math.floor(hp/1000)
     numofredsqs = math.floor((10000-hp)/1000)
     yellowsq = math.ceil((hp-(numofgreensqs*1000))/1000)
-    hpmoji = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")
+    hpmoji = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")+f"({max(min((numofgreensqs*1000)+1,10000),0)}-{max(min((numofgreensqs*1000)+999,10000),0)})"
     return hpmoji
 
 #manamojiconv
@@ -199,7 +200,7 @@ async def manamojiconv(mana):
     players = await getplayerdata()
     numofbluesq = math.floor(mana/1)
     numofpurpsq = math.floor((3-mana)/1)
-    manamoji = str(numofgreensqs*":blue_square:")+str(numofpurpsq*":purple_square:")
+    manamoji = str(numofbluesq*":blue_square:")+str(numofpurpsq*":purple_square:")+f"({numofbluesq}/3)"
     return manamoji
 
 #pulls player.json into dict
@@ -290,6 +291,21 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(45)
 
+async def pollformana():
+    #run forever
+    while True:
+        print(f"\npolling for mana:{int(time.time())}")
+        players = await getplayerdata()
+        for k,v in players.items():
+                if v['ManaDate'] < int(time.time()):
+                    #give mana
+                    print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
+                    v['ManaDate'] = v['ManaDate'] + basecd
+                    v['Mana'] = max(v['Mana'] + 1,3)
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+        await asyncio.sleep(45)
+
 async def pollforready():
     #run forever
     while True:
@@ -311,7 +327,6 @@ async def pollforready():
         #don't turn this on until the bot is not relaunching often
         await send_message(f"Your cooldown is over! You are ready to act!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*24)) #timer
-
 
 
 async def pollforqueue():
@@ -472,6 +487,7 @@ async def join_command(ctx: interactions.CommandContext):
         players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
         players[str(ctx.author.id)]["EquippedInventory"] = ""
         players[str(ctx.author.id)]["ReadyDate"] = current_time
+        players[str(ctx.author.id)]["ManaDate"] = current_time + basecd
         players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
         players[str(ctx.author.id)]["Lastaction"] = "start"
         players[str(ctx.author.id)]["Nextaction"] = ""
@@ -494,7 +510,7 @@ async def join_command(ctx: interactions.CommandContext):
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{ReadyDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: :coin:{SC_pull} \nRage: :fire: {Rage_pull} \nInventory: :school_satchel: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: :alarm_clock: <t:{ReadyDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
     else:
@@ -542,7 +558,7 @@ async def join_command(ctx: interactions.CommandContext):
         row = interactions.ActionRow(
         components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
     )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: {SC_pull} \nRage: {Rage_pull} \nInventory: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: <t:{ReadyDate_pull}>", ephemeral = True)
+        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: :coin:{SC_pull} \nRage: :fire: {Rage_pull} \nInventory: :school_satchel: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull} \nCooldown: :alarm_clock: <t:{ReadyDate_pull}>", ephemeral = True)
         await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
         await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
 
@@ -1130,6 +1146,8 @@ async def status (ctx: interactions.CommandContext):
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     words = players[ctx.author.id]['Nextaction'].split()
+    mana_pull = players[str(ctx.author.id)]["Mana"]
+    manamoji = await manamojiconv(mana_pull)
     print(words)
     displayaction = "displayerror"
     if len(words) == 0:
@@ -1147,7 +1165,7 @@ async def status (ctx: interactions.CommandContext):
         displayaction = f"{words}"
     print(displayaction)
     hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji} \n**Location:** {location_pull} \n**SC:** {SC_pull} \n**Rage:** {Rage_pull} \n**Inventory:** \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n**Cooldown:** <t:{ReadyDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
+    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji}\n\n**Mana:** {manamoji}\n\n**Location:** {location_pull} \n\n**SC:** :coin: {SC_pull} \n\n**Rage:** :fire: {Rage_pull} \n\n**Inventory:** :school_satchel: \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n\n**Cooldown:** :alarm_clock: <t:{ReadyDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
