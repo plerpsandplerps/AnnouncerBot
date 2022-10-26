@@ -463,121 +463,6 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
 
     return
 
-@bot.command(
-    name="join",
-    description="join the game!",
-    scope = guildid,
-)
-async def join_command(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    bounties = await getbountydata()
-    ligma = await getligmadata()
-    if str(ctx.author.id) in players:
-        print("player exists")
-        await ctx.send(f"Failed to Join! {ctx.author} already exists as a player! ", ephemeral = True)
-        return False
-    elif  ligma["firstligmadate"] < int(time.time()) : #players who join late get reduced HP and SC
-        print("player doesn't exist and first ligma date has occurred")
-        current_time = int(time.time())
-        await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
-        await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
-        if str(ctx.author.id) in bounties:
-            print("player exists in bounties")
-            bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
-            await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
-        else:
-            print("player doesn't exists in bounties")
-            bounty_pull = 0
-        players[str(ctx.author.id)] = {}
-        players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
-        players[str(ctx.author.id)]["Location"] = "Crossroads"
-        players[str(ctx.author.id)]["HP"] = 10000
-        players[str(ctx.author.id)]["SC"] = 10
-        players[str(ctx.author.id)]["Mana"] = 3
-        players[str(ctx.author.id)]["HP"] = min(10000,min(x["HP"] for x in players.values() if x["Location"] != "Dead")-1000)
-        players[str(ctx.author.id)]["SC"] = min(10,min(x["SC"] for x in players.values() if x["Location"] != "Dead")-1) + bounty_pull
-        players[str(ctx.author.id)]["Rage"] = 0
-        players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
-        players[str(ctx.author.id)]["EquippedInventory"] = " "
-        players[str(ctx.author.id)]["ReadyDate"] = current_time
-        players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
-        players[str(ctx.author.id)]["NextMana"] = current_time + basecd
-        players[str(ctx.author.id)]["Lastactiontime"] = int(time.time())
-        players[str(ctx.author.id)]["Lastaction"] = "start"
-        players[str(ctx.author.id)]["Nextaction"] = ""
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        print(f"Created {ctx.author.id} player in players.json")
-        players = await getplayerdata()
-        mana_pull = players[str(ctx.author.id)]["Mana"]
-        manamoji = await manamojiconv(mana_pull)
-        hp_pull = players[str(ctx.author.id)]["HP"]
-        location_pull = players[str(ctx.author.id)]["Location"]
-        SC_pull = players[str(ctx.author.id)]["SC"]
-        Rage_pull = players[str(ctx.author.id)]["Rage"]
-        ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-        EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        hpmoji = await hpmojiconv(hp_pull)
-        playingroleid=locations["Playing"]["Role_ID"]
-        row = interactions.ActionRow(
-        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
-    )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: :coin:{SC_pull} \nRage: :fire: {Rage_pull} \nInventory: :school_satchel: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull}", ephemeral = True)
-        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads!  \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
-        await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
-    else:
-        print("player doesn't exist and first ligma date has not occurred")
-        current_time = int(time.time())
-        await ctx.author.add_role(locations["Crossroads"]["Role_ID"], guildid)
-        await ctx.author.add_role(locations["Playing"]["Role_ID"], guildid)
-        if str(ctx.author.id) in bounties:
-            print("player exists in bounties")
-            bounty_pull = bounties[str(ctx.author.id)]["Bounty"]
-            await ctx.send(f"{ctx.author} has claimed prior bounties for {bounty_pull}!", ephemeral = True)
-        else:
-            print("player doesn't exists in bounties")
-            bounty_pull = 0
-        players = await getplayerdata()
-        players[str(ctx.author.id)] = {}
-        players[str(ctx.author.id)]["Username"] = str(ctx.author.user)
-        players[str(ctx.author.id)]["Mana"] = 3
-        players[str(ctx.author.id)]["HP"] = 10000
-        players[str(ctx.author.id)]["Location"] = "Crossroads"
-        players[str(ctx.author.id)]["SC"] = 10 + bounty_pull
-        players[str(ctx.author.id)]["Rage"] = 0
-        players[str(ctx.author.id)]["InitManaDate"] = current_time + basecd
-        players[str(ctx.author.id)]["NextMana"] = current_time + basecd
-        players[str(ctx.author.id)]["ReadyInventory"] = "\n        goodiebag"
-        players[str(ctx.author.id)]["EquippedInventory"] = " "
-        players[str(ctx.author.id)]["ReadyDate"] = current_time
-        players[str(ctx.author.id)]["Lastactiontime"] = current_time
-        players[str(ctx.author.id)]["Lastaction"] = "start"
-        players[str(ctx.author.id)]["Nextaction"] = ""
-        print("writing to players.json")
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        print(f"Created {ctx.author.id} player in players.json")
-        hp_pull = players[str(ctx.author.id)]["HP"]
-        hpmoji = await hpmojiconv(hp_pull)
-        mana_pull = players[str(ctx.author.id)]["Mana"]
-        manamoji = await manamojiconv(mana_pull)
-        location_pull = players[str(ctx.author.id)]["Location"]
-        SC_pull = players[str(ctx.author.id)]["SC"]
-        Rage_pull = players[str(ctx.author.id)]["Rage"]
-        ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-        EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
-        Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-        playingroleid=locations["Playing"]["Role_ID"]
-        row = interactions.ActionRow(
-        components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
-    )
-        await ctx.send(f"{ctx.author}'s HP: {hpmoji} \nMana: {manamoji}\nLocation: {location_pull} \nSC: :coin:{SC_pull} \nRage: :fire: {Rage_pull} \nInventory: :school_satchel: \n    Ready: {ReadyInventory_pull} \n    Equipped:{EquippedInventory_pull}", ephemeral = True)
-        await ctx.send(f"<@{ctx.author.id}> has entered the fray in the Crossroads! \n\nThey may act immediately!! \n\nBeware <@&{playingroleid}>")
-        await ctx.send(f"**Gameinfo buttons**:", components = row, ephemeral = True)
-
 #light attack is below
 async def dolightattack(authorid,targetid):
     players = await getplayerdata()
@@ -662,7 +547,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You light attack!\n\nSubmit another action!",ephemeral=True)
             await dolightattack(ctx.author.id,targetid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 
 @bot.autocomplete("lightattack", "playertarget")
@@ -763,7 +648,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You normal attack!\n\nSubmit another action!",ephemeral=True)
             await donormalattack(ctx.author.id, targetid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
+        await ctx.send(f"You aren't in the competition!", ephemeral=True)
 
 @bot.autocomplete("normalattack", "playertarget")
 async def normal_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -863,7 +748,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
             await doheavyattack(ctx.author.id, targetid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
+        await ctx.send(f"You aren't in the competition!", ephemeral=True)
 
 
 @bot.autocomplete("heavyattack", "playertarget")
@@ -949,7 +834,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
             await dointerrupt(ctx.author.id, targetid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!", ephemeral=True)
+        await ctx.send(f"You aren't in the competition!", ephemeral=True)
 
 @bot.autocomplete("interrupt", "playertarget")
 async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1001,7 +886,7 @@ async def evade_command(ctx: interactions.CommandContext):
             await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
             await doevade(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #rest is below
 async def dorest(authorid):
@@ -1046,7 +931,7 @@ async def rest_command(ctx: interactions.CommandContext):
             await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
             await dorest(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #travelto
 async def dotravelto(authorid,destination):
@@ -1097,7 +982,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotravelto(ctx.author.id,destination)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 
 @bot.autocomplete("travelto", "destination")
@@ -1155,7 +1040,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             await dotraveltocrossroads(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 @bot.command(
     name="status",
@@ -1271,7 +1156,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
             await doexchange(ctx.author.id, targetid,readyitem)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 
 @bot.autocomplete("exchange", "playertarget")
@@ -1350,7 +1235,7 @@ async def farm(ctx: interactions.CommandContext):
             await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
             await dofarm(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #aid is below
 
@@ -1415,7 +1300,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             await ctx.send(f"You aid!",ephemeral=True)
             await doaid(ctx.author.id, playertarget,channelid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 @bot.autocomplete("aid", "playertarget")
 async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1494,7 +1379,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
             await dotrade(ctx.author.id, itemtarget,channelid)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 @bot.autocomplete("trade", "itemtarget")
 async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1617,7 +1502,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
             await dodrinkingchallenge(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #loot is below
 
@@ -1729,7 +1614,7 @@ async def loot(ctx: interactions.CommandContext):
             await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
             await doloot(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #battlelich is below
 
@@ -1861,7 +1746,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
             await douse(ctx.author.id, readyitem)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 @bot.autocomplete("use", "readyitem")
 async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1901,7 +1786,7 @@ async def battlelich(ctx: interactions.CommandContext):
             await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
             await dobattlelich(ctx.author.id)
     else:
-        await ctx.send(f"You need to join with /join before you can do that!" , ephemeral = True)
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #lichitem is below
 
@@ -2105,18 +1990,9 @@ actionhelpbutton = interactions.Button(
 
 @bot.component("Actions")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(joinhelpbutton, lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
-    await ctx.send(f"**Actions**\nActions are what players do!\n\nTo get started take the **/join** action!\n\nMost actions cost mana. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
+    row = interactions.spread_to_rows(lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
+    await ctx.send(f"**Actions**\nActions are what players do!\n\nMost actions cost mana. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
 
-joinhelpbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
-    label="Join",
-    custom_id="Join",
-)
-
-@bot.component("Join")
-async def button_response(ctx):
-    await ctx.send(f"**Join**\n/Join\nJoin the game!", ephemeral=True)
 
 lightattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
