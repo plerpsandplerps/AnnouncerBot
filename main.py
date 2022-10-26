@@ -52,8 +52,8 @@ async def on_ready():
     #    json.dump(membersdict,n, indent=4)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
+    loop.create_task(pollformangain())
     loop.create_task(pollformana())
-    loop.create_task(pollforready())
     loop.create_task(pollforqueue())
     print(f"Started at {current_time}")
     ligma = await getligmadata()
@@ -291,7 +291,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(45)
 
-async def pollformana():
+async def pollformanagain():
     #run forever
     while True:
         print(f"\npolling for mana:{int(time.time())}")
