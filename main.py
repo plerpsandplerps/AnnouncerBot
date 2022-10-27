@@ -314,7 +314,7 @@ async def pollformanagain():
                     #give mana
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['NextMana'] = v['NextMana'] + basecd
-                    v['Mana'] = max(v['Mana'] + 1,3)
+                    v['Mana'] = min(v['Mana'] + 1,3)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
         await asyncio.sleep(45)
