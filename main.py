@@ -2049,7 +2049,7 @@ actionhelpbutton = interactions.Button(
 @bot.component("Actions")
 async def button_response(ctx):
     row = interactions.spread_to_rows(lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
-    await ctx.send(f"**Actions**\nActions are what players do!\n\nMost actions cost mana. You generate one mana every {(basecd/60/60)} hours. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
+    await ctx.send(f"**Actions**\nActions are what players do!\n\nMost actions cost mana. You generate one mana every {int(basecd/60/60)} hours. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
 
 
 lightattackhelpbutton = interactions.Button(
