@@ -2717,7 +2717,7 @@ async def gamble(ctx: interactions.CommandContext,):
     name="quit",
     description="quit the game",
 )
-async def help(ctx: interactions.CommandContext,):
+async def quit(ctx: interactions.CommandContext,):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
