@@ -5,6 +5,12 @@
       "ManaCost": 3,
       "Role_ID":1018888489120575588
     },
+    "localligmaoutbreak": {
+        "Description": "2 mana. deal the current ligma damage to everyone in your area (including yourself).",
+        "Cost": 5,
+        "ManaCost": 2,
+        "Role_ID":1018888489120575588
+      },
     "adventuringgear": {
         "Description": "2 mana. increase your loot score by 1 for the rest of the game.",
         "Cost": 5,

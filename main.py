@@ -1984,28 +1984,29 @@ async def dobeerbando(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! ", channel_id=[channelid])
 
-#aoeitem is below
+#localligmaoutbreak is below
 
-async def doaoeitem(authorid):
+async def dolocalligmaoutbreak(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    ligma = await getligmadata()
     current_time = int(time.time())
-    players[str(authorid)]["Lastaction"] = "aoeitem"
+    players[str(authorid)]["Lastaction"] = "localligmaoutbreak"
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
-    dmg = 690
+    ligmadamage_pull = ligma["ligmadamage"]
     #damage everyone in the area
     for key in players.keys():
       if key in samelocationUserIDs:
         players[key]['HP'] = players[key]['HP'] - dmg
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
-    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aoeitem','',1)
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        localligmaoutbreak','',1)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used a local ligma outbreak. \n\n\n||LIGMA BALLS|| dealt {poison_damagepull} to @everyone in {location}!!", channel_id=[channelid])
+    await send_message(f"<@{authorid}> used a local ligma outbreak! \n\n\n||LIGMA BALLS|| dealt {ligmadamage_pull} to @everyone in {location}!!", channel_id=[channelid])
 
 #aimtraining is below
 
@@ -2251,7 +2252,7 @@ itemhelpbutton = interactions.Button(
 
 @bot.component("Items")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, localligmaoutbreakhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
     await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 adventuringgearhelpbutton = interactions.Button(
@@ -2263,6 +2264,17 @@ adventuringgearhelpbutton = interactions.Button(
 @bot.component("adventuringgear")
 async def button_response(ctx):
     await ctx.send(f"**Adventuring Gear**\n5 SC cost \n2 mana. increase your loot score by 1 for the rest of the game.", ephemeral=True)
+
+
+localligmaoutbreakhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Local Ligma Outbreak",
+    custom_id="localligmaoutbreak",
+)
+
+@bot.component("localligmaoutbreak")
+async def button_response(ctx):
+    await ctx.send(f"**Local Ligma Outbreak**\n5 SC cost \n2 mana. deal the current ligma damage to everyone in your area (including yourself).", ephemeral=True)
 
 aimtraininghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2725,6 +2737,7 @@ functiondict = {'lightattack' : dolightattack,
                 'adventuringgear':doadventuringgear,
                 'goodiebag':dogoodiebag,
                 'critterihardlyknowher':docritterihardlyknowher,
+                'localligmaoutbreak':dolocalligmaoutbreak,
                 'trade':dotrade}
 
 
