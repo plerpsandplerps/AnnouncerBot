@@ -1245,12 +1245,13 @@ async def dofarm(authorid):
     Lastaction_pull=players[str(authorid)]["Lastaction"]
     farmSC = int(random.randint(1, 4)) + (EquippedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
+    players[str(authorid)]["SC"] = SC_pull #write to players
     cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "farm"
-    await lastactiontime(authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
+    await lastactiontime(authorid)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
     await send_message(f"<@{authorid}> farmed {farmSC} from farming", user_id=[authorid]) #channel_id=[farmland])
     await send_message(f"<@{authorid}> farmed! ", channel_id=[channelid])
