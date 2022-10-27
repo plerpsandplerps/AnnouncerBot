@@ -89,7 +89,7 @@ async def on_ready():
             print (players)
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-            await channel.send(f"Ligma damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma timer decreases by 10%! \nThe next ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
+            await channel.send(f"Oh no a Ligma outbreak! ||LIGMA BALLS|| damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma outbreak timer decreases by 10%! \nThe next ligma outbreak occurs at <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
             ligma["ligmadate"] = nextligmatime
             ligma["ligmadamage"] = ligmadamage_pull
             ligma["ligmatimer"] = ligmatimer_pull
@@ -1983,6 +1983,29 @@ async def dobeerbando(authorid):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! ", channel_id=[channelid])
+
+#aoeitem is below
+
+async def doaoeitem(authorid):
+    await rage(authorid)
+    players = await getplayerdata()
+    current_time = int(time.time())
+    players[str(authorid)]["Lastaction"] = "aoeitem"
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    location = players[str(authorid)]["Location"]
+    channelid = locations[str(location)]["Channel_ID"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
+    dmg = 690
+    #damage everyone in the area
+    for key in players.keys():
+      if key in samelocationUserIDs:
+        players[key]['HP'] = players[key]['HP'] - dmg
+    userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
+    #replace first instance of item in user's readyinventory
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aoeitem','',1)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    await send_message(f"<@{authorid}> used a local ligma outbreak. \n\n\n||LIGMA BALLS|| dealt {poison_damagepull} to @everyone in {location}!!", channel_id=[channelid])
 
 #aimtraining is below
 
