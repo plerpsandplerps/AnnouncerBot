@@ -2061,7 +2061,7 @@ lightattackhelpbutton = interactions.Button(
 
 @bot.component("Lightattack")
 async def button_response(ctx):
-    await ctx.send(f"**Light Attack**\n/lightattack\n 1 mana. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
+    await ctx.send(f"**Light Attack**\n/lightattack\n1 mana. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
 
 normalattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2071,7 +2071,7 @@ normalattackhelpbutton = interactions.Button(
 
 @bot.component("Normalattack")
 async def button_response(ctx):
-    await ctx.send(f"**Normal Attack**\n/normalattack\n 2 mana. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
+    await ctx.send(f"**Normal Attack**\n/normalattack\n2 mana. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2081,7 +2081,7 @@ heavyattackhelpbutton = interactions.Button(
 
 @bot.component("Heavyattack")
 async def button_response(ctx):
-    await ctx.send(f"**Heavy Attack**\n/heavyattack\n 3 mana. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
+    await ctx.send(f"**Heavy Attack**\n/heavyattack\n3 mana. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
 
 interrupthelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2091,7 +2091,7 @@ interrupthelpbutton = interactions.Button(
 
 @bot.component("Interrupt")
 async def button_response(ctx):
-    await ctx.send(f"**Interrupt**\n/interrupt\n 1 mana. hit a player in your area for 4200 if they are resting or evading.", ephemeral=True)
+    await ctx.send(f"**Interrupt**\n/interrupt\n1 mana. hit a player in your area for 4200 if they are resting or evading.", ephemeral=True)
 
 
 evadehelpbutton = interactions.Button(
@@ -2102,7 +2102,7 @@ evadehelpbutton = interactions.Button(
 
 @bot.component("Evade")
 async def button_response(ctx):
-    await ctx.send(f"**Evade**\n/evade\n 1 mana. Receive no damage from light, normal, or heavy attacks for 24h.", ephemeral=True)
+    await ctx.send(f"**Evade**\n/evade\n1 mana. Receive no damage from light, normal, or heavy attacks for 24h.", ephemeral=True)
 
 
 resthelpbutton = interactions.Button(
@@ -2113,7 +2113,7 @@ resthelpbutton = interactions.Button(
 
 @bot.component("Rest")
 async def button_response(ctx):
-    await ctx.send(f"**Rest**\n/rest\n 1 mana. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
+    await ctx.send(f"**Rest**\n/rest\n1 mana. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2156,7 +2156,7 @@ crossroadshelpbutton = interactions.Button(
 
 @bot.component("Crossroads")
 async def button_response(ctx):
-    await ctx.send(f"**Crossroads**\n/exchange\n 1 mana. give a player in your area a ready item from your inventory.", ephemeral=True)
+    await ctx.send(f"**Crossroads**\n/exchange\n1 mana. give a player in your area a ready item from your inventory.", ephemeral=True)
 
 dungeonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2166,7 +2166,7 @@ dungeonhelpbutton = interactions.Button(
 
 @bot.component("Dungeon")
 async def button_response(ctx):
-    await ctx.send(f"**Dungeon**\n/loot\n 1 mana. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
+    await ctx.send(f"**Dungeon**\n/loot\n1 mana. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
 
 farmlandhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2176,7 +2176,7 @@ farmlandhelpbutton = interactions.Button(
 
 @bot.component("Farmland")
 async def button_response(ctx):
-    await ctx.send(f"**Farmland**\n/farm\n 1 mana. score 1d4. gain your score seed coins.", ephemeral=True)
+    await ctx.send(f"**Farmland**\n/farm\n1 mana. score 1d4. gain your score seed coins.", ephemeral=True)
 
 
 keephelpbutton = interactions.Button(
@@ -2187,7 +2187,7 @@ keephelpbutton = interactions.Button(
 
 @bot.component("Keep")
 async def button_response(ctx):
-    await ctx.send(f"**Keep**\n/aid\n 1 mana. heal the chosen player 1/4 of their missing health.", ephemeral=True)
+    await ctx.send(f"**Keep**\n/aid\n1 mana. heal the chosen player 1/4 of their missing health.", ephemeral=True)
 
 
 lichcastlehelpbutton = interactions.Button(
@@ -2198,7 +2198,7 @@ lichcastlehelpbutton = interactions.Button(
 
 @bot.component("lichcastle")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Castle**\n/battlelich\n 1 mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
+    await ctx.send(f"**Lich's Castle**\n/battlelich\n1 mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
 
 shophelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2208,7 +2208,7 @@ shophelpbutton = interactions.Button(
 
 @bot.component("Shop")
 async def button_response(ctx):
-    await ctx.send(f"**Shop**\n/trade\n 1 mana. exchange seed coins for a shop item.", ephemeral=True)
+    await ctx.send(f"**Shop**\n/trade\n1 mana. exchange seed coins for a shop item.", ephemeral=True)
 
 tavernhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2218,7 +2218,7 @@ tavernhelpbutton = interactions.Button(
 
 @bot.component("Tavern")
 async def button_response(ctx):
-    await ctx.send(f"**Tavern**\n/drinkingchallenge\n 1 mana. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+    await ctx.send(f"**Tavern**\n/drinkingchallenge\n1 mana. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2329,7 +2329,7 @@ Ligmahelpbutton = interactions.Button(
 
 @bot.component("Ligma")
 async def button_response(ctx):
-    await ctx.send(f"**Ligma**\n\nWhen the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\n Whenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\n Then the ligma timer restarts with 10% less time.", ephemeral=True)
+    await ctx.send(f"**Ligma**\n\nWhen the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\nWhenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\nThen the ligma timer restarts with 10% less time.", ephemeral=True)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2339,7 +2339,7 @@ Ragehelpbutton = interactions.Button(
 
 @bot.component("Rage")
 async def button_response(ctx):
-    await ctx.send(f"**Rage**\n\n Whenever you take an action, you heal equal to your Rage times 420hp. Then you lose one Rage.", ephemeral=True)
+    await ctx.send(f"**Rage**\n\nWhenever you take an action, you heal equal to your Rage times 420hp. Then you lose one Rage.", ephemeral=True)
 
 @bot.command(
     name="help",
