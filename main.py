@@ -1097,7 +1097,7 @@ async def status (ctx: interactions.CommandContext):
     Rage_pull = players[str(ctx.author.id)]["Rage"]
     ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
     EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
-    if players[str(ctx.author.id)]["ReadyDate"] != ""
+    if players[str(ctx.author.id)]["ReadyDate"] != "":
         ReadyDate_pull = "\\<t:"+players[str(ctx.author.id)]["ReadyDate"]+">"
     else:
         ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
