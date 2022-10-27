@@ -678,7 +678,7 @@ async def doheavyattack(authorid,targetid):
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
@@ -697,7 +697,7 @@ async def doheavyattack(authorid,targetid):
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
@@ -734,7 +734,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     print(f"{targetid} is the player target id")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
-        cost = 3 - min((EquippedInventory_pull.count("aimtraining")),1)
+        cost = 3 - min((EquippedInventory_pull.count("AWP")),1)
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
@@ -2008,9 +2008,9 @@ async def dolocalligmaoutbreak(authorid):
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used a local ligma outbreak! \n\n\n||LIGMA BALLS|| dealt {ligmadamage_pull} to @everyone in {location}!!", channel_id=[channelid])
 
-#aimtraining is below
+#AWP is below
 
-async def doaimtrain(authorid):
+async def doAWP(authorid):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
@@ -2020,12 +2020,12 @@ async def doaimtrain(authorid):
     players[str(authorid)]["Lastaction"] = "aimtrain"
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
-    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aimtraining','',1)
+    players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        AWP','',1)
     #add the item to the user's Equippedinventory
-    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"aimtraining"
+    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"AWP"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used aimtraining to decrease the time cost of their heavy attacks to 24h! ", channel_id=[channelid])
+    await send_message(f"<@{authorid}> needs to pick up a weel gun! \n\nthey have equipped an AWP, to decrease the mana cost of their heavy attacks to 2! ", channel_id=[channelid])
 
 #Crooked Abacus is below
 
@@ -2158,7 +2158,7 @@ useitemhelpbutton = interactions.Button(
 
 @bot.component("useitem")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
     await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 locationhelpbutton = interactions.Button(
@@ -2252,7 +2252,7 @@ itemhelpbutton = interactions.Button(
 
 @bot.component("Items")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, aimtraininghelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, localligmaoutbreakhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, localligmaoutbreakhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
     await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
 
 adventuringgearhelpbutton = interactions.Button(
@@ -2276,13 +2276,13 @@ localligmaoutbreakhelpbutton = interactions.Button(
 async def button_response(ctx):
     await ctx.send(f"**Local Ligma Outbreak**\n5 SC cost \n2 mana. deal the current ligma damage to everyone in your area (including yourself).", ephemeral=True)
 
-aimtraininghelpbutton = interactions.Button(
+AWPhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
-    label="Aim Training",
-    custom_id="aimtraining",
+    label="AWP",
+    custom_id="AWP",
 )
 
-@bot.component("aimtraining")
+@bot.component("AWP")
 async def button_response(ctx):
     await ctx.send(f"**Aim Training**\n8 SC cost\n3 mana. Reduce heavy attack mana cost to two for the rest of the game. doesn't stack.", ephemeral=True)
 
@@ -2731,7 +2731,7 @@ functiondict = {'lightattack' : dolightattack,
                 'drinkingmedal': dodrinkingmedal,
                 'tractor':dotractor,
                 'beerbando':dobeerbando,
-                'aimtraining':doaimtrain,
+                'AWP':doAWP,
                 'crookedabacus':docrookedabacus,
                 'loot':doloot,
                 'adventuringgear':doadventuringgear,

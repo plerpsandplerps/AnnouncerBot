@@ -1,6 +1,6 @@
 {
-  "aimtraining": {
-      "Description": "3 mana. reduce heavy attacks to 24h cooldown. doesn't stack.",
+  "AWP": {
+      "Description": "3 mana. decrease the mana cost of your heavy attacks to 2.",
       "Cost": 8,
       "ManaCost": 3,
       "Role_ID":1018888489120575588
