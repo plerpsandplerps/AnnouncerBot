@@ -194,7 +194,7 @@ async def rage(authorid):
     rageplayers = await getplayerdata()
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + ((rageplayers[str(authorid)]["Rage"])*420),10000)
     ragehealing = ((rageplayers[str(authorid)]["Rage"])*420)
-    await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
+    #await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
     with open("players.json","w") as f:
         json.dump(rageplayers,f, indent=4)
@@ -315,7 +315,7 @@ async def pollformanagain():
                     #give mana
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['NextMana'] = v['NextMana'] + basecd
-                    v['Mana'] = min(v['Mana'] + 1,3)
+                    v['Mana'] = min(v['Mana']+1,3)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
         await asyncio.sleep(45)
@@ -2025,7 +2025,7 @@ async def doAWP(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"AWP"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> needs to pick up a weel gun! \n\nthey have equipped an AWP, to decrease the mana cost of their heavy attacks to 2! ", channel_id=[channelid])
+    await send_message(f"<@{authorid}> needs to pick up a weel gun! \n\nThey have equipped an AWP, to decrease the mana cost of their heavy attacks to 2! ", channel_id=[channelid])
 
 #Crooked Abacus is below
 
