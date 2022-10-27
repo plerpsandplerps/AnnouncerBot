@@ -193,8 +193,9 @@ async def deadcheck(targethp,targetid,authorid,players):
 async def rage(authorid):
     rageplayers = await getplayerdata()
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + ((rageplayers[str(authorid)]["Rage"])*420),10000)
+    ragehealing = ((rageplayers[str(authorid)]["Rage"])*420)
+    await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
-    #await send_message(f"You healed {(((rageplayers[str(authorid)]["Rage"])*420),10000))} from :fire:Rage!", user_id=authorid)
     with open("players.json","w") as f:
         json.dump(rageplayers,f, indent=4)
     return
