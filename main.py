@@ -307,7 +307,7 @@ async def pollfornext():
 async def pollformanagain():
     #run forever
     while True:
-        print(f"\npolling for mana:{int(time.time())}")
+        print(f"\npolling for managain:{int(time.time())}")
         players = await getplayerdata()
         for k,v in players.items():
                 if v['NextMana'] < int(time.time()) and v['Location'] != "Dead":
@@ -560,7 +560,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -660,7 +660,7 @@ async def normal_autocomplete(ctx: interactions.CommandContext, value: str = "")
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -728,6 +728,7 @@ async def doheavyattack(authorid,targetid):
 async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
+    EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
     print(f"{playertarget} is the player target")
     for k, v in players.items():
         if v['Username'] == str(playertarget):
@@ -761,7 +762,7 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -846,7 +847,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -880,7 +881,7 @@ async def evade_command(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
@@ -925,7 +926,7 @@ async def rest_command(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
@@ -976,7 +977,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,destination)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
@@ -992,7 +993,7 @@ async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = "
     items = filter(lambda x: x!="Dead",sameLocationUsernames)
     items = filter(lambda x: x!="Playing",items)
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1034,7 +1035,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
@@ -1150,7 +1151,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,targetid,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
@@ -1169,7 +1170,7 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     print (sameLocationUsernames)
     items = sameLocationUsernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1183,7 +1184,7 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     print (readyitems)
     items = readyitems
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1197,7 +1198,7 @@ async def dofarm(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     Lastaction_pull=players[str(authorid)]["Lastaction"]
-    farmSC = int(random.randint(0, 4)) + (EquippedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
+    farmSC = int(random.randint(1, 4)) + (EquippedInventory_pull.count("tractor") * 1) + (Lastaction_pull.count("farm") * 1)
     SC_pull = players[str(authorid)]["SC"] + farmSC  # +randbuff
     cooldown = basecd * 1  # seconds in one day
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -1229,7 +1230,7 @@ async def farm(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
@@ -1294,7 +1295,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,playertarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You aid!",ephemeral=True)
@@ -1309,7 +1310,7 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (Usernames)
     items = Usernames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1373,7 +1374,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,itemtarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
@@ -1389,7 +1390,7 @@ async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (itemnames)
     items = itemnames
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1399,6 +1400,7 @@ async def dodrinkingchallenge(authorid):
     await rage(authorid)
     players = await getplayerdata()
     scores = await gettaverndata()
+    cooldown = basecd
     Lastaction_pull = players[str(authorid)]["Lastaction"]
     playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1))
     print(f"playerroll = {playerroll}")
@@ -1496,7 +1498,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
@@ -1510,6 +1512,7 @@ async def doloot(authorid):
     await rage(authorid)
     players = await getplayerdata()
     scores = await getdungeondata()
+    cooldown = basecd
     Lastaction_pull = players[str(authorid)]["Lastaction"]
     EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
     playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1)) + (EquippedInventory_pull.count("adventuringgear") * 1)
@@ -1608,7 +1611,7 @@ async def loot(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
@@ -1623,6 +1626,7 @@ async def dobattlelich(authorid):
     players = await getplayerdata()
     scores = await getlichdata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
+    cooldown = basecd
     playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("battlelich") * 1))
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
@@ -1740,7 +1744,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
@@ -1757,7 +1761,7 @@ async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (readyitems)
     items = readyitems
     choices = [
-        interactions.Choice(name=item, value=item) for item in items if value in item
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
 
@@ -1780,7 +1784,7 @@ async def battlelich(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
