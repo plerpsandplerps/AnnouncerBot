@@ -331,7 +331,7 @@ async def pollformana():
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone (eastern)
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*19.17)) #10:30am
+        announcementtime = int((1*60*60*10.5)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -357,7 +357,7 @@ async def pollforqueue():
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*19.49)) #10:30am
+        announcementtime = int((1*60*60*10.5)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
