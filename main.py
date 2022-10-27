@@ -546,7 +546,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
         else:
             await ctx.send(f"You light attack!\n\nSubmit another action!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull- cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -652,7 +652,7 @@ async def normalattack(ctx: interactions.CommandContext, playertarget: str):
         else:
             await ctx.send(f"You normal attack!\n\nSubmit another action!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -758,7 +758,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
         else:
             await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -849,7 +849,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
         else:
             await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -906,7 +906,7 @@ async def evade_command(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -956,7 +956,7 @@ async def rest_command(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1012,7 +1012,7 @@ async def travelto(ctx: interactions.CommandContext, destination: str):
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1075,7 +1075,7 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1196,7 +1196,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
         else:
             await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1281,7 +1281,7 @@ async def farm(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1351,7 +1351,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
         else:
             await ctx.send(f"You aid!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1435,7 +1435,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         else:
             await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - manacost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - manacost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1564,7 +1564,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1682,7 +1682,7 @@ async def loot(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1820,7 +1820,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
         else:
             await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
@@ -1865,7 +1865,7 @@ async def battlelich(ctx: interactions.CommandContext):
         else:
             await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull)
+                manamoji = await manamojiconv(Mana_pull - cost)
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
