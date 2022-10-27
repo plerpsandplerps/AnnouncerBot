@@ -2000,7 +2000,7 @@ async def dolocalligmaoutbreak(authorid):
     #damage everyone in the area
     for key in players.keys():
       if key in samelocationUserIDs:
-        players[key]['HP'] = players[key]['HP'] - dmg
+        players[key]['HP'] = players[key]['HP'] - ligmadamage_pull
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        localligmaoutbreak','',1)
