@@ -2422,7 +2422,7 @@ async def button_response(ctx):
         authorid = ctx.author.id
         await deadcheck(targethp,targetid,authorid,players)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} five health with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2430,7 +2430,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} five health with /gamble!", channel_id=[general], ephemeral=False)
 
 button25hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2452,7 +2452,7 @@ async def button_response(ctx):
         authorid = ctx.author.id
         await deadcheck(targethp,targetid,authorid,players)
         await ctx.send(f"You rolled ribs!", ephemeral=True)
-        await send_message(f"You {tag} twenty-five health!",channel_id=[general], ephemeral=False)
+        await send_message(f"You {tag} twenty-five health with /gamble!",channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2460,7 +2460,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} twenty-five health!", channel_id=[general],ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} twenty-five health with /gamble!", channel_id=[general],ephemeral=False)
 
 button50hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2482,7 +2482,7 @@ async def button_response(ctx):
         authorid = ctx.author.id
         await deadcheck(targethp,targetid,authorid,players)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} fifty health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} fifty health with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2490,7 +2490,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} fifty health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} fifty health with /gamble!", channel_id=[general], ephemeral=False)
 
 
 button75hp = interactions.Button(
@@ -2513,7 +2513,7 @@ async def button_response(ctx):
         authorid = ctx.author.id
         await deadcheck(targethp,targetid,authorid,players)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health!",channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health with /gamble!",channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2521,7 +2521,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health with /gamble!", channel_id=[general], ephemeral=False)
 
 button100hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2543,7 +2543,7 @@ async def button_response(ctx):
         authorid = ctx.author.id
         await deadcheck(targethp,targetid,authorid,players)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one hundred health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one hundred health with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2551,7 +2551,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one hundred health!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one hundred health with /gamble!", channel_id=[general], ephemeral=False)
 
 gamblescbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2582,7 +2582,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one SC with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2590,7 +2590,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} one SC with /gamble!", channel_id=[general], ephemeral=False)
 
 
 button2sc = interactions.Button(
@@ -2609,7 +2609,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} two SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} two SC with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2617,7 +2617,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} two SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} two SC with /gamble!", channel_id=[general], ephemeral=False)
 
 
 button3sc = interactions.Button(
@@ -2636,7 +2636,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} three SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} three SC with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2644,7 +2644,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} three SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} three SC with /gamble!", channel_id=[general], ephemeral=False)
 
 button4sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2662,7 +2662,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} four SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} four SC with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2670,7 +2670,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} four SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} four SC with /gamble!", channel_id=[general], ephemeral=False)
 
 button5sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2688,7 +2688,7 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} five SC with /gamble!", channel_id=[general], ephemeral=False)
     elif flip == 2:
         tag = "won"
         players = await getplayerdata()
@@ -2696,11 +2696,11 @@ async def button_response(ctx):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
         await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five SC!", channel_id=[general], ephemeral=False)
+        await send_message(f"<@{ctx.author.id}> {tag} five SC with /gamble!", channel_id=[general], ephemeral=False)
 
 @bot.command(
     name="gamble",
-    description="gamble to gain or lose health!",
+    description="gamble to gain or lose health or SC.",
     scope = guildid,
 )
 async def gamble(ctx: interactions.CommandContext,):
