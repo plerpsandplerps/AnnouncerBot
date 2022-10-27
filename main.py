@@ -365,13 +365,6 @@ async def pollforqueue():
         await asyncio.sleep(int(1*60*60*48)) #timer
 
 
-async def lastactiontime(authorid):
-    players = await getplayerdata()
-    players[str(authorid)]["Lastactiontime"]=int(time.time())
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    return players
-
 async def send_message(message : str, **kwargs):
     if('user_id' in kwargs.keys()):
         for targetid in kwargs['user_id']:
@@ -800,7 +793,6 @@ async def dointerrupt(authorid,targetid):
         players = await getplayerdata()
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "interrupt"
-        await lastactiontime(authorid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await send_message(f"<@{targetid}> was not damaged by an interrupt from <@{authorid}>!", user_id=[authorid,targetid])
@@ -874,6 +866,7 @@ async def doevade(authorid):
     players[str(authorid)]["Evade"] = True
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "evade"
+    players[str(authorid)]["Lastactiontime"] = current_time
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     await send_message(f"<@{authorid}> used evade! ",user_id=[authorid])
@@ -918,6 +911,7 @@ async def dorest(authorid):
     heal = math.ceil(int((10000 - hp_pull) / 2))
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "rest"
+    players[str(authorid)]["Lastactiontime"] = current_time
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
     hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
     with open("players.json", "w") as f:
@@ -965,7 +959,6 @@ async def dotravelto(authorid,destination):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
-    await lastactiontime(authorid)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
