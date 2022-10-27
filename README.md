@@ -1,3 +1,5 @@
+#OUT OF DATE USE THE /HELP COMMAND IF NEEDED!
+
 # AnnouncerBot
 Announcer Bot for a rpg minigame!
 

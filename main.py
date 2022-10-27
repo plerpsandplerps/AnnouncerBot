@@ -2713,6 +2713,59 @@ async def gamble(ctx: interactions.CommandContext,):
 )
     await ctx.send(f"What would you like to gamble?", components = row, ephemeral = True)
 
+@bot.command(
+    name="quit",
+    description="quit the game",
+)
+async def help(ctx: interactions.CommandContext,):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    row = interactions.ActionRow(
+    components=[yesquitbutton, noquitbutton ]
+)
+    await ctx.send(f"Are you sure you want to quit the game?", components = row, ephemeral = True)
+
+yesquitbutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Yes",
+    custom_id="yesquitbutton",
+)
+
+@bot.component("yesquitbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    print(f"\n the target died!")
+    user = await interactions.get(bot, interactions.Member, object_id=(ctx.author.id), guild_id=guildid, force='http')
+    await send_message(f"<@{ctx.author.id}> died because of quitting!", channel_id=[general])
+    #give dead role
+    await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+    #remove all location roles and playing roles to hopefully block all commands?
+    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+    #change players.json location to dead
+    players[str(ctx.author.id)]["Location"] = "Dead"
+    players[str(ctx.author.id)]["HP"] = 0
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+
+noquitbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="No, I don't want to quit",
+    custom_id="noquitbutton",
+)
+
+@bot.component("noquitbutton")
+async def button_response(ctx):
+    await ctx.send(f"You chose not to die! Continue playing with a command!", ephemeral = True)
+
+
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
                 'heavyattack' : doheavyattack,
