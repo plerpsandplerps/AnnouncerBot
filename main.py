@@ -1995,7 +1995,7 @@ async def dolocalligmaoutbreak(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
+    samelocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
     ligmadamage_pull = ligma["ligmadamage"]
     #damage everyone in the area
     for key in players.keys():
