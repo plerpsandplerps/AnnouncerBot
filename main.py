@@ -470,7 +470,7 @@ async def dolightattack(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
         await rage(authorid)
         players = await getplayerdata()
         damage = 0
@@ -479,7 +479,6 @@ async def dolightattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "lightattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -499,7 +498,6 @@ async def dolightattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "lightattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -576,7 +574,7 @@ async def donormalattack(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
         await rage(authorid)
         players = await getplayerdata()
         damage = 0
@@ -585,7 +583,6 @@ async def donormalattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
         players[str(authorid)]["Lastaction"] = "normalattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -605,7 +602,6 @@ async def donormalattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
         players[str(authorid)]["Lastaction"] = "normalattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -681,7 +677,7 @@ async def doheavyattack(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
         await rage(authorid)
         players = await getplayerdata()
         damage = 0
@@ -690,7 +686,6 @@ async def doheavyattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -710,7 +705,6 @@ async def doheavyattack(authorid,targetid):
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("aimtraining")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -788,7 +782,7 @@ async def dointerrupt(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and players[str(targetid)]["Lastactiontime"]+basecd<current_time:
+    if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
         await rage(authorid)
         players = await getplayerdata()
         targethp = players[str(targetid)]["HP"] - 4200
@@ -796,7 +790,6 @@ async def dointerrupt(authorid,targetid):
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "interrupt"
-        await lastactiontime(authorid)
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -1039,7 +1032,6 @@ async def dotraveltocrossroads(authorid):
     current_time = int(time.time())
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
-    await lastactiontime(authorid)
     players[str(authorid)]["Location"] = "Crossroads"
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
@@ -1139,7 +1131,6 @@ async def doexchange(authorid, targetid, readyitem):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "exchange"
     players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + (EquippedInventory_pull.count("crookedabacus") * 1)
-    await lastactiontime(authorid)
     players[str(targetid)]["ReadyInventory"] = players[str(targetid)]["ReadyInventory"]  + "\n        " + readyitem
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     ReadyInventory_pull = ReadyInventory_pull.replace(str("\n        " +readyitem), "",1)
@@ -1254,7 +1245,6 @@ async def dofarm(authorid):
     players[str(authorid)]["Lastaction"] = "farm"
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-    await lastactiontime(authorid)
     #TODO implement channel specific messages... I don't have permission->channel linking in my test env
     await send_message(f"<@{authorid}> farmed {farmSC} from farming", user_id=[authorid]) #channel_id=[farmland])
     await send_message(f"<@{authorid}> farmed! ", channel_id=[channelid])
@@ -1310,7 +1300,6 @@ async def doaid(authorid, playertarget):
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "aid"
-    await lastactiontime(authorid)
     players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
@@ -1392,7 +1381,6 @@ async def dotrade(authorid, itemtarget):
     players[str(authorid)]["SC"] = players[str(authorid)]["SC"] - cost + (EquippedInventory_pull.count("crookedabacus") * 1)
     #add item to inventory
     players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+itemtarget
-    await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"One {itemtarget} was purchased by <@{authorid}> from the shop!", user_id=[authorid])
@@ -1707,7 +1695,6 @@ async def dobattlelich(authorid):
     current_time = int(time.time())
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "battlelich"
-    await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     if scores[str("NPC2")]["Scoreexpiry"] > current_time :
@@ -1782,7 +1769,6 @@ async def douse(authorid, readyitem):
     loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[readyitem]["ManaCost"]
-    await lastactiontime(authorid)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
 
@@ -1887,7 +1873,6 @@ async def dolichitem(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "lichitem"
-    await lastactiontime(authorid)
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
     user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
@@ -1912,7 +1897,6 @@ async def dodrinkingmedal(authorid):
     players = await getplayerdata()
     current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "drinkingmedal"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        drinkingmedal','',1)
@@ -1933,7 +1917,6 @@ async def dogoodiebag(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "goodiebag"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #get a randomitem
     shop = await getshopdata()
@@ -1959,7 +1942,6 @@ async def dotractor(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Lastaction"] = "tractor"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        tractor','',1)
@@ -1979,7 +1961,6 @@ async def docritterihardlyknowher(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Lastaction"] = "critterihardlyknowher"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        critterihardlyknowher','',1)
@@ -1999,7 +1980,6 @@ async def dobeerbando(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    await lastactiontime(authorid)
     #increase user's rage by 3
     players[str(authorid)]["Rage"]=players[str(authorid)]["Rage"]+3
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
@@ -2020,7 +2000,6 @@ async def doaimtrain(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Lastaction"] = "aimtrain"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        aimtraining','',1)
@@ -2040,7 +2019,6 @@ async def docrookedabacus(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Lastaction"] = "crookedabacus"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        crookedabacus','',1)
@@ -2060,7 +2038,6 @@ async def doadventuringgear(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Lastaction"] = "adventuringgear"
-    await lastactiontime(authorid)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        adventuringgear','',1)
