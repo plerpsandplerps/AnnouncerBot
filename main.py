@@ -255,6 +255,11 @@ async def getlichdata():
         scores = json.load(l)
     return scores
 
+async def getreminderdata():
+    with open("reminders.json","r") as m:
+        reminders = json.load(m)
+    return reminders
+
 async def pollfornext():
     #run forever
     while True:
@@ -303,7 +308,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                     elif words[1] in shop:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-        await asyncio.sleep(45)
+        await asyncio.sleep(30)
 
 async def pollformanagain():
     #run forever
@@ -318,7 +323,7 @@ async def pollformanagain():
                     v['Mana'] = min(v['Mana']+1,3)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
-        await asyncio.sleep(45)
+        await asyncio.sleep(30)
 
 async def pollformana():
     #run forever
@@ -326,7 +331,7 @@ async def pollformana():
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone (eastern)
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*12.8)) #10:30am
+        announcementtime = int((1*60*60*19.17)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -337,9 +342,12 @@ async def pollformana():
         print(f"\npolling for mana:{int(time.time())}")
         players = await getplayerdata()
         readyplayers = [k for k, v in players.items() if v['Mana'] > 0 and v['Location'] != "Dead"]
-        print(readyplayers)
+        reminders = await getreminderdata()
+        for key in readyplayers:
+          if key in reminders:
+            print(key)
+            await send_message(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=[key])
         #don't turn this on until the bot is not relaunching often
-        #await send_message(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=readyplayers)
         await asyncio.sleep(int(1*60*60*24)) #timer
 
 
@@ -349,7 +357,7 @@ async def pollforqueue():
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*10.5)) #10:30am
+        announcementtime = int((1*60*60*19.49)) #10:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -360,9 +368,13 @@ async def pollforqueue():
         print(f"\npolling for no queue:{int(time.time())}")
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
+        reminders = await getreminderdata()
         print(noqueueplayers)
+        for key in noqueueplayers:
+          if key in reminders:
+            print(key)
+            await send_message(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=[key])
         #don't turn this on until the bot is not relaunching often
-        #await send_message(f"You have no action queued! You can queue an action with a slash command!\n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=noqueueplayers)
         await asyncio.sleep(int(1*60*60*48)) #timer
 
 
@@ -2765,6 +2777,48 @@ noquitbutton = interactions.Button(
 async def button_response(ctx):
     await ctx.send(f"You chose not to die! Continue playing with a command!", ephemeral = True)
 
+
+@bot.command(
+    name="reminders",
+    description="enable or disable reminders for the game",
+)
+async def reminders(ctx: interactions.CommandContext,):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    row = interactions.ActionRow(
+    components=[yesremindme, noremindme ]
+)
+    await ctx.send(f"Do you want to enable reminders for the game?", components = row, ephemeral = False)
+
+yesremindme = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Yes, I want reminders",
+    custom_id="yesremindme",
+)
+
+@bot.component("yesremindme")
+async def button_response(ctx):
+    reminders = await getreminderdata()
+    user = await interactions.get(bot, interactions.Member, object_id=(ctx.author.id), guild_id=guildid, force='http')
+    await ctx.send(f"<@{ctx.author.id}> has enabled reminders!", ephemeral = False)
+    reminders[str(ctx.author.id)] = {}
+    with open("reminders.json","w") as m:
+        json.dump(reminders,m, indent=4)
+
+noremindme = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="No, I don't want reminders",
+    custom_id="noremindme",
+)
+
+@bot.component("noremindme")
+async def button_response(ctx):
+    await ctx.send(f"You chose to not receive reminders!", ephemeral = True)
+    reminders = await getreminderdata()
+    reminders.pop(str(ctx.author.id), None)
+    with open("reminders.json","w") as m:
+        json.dump(reminders,m, indent=4)
 
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
