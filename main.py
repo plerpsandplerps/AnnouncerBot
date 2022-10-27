@@ -724,7 +724,7 @@ async def doheavyattack(authorid,targetid):
             autocomplete=True,
         )
     ]
-)
+) 
 async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
