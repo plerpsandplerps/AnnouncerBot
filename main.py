@@ -972,6 +972,7 @@ async def dotravelto(authorid,destination):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = destination
+    players[str(authorid)]["Nextaction"] = ""
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1039,6 +1040,7 @@ async def dotraveltocrossroads(authorid):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "travelto"
     players[str(authorid)]["Location"] = "Crossroads"
+    players[str(authorid)]["Nextaction"] = ""
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1081,44 +1083,6 @@ async def traveltocrossroads(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
-@bot.command(
-    name="status",
-    description="check your status.",
-    scope = guildid,
-)
-async def status (ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    shop = await getshopdata()
-    hp_pull = players[str(ctx.author.id)]["HP"]
-    location_pull = players[str(ctx.author.id)]["Location"]
-    SC_pull = players[str(ctx.author.id)]["SC"]
-    Rage_pull = players[str(ctx.author.id)]["Rage"]
-    ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
-    EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
-    Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
-    Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
-    words = players[ctx.author.id]['Nextaction'].split()
-    mana_pull = players[str(ctx.author.id)]["Mana"]
-    manamoji = await manamojiconv(mana_pull)
-    mana_date = players[str(ctx.author.id)]["NextMana"]
-    print(words)
-    displayaction = "displayerror"
-    if len(words) == 0:
-        displayaction = "No queued action"
-    elif len(words) == 1:
-        displayaction = f"{words[0]}"
-    elif words[1] in players:
-        actiontargetid = words[1]
-        displayaction = f"{words[0]} <@{actiontargetid}>"
-        if len(words) == 3:
-            displayaction = displayaction + " " + words[2]
-    elif words[1] in locations:
-        displayaction = f"{words}"
-    elif words[1] in shop:
-        displayaction = f"{words}"
-    print(displayaction)
-    hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji}\n\n**Mana:** {manamoji}\n**Next Mana:**<t:{mana_date}>\n\n**Location:** {location_pull} \n\n**SC:** :coin: {SC_pull} \n\n**Rage:** :fire: {Rage_pull} \n\n**Inventory:** :school_satchel: \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n\n**Nextaction:** {displayaction}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
@@ -2816,6 +2780,56 @@ async def button_response(ctx):
     reminders.pop(str(ctx.author.id), None)
     with open("reminders.json","w") as m:
         json.dump(reminders,m, indent=4)
+
+
+@bot.command(
+    name="status",
+    description="check your status.",
+    scope = guildid,
+)
+async def status (ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    shop = await getshopdata()
+    hp_pull = players[str(ctx.author.id)]["HP"]
+    location_pull = players[str(ctx.author.id)]["Location"]
+    SC_pull = players[str(ctx.author.id)]["SC"]
+    Rage_pull = players[str(ctx.author.id)]["Rage"]
+    ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
+    EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
+    Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
+    Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
+    words = players[ctx.author.id]['Nextaction'].split()
+    mana_pull = players[str(ctx.author.id)]["Mana"]
+    manamoji = await manamojiconv(mana_pull)
+    mana_date = players[str(ctx.author.id)]["NextMana"]
+    print(words)
+    displayaction = "displayerror"
+    if len(words) == 0:
+        displayaction = "No queued action"
+    elif len(words) == 1:
+        displayaction = f"{words[0]}"
+    elif words[1] in players:
+        actiontargetid = words[1]
+        displayaction = f"{words[0]} <@{actiontargetid}>"
+        if len(words) == 3:
+            displayaction = displayaction + " " + words[2]
+    elif words[1] in locations:
+        displayaction = f"{words}"
+    elif words[1] in shop:
+        displayaction = f"{words}"
+    if ReadyInventory_pull =="":
+        ReadyInventory_pull = "Nothing in Ready Inventory"
+    else:
+        ReadyInventory_pull = ReadyInventory_pull
+    print(displayaction)
+    mana_date = "<t:"+str(mana_date)+">"
+    hpmoji = await hpmojiconv(hp_pull)
+    status = interactions.api.models.message.Embed(
+        title = "Status",
+        color = 0xf00c5f,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction)],
+    )
+    await ctx.send(embeds=status,ephemeral=True)
 
 functiondict = {'lightattack' : dolightattack,
                 'normalattack' : donormalattack,
