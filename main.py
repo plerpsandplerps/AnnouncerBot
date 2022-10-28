@@ -10,6 +10,8 @@ import json
 import pprint as pp
 import re
 from typing import List
+from interactions.ext.paginator import Page, Paginator
+
 
 with open('.gitignore2/config.json', 'r') as cfg:
    tokens = json.load(cfg)
