@@ -1135,7 +1135,7 @@ async def farm(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
@@ -1416,7 +1416,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
@@ -1534,7 +1534,7 @@ async def loot(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
@@ -1715,7 +1715,7 @@ async def battlelich(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
@@ -2831,6 +2831,34 @@ async def button_response(ctx):
         else :
             await ctx.send(f"Your next action will be queued.",ephemeral=True)
         await dotravelto(ctx.author.id,destination)
+
+@bot.command(name="paginatortest", description="Paginator testing")
+async def paginator_test(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    LocationPull = players[str(ctx.author.id)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    items = sameLocationUsernames
+    lenitems = len(items)
+    Content1 = "Player targets 1 to "+str(min(lenitems,25))
+    Content2 = "Player targets 25 to "+str(min(lenitems,50))
+    Content3 = "Player targets 50 to "+str(min(lenitems,75))
+    Content4 = "Player targets 75 to "+str(min(lenitems,100))
+    Content4 = "Player targets 100 to "+str(min(lenitems,125))
+    Content5 = "Player targets 125 to "+str(min(lenitems,150))
+    await Paginator(
+        client=bot,
+        ctx=ctx,
+        pages=[
+            Page(Content1, interactions.Embed(title="One")),
+            Page(Content2, interactions.Embed(title="Two")),
+            Page(Content3, interactions.Embed(title="One")),
+            Page(Content4, interactions.Embed(title="Two")),
+            Page(Content5, interactions.Embed(title="Two")),
+            Page(embeds=[interactions.Embed(title="Four"), interactions.Embed(title="Five")]),
+        ],
+    ).run()
+
 
 functiondict = {'lightattack' : dolightattack,
                 'heavyattack' : doheavyattack,
