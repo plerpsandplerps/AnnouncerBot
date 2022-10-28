@@ -573,109 +573,6 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
-#normal attack is below
-async def donormalattack(authorid,targetid):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    location = players[str(authorid)]["Location"]
-    channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
-        await rage(authorid)
-        players = await getplayerdata()
-        damage = 0
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
-        players[str(authorid)]["Lastaction"] = "normalattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a normal attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message(f"<@{authorid}> used a normal attack on <@{targetid}>! ", channel_id=[channelid])
-    else:
-        await rage(authorid)
-        players = await getplayerdata()
-        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
-        damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
-        critdmg = max(critroll-9,0)*2300
-        damage = 2150 + damageroll + critdmg
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid,players)
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +3
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -2
-        players[str(authorid)]["Lastaction"] = "normalattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-        if critroll >= 10:
-            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
-        else:
-            print("nocrit")
-        await send_message(f"<@{targetid}> was hit by a normal attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message( f"<@{authorid}> used a normal attack on <@{targetid}>! ", channel_id=[channelid])
-
-@bot.command(
-    name="normalattack",
-    description="2mana.3rage. attack a player in your area for 2150 - 2450 damage.",
-    scope = guildid,
-    options=[
-        interactions.Option(
-            type=interactions.OptionType.STRING,
-            name="playertarget",
-            description="who you want to attack",
-            required=True,
-            autocomplete=True,
-        )
-    ]
-)
-async def normalattack(ctx: interactions.CommandContext, playertarget: str):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    print(f"{playertarget} is the player target")
-    for k, v in players.items():
-        if v['Username'] == str(playertarget):
-            targetid = k
-    print(f"{targetid} is the player target id")
-    channelid=ctx.channel_id
-    if str(ctx.author.id) in players:
-        cost = 2
-        Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-            with open("players.json", "w") as f:
-                json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
-        else:
-            await ctx.send(f"You normal attack!\n\nSubmit another action!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await donormalattack(ctx.author.id, targetid)
-    else:
-        await ctx.send(f"You aren't in the competition!", ephemeral=True)
-
-@bot.autocomplete("normalattack", "playertarget")
-async def normal_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    players = await getplayerdata()
-    LocationPull = players[str(ctx.author.id)]["Location"]
-    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
-    print (LocationPull)
-    print (sameLocationUsernames)
-    items = sameLocationUsernames
-    choices = [
-        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-    ]
-    await ctx.populate(choices)
-
 #heavy attack is below
 async def doheavyattack(authorid,targetid):
     players = await getplayerdata()
@@ -2934,7 +2831,6 @@ async def button_response(ctx):
         await dotravelto(ctx.author.id,destination)
 
 functiondict = {'lightattack' : dolightattack,
-                'normalattack' : donormalattack,
                 'heavyattack' : doheavyattack,
                 'interrupt' : dointerrupt,
                 'evade' : doevade,
