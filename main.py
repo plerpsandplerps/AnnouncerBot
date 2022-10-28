@@ -1095,15 +1095,12 @@ async def status (ctx: interactions.CommandContext):
     Rage_pull = players[str(ctx.author.id)]["Rage"]
     ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
     EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
-    if players[str(ctx.author.id)]["ReadyDate"] != "":
-        ReadyDate_pull = "\\<t:"+players[str(ctx.author.id)]["ReadyDate"]+">"
-    else:
-        ReadyDate_pull = players[str(ctx.author.id)]["ReadyDate"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     words = players[ctx.author.id]['Nextaction'].split()
     mana_pull = players[str(ctx.author.id)]["Mana"]
     manamoji = await manamojiconv(mana_pull)
+    mana_date = players[str(ctx.author.id)]["NextMana"]
     print(words)
     displayaction = "displayerror"
     if len(words) == 0:
@@ -1121,7 +1118,7 @@ async def status (ctx: interactions.CommandContext):
         displayaction = f"{words}"
     print(displayaction)
     hpmoji = await hpmojiconv(hp_pull)
-    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji}\n\n**Mana:** {manamoji}\n\n**Location:** {location_pull} \n\n**SC:** :coin: {SC_pull} \n\n**Rage:** :fire: {Rage_pull} \n\n**Inventory:** :school_satchel: \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n\n**Next Action Time:** :alarm_clock: <t:{ReadyDate_pull}>\n**Nextaction:** {displayaction}", ephemeral = True)
+    await ctx.send(f"**{ctx.author}'s HP:** {hpmoji}\n\n**Mana:** {manamoji}\n**Next Mana:**<t:{mana_date}>\n\n**Location:** {location_pull} \n\n**SC:** :coin: {SC_pull} \n\n**Rage:** :fire: {Rage_pull} \n\n**Inventory:** :school_satchel: \n    **Ready:** {ReadyInventory_pull} \n    **Equipped:**{EquippedInventory_pull} \n\n**Nextaction:** {displayaction}", ephemeral = True)
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
