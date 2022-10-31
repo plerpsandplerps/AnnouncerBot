@@ -414,7 +414,7 @@ async def queuenext(ctx):
 
     return
 
-async def queuenexttarget(ctx, actiontargetid, *argv):
+async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
     players = await getplayerdata()
     shop = await getshopdata ()
     print(argv)
@@ -423,17 +423,17 @@ async def queuenexttarget(ctx, actiontargetid, *argv):
     if len(argv) == 1:
         print("len argv = 1")
         print(argv[0])
-        saveaction = f"{ctx.data.name} {actiontargetid} {argv[0]}"
+        saveaction = f"{commandname} {actiontargetid} {argv[0]}"
     else:
-        saveaction = f"{ctx.data.name} {actiontargetid}"
+        saveaction = f"{commandname} {actiontargetid}"
     displayactionnew = "displayerror"
     if actiontargetid in players:
         if len(argv) == 1:
             print("len argv = 1")
             print(argv[0])
-            displayactionnew = f"{ctx.data.name} <@{actiontargetid}> {argv[0]}"
+            displayactionnew = f"{commandname} <@{actiontargetid}> {argv[0]}"
         else:
-            displayactionnew = f"{ctx.data.name} <@{actiontargetid}>"
+            displayactionnew = f"{commandname} <@{actiontargetid}>"
     #name here is a little misleading, but actiontargetid is actually the destination name in this context
     elif actiontargetid in locations:
         displayactionnew = saveaction
@@ -547,7 +547,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget("lightattack",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You light attack!\n\nSubmit another action!",ephemeral=True)
@@ -652,7 +652,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget("heavyattack",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
@@ -741,7 +741,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid)
+            await queuenexttarget("interrupt",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
@@ -799,7 +799,7 @@ async def evade_command(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
@@ -850,7 +850,7 @@ async def rest_command(ctx: interactions.CommandContext):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
+            await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
@@ -862,126 +862,6 @@ async def rest_command(ctx: interactions.CommandContext):
             await dorest(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
-
-#travelto
-async def dotravelto(authorid,destination):
-    await rage(authorid)
-    players = await getplayerdata()
-    current_time = int(time.time())
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-    players[str(authorid)]["Lastaction"] = "travelto"
-    players[str(authorid)]["Location"] = destination
-    players[str(authorid)]["Nextaction"] = ""
-    with open("players.json", "w") as f:
-        json.dump(players, f, indent=4)
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-    await user.add_role(role=locations[destination]["Role_ID"], guild_id=guildid)
-    await send_message(f"<@{authorid}> traveled to {destination}! ",user_id=[authorid],channel_id=[locations[destination]["Channel_ID"]])
-
-@bot.command(
-    name="travelto",
-    description="1mana. travel to any location from the crossroads .",
-    scope = guildid,
-    options=[
-        interactions.Option(
-            type=interactions.OptionType.STRING,
-            name="destination",
-            description="where to travel to",
-            required=True,
-            autocomplete=True,
-        )
-    ]
-)
-async def travelto(ctx: interactions.CommandContext, destination: str):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    print(f"{destination} is the destination")
-    channelid=ctx.channel_id
-    if str(ctx.author.id) in players:
-        cost = 1
-        Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-            with open("players.json", "w") as f:
-                json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,destination)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
-        else:
-            await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dotravelto(ctx.author.id,destination)
-    else:
-        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
-
-
-@bot.autocomplete("travelto", "destination")
-async def travelto_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    sameLocationUsernames = [k for k in locations.keys()]
-    print (sameLocationUsernames)
-    items = filter(lambda x: x!="Dead",sameLocationUsernames)
-    items = filter(lambda x: x!="Playing",items)
-    choices = [
-        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-    ]
-    await ctx.populate(choices)
-
-#travelto
-async def dotraveltocrossroads(authorid):
-    await rage(authorid)
-    players = await getplayerdata()
-    current_time = int(time.time())
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-    players[str(authorid)]["Lastaction"] = "travelto"
-    players[str(authorid)]["Location"] = "Crossroads"
-    players[str(authorid)]["Nextaction"] = ""
-    with open("players.json", "w") as f:
-        json.dump(players, f, indent=4)
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-    await user.add_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-    await send_message(f"<@{authorid}> traveled to the Crossroads! ",user_id=[authorid],channel_id=[locations["Crossroads"]["Channel_ID"]])
-
-@bot.command(
-    name="traveltocrossroads",
-    description="1mana. travel to the crossroads from any location.",
-    scope = guildid,
-)
-async def traveltocrossroads(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    if str(ctx.author.id) in players:
-        cost = 1
-        Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-            with open("players.json", "w") as f:
-                json.dump(players, f, indent=4)
-            await queuenexttarget(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
-        else:
-            await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dotraveltocrossroads(ctx.author.id)
-    else:
-        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
-
 
 #exchange is below
 async def doexchange(authorid, targetid, readyitem):
@@ -1051,7 +931,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,targetid,readyitem)
+            await queuenexttarget("exchange",ctx,targetid,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
@@ -1204,7 +1084,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,playertarget)
+            await queuenexttarget("aid",ctx,playertarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You aid!",ephemeral=True)
@@ -1287,7 +1167,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,itemtarget)
+            await queuenexttarget("trade",ctx,itemtarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
@@ -1296,7 +1176,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dotrade(ctx.author.id, itemtarget,channelid)
+            await dotrade(ctx.author.id, itemtarget)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
@@ -1670,7 +1550,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget(ctx,readyitem)
+            await queuenexttarget("use",ctx,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
@@ -2731,76 +2611,52 @@ async def status (ctx: interactions.CommandContext):
     await ctx.send(embeds=status,ephemeral=True)
 
 #travelto
-async def dotraveltotest(authorid,destination):
+async def dotravel(authorid,destination):
     await rage(authorid)
     players = await getplayerdata()
     current_time = int(time.time())
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-    players[str(authorid)]["Lastaction"] = "travelto"
-    players[str(authorid)]["Location"] = destination
-    players[str(authorid)]["Nextaction"] = ""
-    with open("players.json", "w") as f:
-        json.dump(players, f, indent=4)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-    await user.add_role(role=locations[destination]["Role_ID"], guild_id=guildid)
-    await send_message(f"<@{authorid}> traveled to {destination}! ",user_id=[authorid],channel_id=[locations[destination]["Channel_ID"]])
+    if players[str(authorid)]["Location"] == "Crossroads" or destination == "Crossroads":
+        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+        players[str(authorid)]["Lastaction"] = "travelto"
+        players[str(authorid)]["Location"] = destination
+        players[str(authorid)]["Nextaction"] = ""
+        await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+        await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+        await user.add_role(role=locations[str(destination)]["Role_ID"], guild_id=guildid)
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await send_message(f"<@{authorid}> traveled to {destination}! ",channel_id=[locations[destination]["Channel_ID"]])
+    else:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, force='http')
+        await send_message(f"You must travel to the Crossroads before you can travel there!", user_id=[user])
+
 
 @bot.command(
-    name="traveltotest",
-    description="1mana. travel to any location from the crossroads .",
+    name="travel",
+    description="1mana. travel to any location from the crossroads or from any location to the crossroads.",
     scope = guildid,
-    options=[
-        interactions.Option(
-            type=interactions.OptionType.STRING,
-            name="destination",
-            description="where to travel to",
-            required=True,
-            autocomplete=True,
-        )
-    ]
 )
-async def traveltotest(ctx: interactions.CommandContext, destination: str):
+async def travel(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
-    print(f"{destination} is the destination")
     channelid=ctx.channel_id
     if str(ctx.author.id) in players:
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if destination != "Crossroads" and players[str(ctx.author.id)]["Location"] != "Crossroads":
+        if players[str(ctx.author.id)]["Location"] != "Crossroads":
             row = interactions.spread_to_rows(traveltocrossroadsbutton)
-            await ctx.send(f"You aren't in the Crossroads! You must travel to the crossroads first!", components = row, ephemeral = True)
+            await ctx.send(f"You aren't in the Crossroads! You must travel to the Crossroads before you travel to another location!", components = row, ephemeral = True)
         else:
-            if cost-Mana_pull > 0:
-                enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-                players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-                with open("players.json", "w") as f:
-                    json.dump(players, f, indent=4)
-                await queuenexttarget(ctx,destination)
-                await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
-            else:
-                await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-                if Mana_pull - cost > 0:
-                    manamoji = await manamojiconv(Mana_pull - cost)
-                    await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-                else :
-                    await ctx.send(f"Your next action will be queued.",ephemeral=True)
-                await dotravelto(ctx.author.id,destination)
+            row = interactions.spread_to_rows(traveltodungeonbutton, traveltofarmlandbutton, traveltokeepbutton, traveltolichcastlebutton, traveltoshopbutton, traveltotavernbutton)
+            await ctx.send(f"Where would you like to travel to?", components = row, ephemeral = True)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
-
-
-@bot.autocomplete("traveltotest", "destination")
-async def traveltotest_autocomplete(ctx: interactions.CommandContext, value: str = ""):
-    sameLocationUsernames = [k for k in locations.keys()]
-    print (sameLocationUsernames)
-    items = filter(lambda x: x!="Dead",sameLocationUsernames)
-    items = filter(lambda x: x!="Playing",items)
-    choices = [
-        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-    ]
-    await ctx.populate(choices)
 
 traveltocrossroadsbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2821,7 +2677,7 @@ async def button_response(ctx):
         players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await queuenexttarget(ctx,destination)
+        await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
         await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
@@ -2831,6 +2687,187 @@ async def button_response(ctx):
         else :
             await ctx.send(f"Your next action will be queued.",ephemeral=True)
         await dotravelto(ctx.author.id,destination)
+
+traveltodungeonbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Dungeon!",
+    custom_id="traveltodungeonbutton",
+)
+
+@bot.component("traveltodungeonbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Dungeon"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
+
+
+traveltofarmlandbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Farmland!",
+    custom_id="traveltofarmlandbutton",
+)
+
+@bot.component("traveltofarmlandbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Farmland"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
+
+traveltokeepbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Keep!",
+    custom_id="traveltokeepbutton",
+)
+
+@bot.component("traveltokeepbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Keep"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
+
+traveltolichcastlebutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Lich's Castle!",
+    custom_id="traveltolichcastlebutton",
+)
+
+@bot.component("traveltolichcastlebutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Lich's Castle"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
+
+traveltoshopbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Shop!",
+    custom_id="traveltoshopbutton",
+)
+
+@bot.component("traveltoshopbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Shop"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
+
+traveltotavernbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Travel to Tavern!",
+    custom_id="traveltotavernbutton",
+)
+
+@bot.component("traveltotavernbutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    destination = "Tavern"
+    channelid=ctx.channel_id
+    cost = 1
+    Mana_pull = players[str(ctx.author.id)]["Mana"]
+    if cost-Mana_pull > 0:
+        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await queuenexttarget("travel",ctx,destination)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+    else:
+        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
+        if Mana_pull - cost > 0:
+            manamoji = await manamojiconv(Mana_pull - cost)
+            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
+        else :
+            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        await dotravel(ctx.author.id,destination)
 
 @bot.command(name="paginatortest", description="Paginator testing")
 async def paginator_test(ctx: interactions.CommandContext):
@@ -2866,8 +2903,7 @@ functiondict = {'lightattack' : dolightattack,
                 'evade' : doevade,
                 'rest' : dorest,
                 'farm' : dofarm,
-                'travelto' : dotravelto,
-                'traveltocrossroads': dotraveltocrossroads,
+                'travel' : dotravel,
                 'aid': doaid,
                 'exchange': doexchange,
                 'trade': doexchange,
