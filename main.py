@@ -1192,20 +1192,26 @@ async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     ]
     await ctx.populate(choices)
 
-#drinkingchallenge is below
+#drink is below
 
-async def dodrinkingchallenge(authorid):
+async def dodrink(authorid):
     await rage(authorid)
     players = await getplayerdata()
     scores = await gettaverndata()
     cooldown = basecd
+    current_time = int(time.time())
     Lastaction_pull = players[str(authorid)]["Lastaction"]
-    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drinkingchallenge") * 1))
+    playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("drink") * 1))
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
-    current_time = int(time.time())
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-    players[str(authorid)]["Lastaction"] = "drinkingchallenge"
+    players[str(authorid)]["Lastaction"] = "drink"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     if scores[str("NPC4")]["Scoreexpiry"] > current_time :
@@ -1236,18 +1242,36 @@ async def dodrinkingchallenge(authorid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    scores[str(authorid)] = {}
-    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
-    scores[str(authorid)]["Media"] = ""
-    scores[str(authorid)]["Score"] = playerroll
-    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    highscoremedia = "https://media.tenor.com/6ETrTNVz1GQAAAAC/kevin-hikevin.gif"
+    for x in scores.values():
+        if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+            highscoremedia = x["Media"]
+            highscorename = x["Username"]
     with open("tavern.json","w") as t:
         json.dump(scores,t, indent=4)
     print("Player Tavern Score Saved")
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Tavern"]["Channel_ID"]])
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll, they heal for 1/4 of their current health!"
+        drinktenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
+        drinktenor = interactions.api.models.message.Embed(
+            title = f"Defeated by {highscorename}!",
+            color = 0xff0000,
+            description = f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}. \n\n{damagedesc} \n\nThey were defeated by {highscorename}!",
+            image = drinktenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        tavernchannel=str(locations["Tavern"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=tavernchannel , force='http')
+        await channel.send(embeds=drinktenor)
     else:
         print(f"playerscore is the highscore")
         await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingmedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
@@ -1259,8 +1283,7 @@ async def dodrinkingchallenge(authorid):
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[locations["Tavern"]["Channel_ID"]] )
+        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll, so you lose 1/4 of your current hp! \nNew HP: {hpmoji}" , user_id=[authorid] )
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -1278,11 +1301,11 @@ async def dodrinkingchallenge(authorid):
         json.dump(players,f, indent=4)
 
 @bot.command(
-    name="drinkingchallenge",
+    name="drink",
     description="1mana. score 1d4.high:gain drinkingmedal. heal 1/4 missing hp except low score loses 1/4hp.",
     scope = guildid,
 )
-async def drinkingchallenge(ctx: interactions.CommandContext):
+async def drink(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
@@ -1290,7 +1313,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot drinkingchallenge when you are not in the tavern!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot drink when you are not in the tavern!", ephemeral=True)  # golive
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -1305,7 +1328,7 @@ async def drinkingchallenge(ctx: interactions.CommandContext):
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dodrinkingchallenge(ctx.author.id)
+            await dodrink(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
@@ -1912,7 +1935,7 @@ locationhelpbutton = interactions.Button(
 @bot.component("Locations")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /travel  \n\nYou can travel from the crossroads to any area using /travel \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
 crossroadshelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -1984,7 +2007,7 @@ tavernhelpbutton = interactions.Button(
 
 @bot.component("Tavern")
 async def button_response(ctx):
-    await ctx.send(f"**Tavern**\n/drinkingchallenge\n1 mana. score 1d4. high score: gain a Equipped drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+    await ctx.send(f"**Tavern**\n/drink\n1 mana. score 1d4. high score: gain an equipped drinking medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2676,7 +2699,7 @@ async def button_response(ctx):
             await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
         else :
             await ctx.send(f"Your next action will be queued.",ephemeral=True)
-        await dotravelto(ctx.author.id,destination)
+        await dotravel(ctx.author.id,destination)
 
 traveltodungeonbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2897,7 +2920,7 @@ functiondict = {'lightattack' : dolightattack,
                 'aid': doaid,
                 'exchange': doexchange,
                 'trade': doexchange,
-                'drinkingchallenge': dodrinkingchallenge,
+                'drink': dodrink,
                 'battlelich': dobattlelich,
                 'lichitem': dolichitem,
                 'drinkingmedal': dodrinkingmedal,
