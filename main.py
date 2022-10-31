@@ -785,7 +785,7 @@ async def doevade(authorid):
 
 @bot.command(
     name="evade",
-    description="1mana. receive no damage from light normal or heavy attacks",
+    description="1mana. receive no damage from light or heavy attacks",
     scope = guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
@@ -1825,7 +1825,7 @@ actionhelpbutton = interactions.Button(
 
 @bot.component("Actions")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(lightattackhelpbutton, normalattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
+    row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
     await ctx.send(f"**Actions**\nActions are what players do!\n\nMost actions cost mana. You generate one mana every {int(basecd/60/60)} hours. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
 
 
@@ -1838,16 +1838,6 @@ lightattackhelpbutton = interactions.Button(
 @bot.component("Lightattack")
 async def button_response(ctx):
     await ctx.send(f"**Light Attack**\n/lightattack\n1 mana. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
-
-normalattackhelpbutton = interactions.Button(
-    style=interactions.ButtonStyle.DANGER,
-    label="Normalattack",
-    custom_id="Normalattack",
-)
-
-@bot.component("Normalattack")
-async def button_response(ctx):
-    await ctx.send(f"**Normal Attack**\n/normalattack\n2 mana. gain 3 rage. attack a player in your area for 2150 to 2450 damage.", ephemeral=True)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -1878,7 +1868,7 @@ evadehelpbutton = interactions.Button(
 
 @bot.component("Evade")
 async def button_response(ctx):
-    await ctx.send(f"**Evade**\n/evade\n1 mana. Receive no damage from light, normal, or heavy attacks for 24h.", ephemeral=True)
+    await ctx.send(f"**Evade**\n/evade\n1 mana. Receive no damage from light or heavy attacks for 24h.", ephemeral=True)
 
 
 resthelpbutton = interactions.Button(
@@ -1900,7 +1890,7 @@ areactionhelpbutton = interactions.Button(
 @bot.component("AreaAction")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /traveltocrossroads \n\nYou can travel from the crossroads to any area using /travelto \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    await ctx.send(f"**Locations** \nYou can travel from any location to the Crossroads using /travel \n\nYou can travel from the Crossroads to any area using /travel \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
 
 useitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
