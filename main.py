@@ -1602,13 +1602,15 @@ async def douse(authorid, readyitem):
     loop = asyncio.get_running_loop()
     loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[readyitem]["ManaCost"]
+    manacost = shop[str(readyitem)]["ManaCost"]
+    print(f"{authorid} will use {readyitem} for {manacost}!")
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[str(readyitem)]["ManaCost"]
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
 
 @bot.command(
     name="use",
-    description="Xmana. use or equip an item in your inventory",
+    description="x mana. use or equip an item in your inventory",
     scope = guildid,
     options=[
         interactions.Option(
