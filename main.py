@@ -310,7 +310,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                     elif words[1] in shop:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-        await asyncio.sleep(30)
+        await asyncio.sleep(180)
 
 async def pollformanagain():
     #run forever
@@ -325,7 +325,7 @@ async def pollformanagain():
                     v['Mana'] = min(v['Mana']+1,3)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
-        await asyncio.sleep(30)
+        await asyncio.sleep(180)
 
 async def pollformana():
     #run forever
@@ -1242,7 +1242,7 @@ async def dodrink(authorid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    highscoremedia = "https://media.tenor.com/6ETrTNVz1GQAAAAC/kevin-hikevin.gif"
+    highscoremedia = "https://i.imgur.com/TxUSKwi.png"
     for x in scores.values():
         if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
             highscoremedia = x["Media"]
@@ -1253,6 +1253,11 @@ async def dodrink(authorid):
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
+        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
         if lowscore == playerroll:
             damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
         else:
@@ -1265,7 +1270,7 @@ async def dodrink(authorid):
         drinktenor = interactions.api.models.message.Embed(
             title = f"Defeated by {highscorename}!",
             color = 0xff0000,
-            description = f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}. \n\n{damagedesc} \n\nThey were defeated by {highscorename}!",
+            description = f"<@{authorid}> spilled their drink, then farted, then pooped their pants. Very embarassing.\n\n{damagedesc} \n\nThey lost the drinking challenge against {highscorename}!",
             image = drinktenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
         )
@@ -1273,27 +1278,87 @@ async def dodrink(authorid):
         channel = await interactions.get(bot, interactions.Channel, object_id=tavernchannel , force='http')
         await channel.send(embeds=drinktenor)
     else:
+        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        drinktenorimage = interactions.EmbedImageStruct(
+                            url="https://i.imgur.com/TxUSKwi.png",
+                            height = 375,
+                            width = 500,
+                            )
+        print(f"playerscore is equal to or higher than the highscore")
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll, they heal for 1/4 of their current health!"
+        usernameauthor = players[str(authorid)]["Username"]
+        drinktenor = interactions.api.models.message.Embed(
+            title = f"{usernameauthor} is the champion!",
+            color = 0x09ff00,
+            description = f"<@{authorid}> threw back shot after shot, tankard after tankard, until they were the last one standing!\n\nThey were awarded a medal for their drinking prowess! \n\n{damagedesc}!",
+            image = drinktenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        tavernchannel=str(locations["Tavern"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=tavernchannel , force='http')
+        await channel.send(embeds=drinktenor)
         print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the drinkingmedal." , channel_id=[locations["Tavern"]["Channel_ID"]])
         players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"drinkingmedal"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
+        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        drinktenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
         print(f"lowscore is equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
-        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        hp_pull= max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll, so you lose 1/4 of your current hp! \nNew HP: {hpmoji}" , user_id=[authorid] )
+        drinkprivate = interactions.api.models.message.Embed(
+            title = f"Damaged by lost Drinking Challenge!",
+            color = 0xff0000,
+            description = f"You had the lowest roll in the Tavern and lost 1/4 of your current hp!",
+            image = drinktenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=drinkprivate)
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else :
+        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        drinktenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
         print(f"lowscore is not equal to playerscore")
         hp_pull = players[str(authorid)]["HP"]
         hp_pull=min(hp_pull+math.ceil((10000-hp_pull)/4),10000)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is not the low roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is not the low roll. They heal for 1/4 of their missing health!" , channel_id=[locations["Tavern"]["Channel_ID"]])
+        drinkprivate = interactions.api.models.message.Embed(
+            title = f"Healed by Drinking Challenge!",
+            color = 0x09ff00,
+            description = f"You did not have the lowest roll in the Tavern and healed 1/4 of your missing hp!",
+            image = drinktenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=drinkprivate)
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
