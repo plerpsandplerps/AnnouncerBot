@@ -1406,77 +1406,158 @@ async def doloot(authorid):
     Lastaction_pull = players[str(authorid)]["Lastaction"]
     EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
     playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("loot") * 1)) + (EquippedInventory_pull.count("adventuringgear") * 1)
+    current_time = int(time.time())
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
-    current_time = int(time.time())
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "loot"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    if scores[str("NPC4")]["Scoreexpiry"] > current_time :
+    if scores[str("NPC6")]["Scoreexpiry"] > current_time :
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
-        print("NPC4 score is not expired, and has not been rewritten")
+        print("NPC6 score is not expired, and has not been rewritten")
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
     else:
-        scores[str("NPC4")]["Score"] = int(random.randint(1,4)-1)
-        scores[str("NPC4")]["Scoreexpiry"] = current_time +cooldown
-        print("NPC4 score is expired, and has been rewritten")
+        scores[str("NPC6")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC6")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC6 score is expired, and has been rewritten")
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    if scores[str("NPC3")]["Scoreexpiry"] > current_time:
+    if scores[str("NPC5")]["Scoreexpiry"] > current_time:
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
-        print("NPC3 score is not expired, and has not been rewritten")
+        print("NPC5 score is not expired, and has not been rewritten")
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
     else:
-        scores[str("NPC3")]["Score"] = int(random.randint(1,4)-1)
-        scores[str("NPC3")]["Scoreexpiry"] = current_time +cooldown
-        print("NPC3 score is expired, and has been rewritten")
+        scores[str("NPC5")]["Score"] = int(random.randint(1,4)-1)
+        scores[str("NPC5")]["Scoreexpiry"] = current_time +cooldown
+        print("NPC5 score is expired, and has been rewritten")
         highscore= max(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    scores[str(authorid)] = {}
-    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
-    scores[str(authorid)]["Media"] = ""
-    scores[str(authorid)]["Score"] = playerroll
-    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    highscoremedia = "https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif"
+    for x in scores.values():
+        if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+            highscoremedia = x["Media"]
+            highscorename = x["Username"]
     with open("dungeon.json","w") as o:
         json.dump(scores,o, indent=4)
     print("Player dungeon Score Saved")
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Dungeon"]["Channel_ID"]])
+        highscoremedia = "https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll!"
+        loottenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
+        loottenor = interactions.api.models.message.Embed(
+            title = f"Defeated by {highscorename}!",
+            color = 0xff0000,
+            description = f"<@{authorid}> tripped, rolled a nat one, then was hit by a trap! Very embarassing.\n\n{damagedesc} \n\nThey failed to loot because of {highscorename}!",
+            image = loottenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        dungeonchannel=str(locations["Dungeon"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=dungeonchannel, force='http')
+        await channel.send(embeds=loottenor)
     else:
-        print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got a random item." , channel_id=[locations["Dungeon"]["Channel_ID"]])
+        print(f"playerscore is equal to or higher than the highscore")
+        highscoremedia = "https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll!"
+        usernameauthor = players[str(authorid)]["Username"]
+        loottenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
+        loottenor = interactions.api.models.message.Embed(
+            title = f"{usernameauthor} is successful!",
+            color = 0x09ff00,
+            description = f"<@{authorid}> slayed beast after beast, until they were the last one standing!\n\nThey looted a random item!",
+            image = loottenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        dungeonchannel=str(locations["Dungeon"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=dungeonchannel, force='http')
+        await channel.send(embeds=loottenor)
+        #shop item random
         shop = await getshopdata()
         randomitem = random.choice(list(shop))
-        await send_message(f"<@{authorid}> you gained {randomitem} as a random item.", user_id=[authorid])
+        loottenorimage = interactions.EmbedImageStruct(
+                            url="https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif",
+                            height = 375,
+                            width = 500,
+                            )
+        lootprivate = interactions.api.models.message.Embed(
+            title = f"You looted!",
+            color = 0x09ff00,
+            description = f"You had the high roll in the Dungeon and gained {randomitem}!",
+            image = loottenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=drinkprivate)
         players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
         print(f"lowscore is equal to playerscore")
+        highscoremedia = "https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        loottenorimage = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 375,
+                            width = 500,
+                            )
         hp_pull = players[str(authorid)]["HP"]
-        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        hp_pull= max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[locations["Dungeon"]["Channel_ID"]] )
+        lootprivate = interactions.api.models.message.Embed(
+            title = f"Damaged by failed looting!",
+            color = 0xff0000,
+            description = f"You had the lowest roll in the Dungeon and lost 1/4 of your current hp!",
+            image = loottenorimage,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=lootprivate)
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else :
         print(f"lowscore is not equal to playerscore")
-        await send_message(f"<@{authorid}> your roll of {playerroll} is not the low roll.", user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is not the low roll." , channel_id=[locations["Dungeon"]["Channel_ID"]])
-        players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     with open("players.json","w") as f:
