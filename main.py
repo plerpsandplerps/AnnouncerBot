@@ -1242,7 +1242,7 @@ async def dodrink(authorid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+    highscoremedia = "https://i.imgur.com/Mt9swvj.png"
     for x in scores.values():
         if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
             highscoremedia = x["Media"]
@@ -1253,7 +1253,7 @@ async def dodrink(authorid):
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        highscoremedia = "https://i.imgur.com/Mt9swvj.png"
         for x in scores.values():
             if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
                 highscoremedia = x["Media"]
@@ -1278,13 +1278,13 @@ async def dodrink(authorid):
         channel = await interactions.get(bot, interactions.Channel, object_id=tavernchannel , force='http')
         await channel.send(embeds=drinktenor)
     else:
-        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        highscoremedia = "https://i.imgur.com/Mt9swvj.png"
         for x in scores.values():
             if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
                 highscoremedia = x["Media"]
                 highscorename = x["Username"]
         drinktenorimage = interactions.EmbedImageStruct(
-                            url="https://i.imgur.com/TxUSKwi.png",
+                            url="https://i.imgur.com/Mt9swvj.png",
                             height = 375,
                             width = 500,
                             )
@@ -1309,7 +1309,7 @@ async def dodrink(authorid):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
-        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        highscoremedia = "https://i.imgur.com/Mt9swvj.png"
         for x in scores.values():
             if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
                 highscoremedia = x["Media"]
@@ -1336,7 +1336,7 @@ async def dodrink(authorid):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else :
-        highscoremedia = "https://i.imgur.com/TxUSKwi.png"
+        highscoremedia = "https://i.imgur.com/Mt9swvj.png"
         for x in scores.values():
             if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
                 highscoremedia = x["Media"]
