@@ -1760,8 +1760,6 @@ async def dogoodiebag(authorid):
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
-    #add the item to the user's Equippedinventory
-    players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"goodiebag"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     await send_message(f"<@{authorid}> used goodiebag to gain a random item! ", channel_id=[channelid])
