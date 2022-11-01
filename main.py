@@ -51,8 +51,6 @@ async def on_ready():
     membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"" } for k, v in membersdict.items() if v[1] != 'True'}
     players = await getplayerdata()
     bounty = await getbountydata()
-    print(bounty)
-    print(membersdict)
     for key in bounty.keys():
       if key in membersdict.keys():
         membersdict[key]['SC']+=bounty[key]['SC']
@@ -347,10 +345,10 @@ async def pollformana():
         reminders = await getreminderdata()
         for key in readyplayers:
           if key in reminders:
-            print(key)
-            await send_message(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=[key])
+            user = await interactions.get(bot, interactions.Member, object_id=[key], guild_id=guildid, force='http')
+            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
         #don't turn this on until the bot is not relaunching often
-        await asyncio.sleep(int(1*60*60*24)) #timer
+        await asyncio.sleep(int(1*60*60*12)) #timer
 
 
 async def pollforqueue():
@@ -375,7 +373,8 @@ async def pollforqueue():
         for key in noqueueplayers:
           if key in reminders:
             print(key)
-            await send_message(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9", user_id=[key])
+            user = await interactions.get(bot, interactions.Member, object_id=[key], guild_id=guildid, force='http')
+            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*48)) #timer
 
