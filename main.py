@@ -1029,7 +1029,7 @@ async def farm(ctx: interactions.CommandContext):
 
 #aid is below
 
-async def doaid(authorid, playertarget):
+async def doaid(authorid, targetid):
     await rage(authorid)
     players = await getplayerdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1037,10 +1037,6 @@ async def doaid(authorid, playertarget):
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     print(f"{playertarget} is the player target")
-    for k,v in players.items():
-        if v['Username']==str(playertarget):
-            targetid=k
-    print(f"{targetid} is the player target id")
     targethp=players[str(targetid)]["HP"]
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -1073,6 +1069,10 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
     current_time = int(time.time())
     channelid=ctx.channel_id
     authorid=ctx.author.id
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
     if str(ctx.author.id) in players:
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
@@ -1083,7 +1083,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
-            await queuenexttarget("aid",ctx,playertarget)
+            await queuenexttarget("aid",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
             await ctx.send(f"You aid!",ephemeral=True)
