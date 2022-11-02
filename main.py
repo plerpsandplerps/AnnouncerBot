@@ -1512,6 +1512,8 @@ async def doloot(authorid):
         #shop item random
         shop = await getshopdata()
         randomitem = random.choice(list(shop))
+        hp_pull = players[str(authorid)]["HP"]
+        hpmoji = await hpmojiconv(hp_pull)
         loottenorimage = interactions.EmbedImageStruct(
                             url="https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif",
                             height = 375,
@@ -1679,14 +1681,14 @@ async def douse(authorid, readyitem):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
-    loop = asyncio.get_running_loop()
-    loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
     manacost = shop[str(readyitem)]["ManaCost"]
     print(f"{authorid} will use {readyitem} for {manacost}!")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[str(readyitem)]["ManaCost"]
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+    loop = asyncio.get_running_loop()
+    loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
 
 @bot.command(
     name="use",
