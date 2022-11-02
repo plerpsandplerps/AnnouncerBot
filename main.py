@@ -1036,7 +1036,7 @@ async def doaid(authorid, targetid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
-    print(f"{playertarget} is the player target")
+    print(f"{targetid} is the player target")
     targethp=players[str(targetid)]["HP"]
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -1046,7 +1046,7 @@ async def doaid(authorid, targetid):
     hpmoji = await hpmojiconv(targethp)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, playertarget])
+    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, targetid])
     await send_message(f"<@{authorid}> used aid on <@{targetid}> to heal them! ", channel_id=[channelid])
 
 
@@ -1092,7 +1092,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
                 await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
             else :
                 await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await doaid(ctx.author.id, playertarget,channelid)
+            await doaid(ctx.author.id, targetid)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
