@@ -276,7 +276,7 @@ async def pollfornext():
                         loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
                     elif words[0] == "use":
-                        loop.create_task(functiondict[words[1]](**{'authorid': k}))
+                        loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in players:
                         if len(words) == 3:
@@ -346,7 +346,7 @@ async def pollformana():
         reminders = await getreminderdata()
         for key in readyplayers:
           if key in reminders:
-            user = await interactions.get(bot, interactions.Member, object_id=[key], guild_id=guildid, force='http')
+            user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
             await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*12)) #timer
@@ -3062,6 +3062,21 @@ async def paginator_test(ctx: interactions.CommandContext):
         ],
     ).run()
 
+
+@bot.command(
+    name="mana",
+    description="give yourself mana, this is for testing purposes only.",
+    scope = guildid,
+    )
+async def mana(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    players[ctx.author.id]["Mana"] = players[ctx.author.id]["Mana"] + 1
+    players[ctx.author.id]["ReadyDate"] = players[ctx.author.id]["ReadyDate"] - 86400
+    await ctx.send(f"You gained a Mana!", ephemeral = True)
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
 
 functiondict = {'lightattack' : dolightattack,
                 'heavyattack' : doheavyattack,
