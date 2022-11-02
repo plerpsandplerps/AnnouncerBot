@@ -1159,7 +1159,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
-        elif players[str(authorid)]["SC"] <= shop[str(itemtarget)]["Cost"]:
+        elif SC_pull < cost:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ", ephemeral = True)
         elif manacost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((manacost-Mana_pull-1),0))*basecd
