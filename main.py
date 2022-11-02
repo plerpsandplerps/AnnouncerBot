@@ -291,6 +291,7 @@ async def pollfornext():
                     elif words[1] in shop:
                         loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                    players = await getplayerdata()
                     players[k]['Nextaction'] = ""
                     with open("players.json", "w") as f:
                         json.dump(players, f, indent=4)
@@ -467,7 +468,6 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
     players[ctx.author.id]["Nextaction"]=saveaction
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-
     return
 
 #light attack is below
@@ -1111,6 +1111,9 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 async def dotrade(authorid, itemtarget):
     await rage(authorid)
+    print("dotrade")
+    print(f"{authorid}")
+    print(f"{itemtarget}")
     players = await getplayerdata()
     shop = await getshopdata()
     current_time = int(time.time())
@@ -1527,7 +1530,7 @@ async def doloot(authorid):
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=drinkprivate)
+        await user.send(embeds=lootprivate)
         players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
