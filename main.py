@@ -1678,15 +1678,18 @@ async def douse(authorid, readyitem):
     players = await getplayerdata()
     shop = await getshopdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    manacost = shop[str(readyitem)]["ManaCost"]
+    print(f"{authorid} will use {readyitem} for {manacost}!")
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    manacost = shop[str(readyitem)]["ManaCost"]
-    print(f"{authorid} will use {readyitem} for {manacost}!")
+    print("Step1")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[str(readyitem)]["ManaCost"]
+    print("Step2")
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+    print("Step3")
     loop = asyncio.get_running_loop()
     loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
 
@@ -3080,7 +3083,8 @@ functiondict = {'lightattack' : dolightattack,
                 'goodiebag':dogoodiebag,
                 'critterihardlyknowher':docritterihardlyknowher,
                 'localligmaoutbreak':dolocalligmaoutbreak,
-                'trade':dotrade}
+                'trade':dotrade,
+                'use' : douse}
 
 
 
