@@ -1238,14 +1238,39 @@ async def doaid(authorid, targetid):
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "aid"
-    players[str(targetid)]["HP"] = players[str(targetid)]["HP"] + heal
+    players[str(targetid)]["HP"] = min(players[str(targetid)]["HP"] + heal, 10000)
     targethp=players[str(targetid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was healed by aid from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid, targetid])
-    await send_message(f"<@{authorid}> used aid on <@{targetid}> to heal them! ", channel_id=[channelid])
-
+    aidimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/Uj6IStN.png",
+                        height = 512,
+                        width = 512,
+                        )
+    aidemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} aids {players[str(targetid)]['Username']}!",
+        color = 0x2da66b,
+        description = f"<@{authorid}> channels the Keep's strength into <@{targetid}> healing them!",
+        image = aidimg,
+        )
+    aiderchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    aidedchannel=str(locations[players[str(targetid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=aiderchannel , force='http')
+    await channel.send(embeds=aidemb)
+    channel2 = await interactions.get(bot, interactions.Channel, object_id=aidedchannel , force='http')
+    await channel2.send(embeds=aidemb)
+    aidembpriv = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} aids {players[str(targetid)]['Username']}!",
+        color = 0x2da66b,
+        description = f"<@{authorid}> channels the Keep's strength into <@{targetid}> healing them!",
+        image = aidimg,
+        fields = [interactions.EmbedField(name="Heal",value=heal,inline=True),interactions.EmbedField(name="New Target HP",value=hpmoji,inline=True)],
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=aidembpriv)
+    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user2.send(embeds=aidembpriv)
 
 @bot.command(
     name="aid",
