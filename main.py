@@ -2655,7 +2655,18 @@ async def button_response(ctx):
     row = interactions.ActionRow(
     components=[button5hp, button25hp, button50hp, button75hp, button100hp]
 )
-    await ctx.send(f"How much of your HP would you like to wager?", components = row, ephemeral=True)
+    gambleimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/cvbHkgt.png",
+                        height = 512,
+                        width = 512,
+                        )
+    gamblehp = interactions.api.models.message.Embed(
+        title = "Gamble HP",
+        color = 0xfff700,
+        description = f"How much of your HP would you like to wager?",
+        image = gambleimg,
+        )
+    await ctx.send(embeds = gamblehp, components = row, ephemeral=True)
 
 button5hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2666,26 +2677,44 @@ button5hp = interactions.Button(
 @bot.component("button5hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    hpnumber = 5
     if flip == 1:
+        hpchange = 0-hpnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -5
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        targethp = players[str(ctx.author.id)]["HP"]
-        targetid = ctx.author.id
-        authorid = ctx.author.id
-        await deadcheck(targethp,targetid,authorid,players)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five health with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        hpchange = hpnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +5, 10000)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five health with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] + hpchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targethp = players[str(ctx.author.id)]["HP"]
+    targetid = ctx.author.id
+    authorid = ctx.author.id
+    await deadcheck(targethp,targetid,authorid,players)
+    hpmoji = await hpmojiconv(targethp)
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {hpnumber} health with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji,inline=False),interactions.EmbedField(name="HP Change",value=hpchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
+
 
 button25hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2696,26 +2725,43 @@ button25hp = interactions.Button(
 @bot.component("button25hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    hpnumber = 25
     if flip == 1:
+        hpchange = 0-hpnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -25
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        targethp = players[str(ctx.author.id)]["HP"]
-        targetid = ctx.author.id
-        authorid = ctx.author.id
-        await deadcheck(targethp,targetid,authorid,players)
-        await ctx.send(f"You rolled ribs!", ephemeral=True)
-        await send_message(f"You {tag} twenty-five health with /gamble!",channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        hpchange = hpnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +25, 10000)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} twenty-five health with /gamble!", channel_id=[general],ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] + hpchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targethp = players[str(ctx.author.id)]["HP"]
+    targetid = ctx.author.id
+    authorid = ctx.author.id
+    await deadcheck(targethp,targetid,authorid,players)
+    hpmoji = await hpmojiconv(targethp)
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {hpnumber} health with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji,inline=False),interactions.EmbedField(name="HP Change",value=hpchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button50hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2726,27 +2772,43 @@ button50hp = interactions.Button(
 @bot.component("button50hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    hpnumber = 50
     if flip == 1:
+        hpchange = 0-hpnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -50
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        targethp = players[str(ctx.author.id)]["HP"]
-        targetid = ctx.author.id
-        authorid = ctx.author.id
-        await deadcheck(targethp,targetid,authorid,players)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} fifty health with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        hpchange = hpnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +50, 10000)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} fifty health with /gamble!", channel_id=[general], ephemeral=False)
-
+        tag2 = "loins"
+    players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] + hpchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targethp = players[str(ctx.author.id)]["HP"]
+    targetid = ctx.author.id
+    authorid = ctx.author.id
+    await deadcheck(targethp,targetid,authorid,players)
+    hpmoji = await hpmojiconv(targethp)
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {hpnumber} health with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji,inline=False),interactions.EmbedField(name="HP Change",value=hpchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button75hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2757,26 +2819,43 @@ button75hp = interactions.Button(
 @bot.component("button75hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    hpnumber = 75
     if flip == 1:
+        hpchange = 0-hpnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -75
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        targethp = players[str(ctx.author.id)]["HP"]
-        targetid = ctx.author.id
-        authorid = ctx.author.id
-        await deadcheck(targethp,targetid,authorid,players)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health with /gamble!",channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        hpchange = hpnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +75, 10000)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} seventy-five health with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] + hpchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targethp = players[str(ctx.author.id)]["HP"]
+    targetid = ctx.author.id
+    authorid = ctx.author.id
+    await deadcheck(targethp,targetid,authorid,players)
+    hpmoji = await hpmojiconv(targethp)
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {hpnumber} health with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji,inline=False),interactions.EmbedField(name="HP Change",value=hpchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button100hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2787,26 +2866,43 @@ button100hp = interactions.Button(
 @bot.component("button100hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    hpnumber = 100
     if flip == 1:
+        hpchange = 0-hpnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] -100
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        targethp = players[str(ctx.author.id)]["HP"]
-        targetid = ctx.author.id
-        authorid = ctx.author.id
-        await deadcheck(targethp,targetid,authorid,players)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one hundred health with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        hpchange = hpnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["HP"] = min(players[str(ctx.author.id)]["HP"] +100, 10000)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one hundred health with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["HP"] = players[str(ctx.author.id)]["HP"] + hpchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targethp = players[str(ctx.author.id)]["HP"]
+    targetid = ctx.author.id
+    authorid = ctx.author.id
+    await deadcheck(targethp,targetid,authorid,players)
+    hpmoji = await hpmojiconv(targethp)
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {hpnumber} health with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="HP",value=hpmoji,inline=False),interactions.EmbedField(name="HP Change",value=hpchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 gamblescbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2819,7 +2915,18 @@ async def button_response(ctx):
     row = interactions.ActionRow(
     components=[button1sc, button2sc, button3sc, button4sc, button5sc]
 )
-    await ctx.send(f"How many SC would you like to wager?\n\n*p.s. beware, you can go negative*", components = row, ephemeral=True)
+    gambleimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/cvbHkgt.png",
+                        height = 512,
+                        width = 512,
+                        )
+    gamblesc = interactions.api.models.message.Embed(
+        title = "Gamble SC",
+        color = 0xfff700,
+        description = f"How much of your SC would you like to wager?",
+        image = gambleimg,
+        )
+    await ctx.send(embeds = gamblesc, components = row, ephemeral=True)
 
 button1sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2830,23 +2937,41 @@ button1sc = interactions.Button(
 @bot.component("button1sc")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    scnumber = 1
     if flip == 1:
+        scchange = 0-scnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] -1
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one SC with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        scchange = scnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] +1
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} one SC with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targetSC = players[str(ctx.author.id)]["SC"]
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
+#delete below
 
 button2sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2857,23 +2982,39 @@ button2sc = interactions.Button(
 @bot.component("button2sc")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    scnumber = 2
     if flip == 1:
+        scchange = 0-scnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] -2
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} two SC with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        scchange = scnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] +2
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} two SC with /gamble!", channel_id=[general], ephemeral=False)
-
+        tag2 = "loins"
+    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targetSC = players[str(ctx.author.id)]["SC"]
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button3sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2884,22 +3025,39 @@ button3sc = interactions.Button(
 @bot.component("button3sc")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    scnumber = 3
     if flip == 1:
+        scchange = 0-scnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] -3
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} three SC with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        scchange = scnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] +3
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} three SC with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targetSC = players[str(ctx.author.id)]["SC"]
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button4sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2910,22 +3068,39 @@ button4sc = interactions.Button(
 @bot.component("button4sc")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    scnumber = 4
     if flip == 1:
+        scchange = 0-scnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] -4
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} four SC with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        scchange = scnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] +4
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} four SC with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targetSC = players[str(ctx.author.id)]["SC"]
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 button5sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2936,22 +3111,39 @@ button5sc = interactions.Button(
 @bot.component("button5sc")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
+    players = await getplayerdata()
+    scnumber = 5
     if flip == 1:
+        scchange = 0-scnumber
+        title = "Lost"
+        color2 = 0xff0000
         tag = "lost"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] -5
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled ribs!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five SC with /gamble!", channel_id=[general], ephemeral=False)
-    elif flip == 2:
+        tag2 = "ribs"
+    else:
+        scchange = scnumber
+        title = "Won"
+        color2 = 0x1aff00
         tag = "won"
-        players = await getplayerdata()
-        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] +5
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        await ctx.send(f"<@{ctx.author.id}> rolled loins!", ephemeral=True)
-        await send_message(f"<@{ctx.author.id}> {tag} five SC with /gamble!", channel_id=[general], ephemeral=False)
+        tag2 = "loins"
+    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    targetSC = players[str(ctx.author.id)]["SC"]
+    gambleimg = interactions.EmbedImageStruct(
+                url="https://i.imgur.com/cvbHkgt.png",
+                height = 512,
+                width = 512,
+                )
+    gamblehp = interactions.api.models.message.Embed(
+        title = f"{title}",
+        color = color2,
+        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+        image = gambleimg,
+        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+        )
+    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+    await channel.send(embeds = gamblehp)
 
 @bot.command(
     name="gamble",
@@ -2966,7 +3158,18 @@ async def gamble(ctx: interactions.CommandContext,):
     row = interactions.ActionRow(
     components=[gamblehpbutton, gamblescbutton]
 )
-    await ctx.send(f"What would you like to gamble?", components = row, ephemeral = True)
+    gambleimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/cvbHkgt.png",
+                        height = 512,
+                        width = 512,
+                        )
+    gambleemb = interactions.api.models.message.Embed(
+        title = f"What would you like to gamble?",
+        color = 0xfff700,
+        description = f"Choose health or SC",
+        image = gambleimg,
+        )
+    await ctx.send(embeds = gambleemb, components = row, ephemeral = True)
 
 @bot.command(
     name="quit",
