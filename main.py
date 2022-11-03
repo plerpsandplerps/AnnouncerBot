@@ -1308,13 +1308,14 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget("aid",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You aid!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await doaid(ctx.author.id, targetid)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            aidemb = interactions.api.models.message.Embed(
+                title = f"You aid {players[str(targetid)]['Username']}!",
+                color = 0x2da66b,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=aidemb,ephemeral = True)
+            await doaid(ctx.author.id,targetid)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
