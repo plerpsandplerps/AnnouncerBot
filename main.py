@@ -1188,7 +1188,7 @@ async def dofarm(authorid):
     farmerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=farmerchannel , force='http')
     await channel.send(embeds=farmemb)
-    
+
 @bot.command(
     name="farm",
     description="1mana. roll 1d4 gain that many seed coins.",
@@ -1212,12 +1212,13 @@ async def farm(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You farm!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            farmemb = interactions.api.models.message.Embed(
+                title = f"You farm!",
+                color = 0x2c3d00,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=farmemb,ephemeral = True)
             await dofarm(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
