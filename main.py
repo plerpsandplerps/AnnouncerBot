@@ -1998,6 +1998,40 @@ async def douse(authorid, readyitem):
     loop = asyncio.get_running_loop()
     await loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
 
+
+@bot.command(
+    name="battlelich",
+    description="1mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.",
+    scope = guildid,
+)
+async def battlelich(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    if str(ctx.author.id) in players:
+        cost = 1
+        Mana_pull = players[str(ctx.author.id)]["Mana"]
+        if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
+            await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
+        elif cost-Mana_pull > 0:
+            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await queuenext(ctx)
+            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        else:
+            manamoji = await manamojiconv(Mana_pull- cost)
+            lichemb = interactions.api.models.message.Embed(
+                title = f"You battle the lich!",
+                color = 0x000000,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=lichemb,ephemeral = True)
+            await dobattlelich(ctx.author.id,targetid)
+    else:
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
+
 @bot.command(
     name="use",
     description="x mana. use or equip an item in your inventory",
@@ -2055,38 +2089,6 @@ async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
-
-@bot.command(
-    name="battlelich",
-    description="1mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.",
-    scope = guildid,
-)
-async def battlelich(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    if str(ctx.author.id) in players:
-        cost = 1
-        Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
-        elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-            with open("players.json", "w") as f:
-                json.dump(players, f, indent=4)
-            await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
-        else:
-            await ctx.send(f"You battle the lich!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dobattlelich(ctx.author.id)
-    else:
-        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
 #lichitem is below
 
