@@ -989,8 +989,9 @@ async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     channelid=ctx.channel_id
     resting = False
-    if "RestTimer" in players[str(targetid)] :
-        if current_time < players[str(targetid)]["RestTimer"]:
+    current_time = int(time.time())
+    if "RestTimer" in players[str(ctx.author.id)] :
+        if current_time < players[str(ctx.author.id)]["RestTimer"]:
             resting = True
             print("resting")
     if str(ctx.author.id) in players:
@@ -2229,7 +2230,7 @@ resthelpbutton = interactions.Button(
 
 @bot.component("Rest")
 async def button_response(ctx):
-    await ctx.send(f"**Rest**\n/rest\nYou rest for 24h, gain a mana, and heal half your missing health rounded up. You cannot use this twice in a row.", ephemeral=True)
+    await ctx.send(f"**Rest**\n/rest\nYou rest for 24h, gain a mana, and heal half your missing health rounded up. You cannot rest while you are resting.", ephemeral=True)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
