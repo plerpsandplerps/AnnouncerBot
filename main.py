@@ -1703,7 +1703,7 @@ async def doloot(authorid):
                             )
         loottenor = interactions.api.models.message.Embed(
             title = f"Defeated by {highscorename}!",
-            color = 0xff0000,
+            color = 0x474545,
             description = f"<@{authorid}> tripped, rolled a nat one, then was hit by a trap! Very embarassing.\n\n{damagedesc} \n\nThey failed to loot because of {highscorename}!",
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
@@ -1730,7 +1730,7 @@ async def doloot(authorid):
                             )
         loottenor = interactions.api.models.message.Embed(
             title = f"{usernameauthor} is successful!",
-            color = 0x09ff00,
+            color = 0x474545,
             description = f"<@{authorid}> slayed beast after beast, until they were the last one standing!\n\nThey looted a random item!",
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
@@ -1750,7 +1750,7 @@ async def doloot(authorid):
                             )
         lootprivate = interactions.api.models.message.Embed(
             title = f"You looted!",
-            color = 0x09ff00,
+            color = 0x474545,
             description = f"You had the high roll in the Dungeon and gained {randomitem}!",
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
@@ -1777,7 +1777,7 @@ async def doloot(authorid):
         hpmoji = await hpmojiconv(hp_pull)
         lootprivate = interactions.api.models.message.Embed(
             title = f"Damaged by failed looting!",
-            color = 0xff0000,
+            color = 0x474545,
             description = f"You had the lowest roll in the Dungeon and lost 1/4 of your current hp!",
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
@@ -1819,7 +1819,7 @@ async def loot(ctx: interactions.CommandContext):
             manamoji = await manamojiconv(Mana_pull- cost)
             manaemb = interactions.api.models.message.Embed(
                 title = f"You attempt to loot!",
-                color = 0x000000,
+                color = 0x474545,
                 fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
             )
             await ctx.send(embeds=manaemb,ephemeral = True)
