@@ -1355,10 +1355,17 @@ async def dotrade(authorid, itemtarget):
     players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+itemtarget
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+    tradeimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/rMJUaGR.png",
+                        height = 512,
+                        width = 512,
+                        )
     tradeemb = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} buys an item!",
         color = 0xfff700,
+        image = tradeimg,
         description = f"<@{authorid}> haggles for a {itemtarget}",
+        fields = [interactions.EmbedField(name="Item Bought",value=itemtarget,inline=True)],
         )
     buyerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=buyerchannel , force='http')
@@ -1366,12 +1373,12 @@ async def dotrade(authorid, itemtarget):
     tradeembpriv = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} buys an item!",
         color = 0xfff700,
+        image = tradeimg,
         description = f"<@{authorid}> haggles for a {itemtarget}",
         fields = [interactions.EmbedField(name="Item Bought",value=itemtarget,inline=True),interactions.EmbedField(name="SC Remaining",value=players[str(authorid)]["SC"],inline=True)],
         )
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     await user.send(embeds=tradeembpriv)
-
 
 @bot.command(
     name="trade",
@@ -1410,7 +1417,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             await queuenexttarget("trade",ctx,itemtarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            manamoji = await manamojiconv(Mana_pull - cost)
+            manamoji = await manamojiconv(Mana_pull - manacost)
             manaemb = interactions.api.models.message.Embed(
                 title = f"You trade!",
                 color = 0xfff700,
