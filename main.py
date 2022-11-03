@@ -479,7 +479,12 @@ async def dolightattack(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
+    evading = False
+    if "EvadeTimer" in players[str(targetid)] :
+        if current_time < players[str(targetid)]["EvadeTimer"]:
+            evading = True
+            print("evading")
+    if evading:
         await rage(authorid)
         players = await getplayerdata()
         damage = 0
@@ -610,7 +615,12 @@ async def doheavyattack(authorid,targetid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if players[str(targetid)]["Lastaction"] == "evade" and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
+    evading = False
+    if "EvadeTimer" in players[str(targetid)] :
+        if current_time < players[str(targetid)]["EvadeTimer"]:
+            evading = True
+            print("evading")
+    if evading:
         await rage(authorid)
         players = await getplayerdata()
         damage = 0
