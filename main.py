@@ -644,32 +644,32 @@ async def doheavyattack(authorid,targetid):
         else:
             print("nocrit")
             crit = ""
-        heavyattackimage = interactions.EmbedImageStruct(
-                            url=heavyattackurl,
-                            height = 512,
-                            width = 512,
-                            )
-        heavyattackemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
-            color = 0xed8a34,
-            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
-            image = heavyattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
-        )
-        attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
-        channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
-        await channel.send(embeds=heavyattackemb)
-        heavyattackprivemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
-            color = 0xed8a34,
-            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
-            image = heavyattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
-        )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=heavyattackprivemb)
-        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-        await user2.send(embeds=heavyattackprivemb)
+    heavyattackimage = interactions.EmbedImageStruct(
+                        url=heavyattackurl,
+                        height = 512,
+                        width = 512,
+                        )
+    heavyattackemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
+        color = 0xed8a34,
+        description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+        image = heavyattackimage,
+        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+    )
+    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+    await channel.send(embeds=heavyattackemb)
+    heavyattackprivemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
+        color = 0xed8a34,
+        description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+        image = heavyattackimage,
+        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=heavyattackprivemb)
+    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user2.send(embeds=heavyattackprivemb)
 
 @bot.command(
     name="heavyattack",
@@ -734,38 +734,81 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #interrupt is below
 async def dointerrupt(authorid,targetid):
+    await rage(authorid)
+    interrupturl = "https://i.imgur.com/elTFUmW.png"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    if (players[str(targetid)]["Lastaction"] == "evade" or players[str(targetid)]["Lastaction"] == "rest") and (players[str(targetid)]["Lastactiontime"]+86400)<current_time:
-        await rage(authorid)
-        players = await getplayerdata()
-        targethp = players[str(targetid)]["HP"] - 4200
+    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+    resting = False
+    evading = False
+    if "EvadeTimer" in players[str(targetid)] :
+        if current_time < players[str(targetid)]["EvadeTimer"]:
+            evading = True
+            print("evading")
+    elif "RestTimer" in players[str(targetid)] :
+        if current_time < players[str(targetid)]["RestTimer"]:
+            resting = True
+            print("resting")
+    if resting or evading:
+        damage = 4200
+        targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
         await deadcheck(targethp,targetid,authorid,players)
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "interrupt"
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was hit and damaged by an interrupt by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message(f"<@{authorid}> used an interrupt on <@{targetid}>! ",channel_id=channelid)
     else:
-        await rage(authorid)
-        players = await getplayerdata()
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+        damage = 0
+        targethp = players[str(targetid)]["HP"] - damage
+        hpmoji = await hpmojiconv(targethp)
         players[str(authorid)]["Lastaction"] = "interrupt"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> was not damaged by an interrupt from <@{authorid}>!", user_id=[authorid,targetid])
-        await send_message(f"<@{authorid}> used an interrupt on <@{targetid}>! ",channel_id=[channelid])
+    interruptimage = interactions.EmbedImageStruct(
+                        url=interrupturl,
+                        height = 512,
+                        width = 512,
+                        )
+    oldnextaction = players[str(targetid)]["Nextaction"]
+    newnextaction = ""
+    players[str(targetid)]["Nextaction"] = ""
+    desc = ""
+    removequeue = "No"
+    if oldnextaction != newnextaction:
+        desc = f"Removed the queued action: **{oldnextaction}**"
+        removequeue = "Yes"
+    interruptemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
+        color = 0x8541fa,
+        description = f"<@{authorid}> makes distracting noises at <@{targetid}>!",
+        image = interruptimage,
+        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
+        )
+    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+    await channel.send(embeds=interruptemb)
+    interruptembpriv = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']}  tries to interrupt {players[str(targetid)]['Username']}!",
+        color = 0x8541fa,
+        description = f"<@{authorid}> makes distracting noises at <@{targetid}>!\n\n{desc}",
+        image = interruptimage,
+        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=interruptembpriv)
+    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user2.send(embeds=interruptembpriv)
+    with open("players.json", "w") as f:
+        json.dump(players, f, indent=4)
 
 @bot.command(
     name="interrupt",
-    description="1mana. hit a player in your area for 4200 if they are resting or evading.",
+    description="1mana. 4200dmg to a target in area if they are resting/evading. they lose any queued actions.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -797,13 +840,14 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget("interrupt",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You interrupt!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dointerrupt(ctx.author.id, targetid)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            interruptemb = interactions.api.models.message.Embed(
+                title = f"You interrupt {players[str(targetid)]['Username']}!",
+                color = 0x8541fa,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=interruptemb,ephemeral = True)
+            await dointerrupt(ctx.author.id,targetid)
     else:
         await ctx.send(f"You aren't in the competition!", ephemeral=True)
 
