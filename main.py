@@ -474,6 +474,7 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
 async def dolightattack(authorid,targetid):
     lightattackurl = "https://i.imgur.com/2TlYCY0.png"
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -604,6 +605,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def doheavyattack(authorid,targetid):
     heavyattackurl = "https://i.imgur.com/n6c3tNt.png"
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -656,7 +658,7 @@ async def doheavyattack(authorid,targetid):
         )
         attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
-        await channel.send(embeds=lightattackemb)
+        await channel.send(embeds=heavyattackemb)
         heavyattackprivemb = interactions.api.models.message.Embed(
             title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
             color = 0xed8a34,
@@ -733,6 +735,7 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #interrupt is below
 async def dointerrupt(authorid,targetid):
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -822,6 +825,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 async def doevade(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -866,6 +870,7 @@ async def evade_command(ctx: interactions.CommandContext):
 async def dorest(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -917,6 +922,7 @@ async def rest_command(ctx: interactions.CommandContext):
 async def doexchange(authorid, targetid, readyitem):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -1027,6 +1033,7 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
 async def dofarm(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1083,6 +1090,7 @@ async def farm(ctx: interactions.CommandContext):
 async def doaid(authorid, targetid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -1166,6 +1174,7 @@ async def dotrade(authorid, itemtarget):
     print(f"{authorid}")
     print(f"{itemtarget}")
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     shop = await getshopdata()
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1250,6 +1259,7 @@ async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 async def dodrink(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     scores = await gettaverndata()
     cooldown = basecd
     current_time = int(time.time())
@@ -1455,6 +1465,7 @@ async def drink(ctx: interactions.CommandContext):
 async def doloot(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     scores = await getdungeondata()
     cooldown = basecd
     Lastaction_pull = players[str(authorid)]["Lastaction"]
@@ -1656,6 +1667,7 @@ async def loot(ctx: interactions.CommandContext):
 async def dobattlelich(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     scores = await getlichdata()
     Lastaction_pull = players[str(authorid)]["Lastaction"]
     cooldown = basecd
@@ -1730,6 +1742,7 @@ async def dobattlelich(authorid):
 
 async def douse(authorid, readyitem):
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     shop = await getshopdata()
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     manacost = shop[str(readyitem)]["ManaCost"]
@@ -1745,7 +1758,7 @@ async def douse(authorid, readyitem):
         json.dump(players,f, indent=4)
     print("Step3")
     loop = asyncio.get_running_loop()
-    loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
+    await loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
 
 @bot.command(
     name="use",
@@ -1842,6 +1855,7 @@ async def battlelich(ctx: interactions.CommandContext):
 async def dolichitem(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -1866,6 +1880,7 @@ async def dolichitem(authorid):
 async def dodrinkingmedal(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -1887,6 +1902,7 @@ async def dodrinkingmedal(authorid):
 async def dogoodiebag(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
@@ -1910,6 +1926,7 @@ async def dogoodiebag(authorid):
 async def dotractor(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -1929,6 +1946,7 @@ async def dotractor(authorid):
 async def docritterihardlyknowher(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -1948,6 +1966,7 @@ async def docritterihardlyknowher(authorid):
 async def dobeerbando(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "beerbando"
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -1968,6 +1987,7 @@ async def dobeerbando(authorid):
 async def dolocalligmaoutbreak(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     ligma = await getligmadata()
     current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "localligmaoutbreak"
@@ -1992,6 +2012,7 @@ async def dolocalligmaoutbreak(authorid):
 async def doAWP(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -2011,6 +2032,7 @@ async def doAWP(authorid):
 async def docrookedabacus(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -2030,6 +2052,7 @@ async def docrookedabacus(authorid):
 async def doadventuringgear(authorid):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
@@ -2831,13 +2854,13 @@ async def status (ctx: interactions.CommandContext):
 async def dotravel(authorid,destination):
     await rage(authorid)
     players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     if players[str(authorid)]["Location"] == "Crossroads" or destination == "Crossroads":
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "travelto"
         players[str(authorid)]["Location"] = destination
-        players[str(authorid)]["Nextaction"] = ""
         await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
         await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
