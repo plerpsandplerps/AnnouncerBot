@@ -982,7 +982,7 @@ async def dorest(authorid):
 
 @bot.command(
     name="rest",
-    description="1mana. heal half your missing health rounded up.",
+    description="you rest for 24h, gain a mana, and heal half your missing health rounded up",
     scope = guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
@@ -2218,7 +2218,7 @@ resthelpbutton = interactions.Button(
 
 @bot.component("Rest")
 async def button_response(ctx):
-    await ctx.send(f"**Rest**\n/rest\n1 mana. Heal half of your missing health rounded up unless you used rest as your last action.", ephemeral=True)
+    await ctx.send(f"**Rest**\n/rest\nYou rest for 24h, gain a mana, and heal half your missing health rounded up. You cannot use this twice in a row.", ephemeral=True)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
