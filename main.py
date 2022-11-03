@@ -988,13 +988,24 @@ async def dorest(authorid):
 async def rest_command(ctx: interactions.CommandContext):
     players = await getplayerdata()
     channelid=ctx.channel_id
+    resting = False
+    if "RestTimer" in players[str(targetid)] :
+        if current_time < players[str(targetid)]["RestTimer"]:
+            resting = True
+            print("resting")
     if str(ctx.author.id) in players:
         current_time = int(time.time())
         Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
         cost = -1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
-        if Lastaction_pull == "rest":
-                await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
+        if resting:
+                manamoji = await manamojiconv(Mana_pull)
+                restemb = interactions.api.models.message.Embed(
+                    title = f"You cannot rest! You are still resting from your last rest!",
+                    color = 0x05ad0b,
+                    fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+                )
+                await ctx.send(embeds=restemb,ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             restemb = interactions.api.models.message.Embed(
