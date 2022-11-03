@@ -1355,8 +1355,22 @@ async def dotrade(authorid, itemtarget):
     players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        "+itemtarget
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"One {itemtarget} was purchased by <@{authorid}> from the shop!", user_id=[authorid])
-    await send_message(f"<@{authorid}> purchased an item from the shop! ", channel_id=[channelid])
+    tradeemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} buys an item!",
+        color = 0xfff700,
+        description = f"<@{authorid}> haggles for a {itemtarget}",
+        )
+    buyerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=buyerchannel , force='http')
+    await channel.send(embeds=tradeemb)
+    tradeembpriv = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} buys an item!",
+        color = 0xfff700,
+        description = f"<@{authorid}> haggles for a {itemtarget}",
+        fields = [interactions.EmbedField(name="Item Bought",value=itemtarget,inline=True),interactions.EmbedField(name="SC Remaining",value=players[str(authorid)]["SC"],inline=True)],
+        )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=tradeembpriv)
 
 
 @bot.command(
@@ -1396,13 +1410,14 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             await queuenexttarget("trade",ctx,itemtarget)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You trade!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - manacost > 0:
-                manamoji = await manamojiconv(Mana_pull - manacost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await dotrade(ctx.author.id, itemtarget)
+            manamoji = await manamojiconv(Mana_pull - cost)
+            manaemb = interactions.api.models.message.Embed(
+                title = f"You trade!",
+                color = 0xfff700,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=manaemb,ephemeral = True)
+            await dotrade(ctx.author.id,itemtarget)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
@@ -1698,8 +1713,8 @@ async def doloot(authorid):
             damagedesc = "This roll is not the lowest roll!"
         loottenorimage = interactions.EmbedImageStruct(
                             url=highscoremedia,
-                            height = 375,
-                            width = 500,
+                            height = 512,
+                            width = 512,
                             )
         loottenor = interactions.api.models.message.Embed(
             title = f"Defeated by {highscorename}!",
@@ -1725,8 +1740,8 @@ async def doloot(authorid):
         usernameauthor = players[str(authorid)]["Username"]
         loottenorimage = interactions.EmbedImageStruct(
                             url=highscoremedia,
-                            height = 375,
-                            width = 500,
+                            height = 512,
+                            width = 512,
                             )
         loottenor = interactions.api.models.message.Embed(
             title = f"{usernameauthor} is successful!",
@@ -1745,8 +1760,8 @@ async def doloot(authorid):
         hpmoji = await hpmojiconv(hp_pull)
         loottenorimage = interactions.EmbedImageStruct(
                             url="https://media.tenor.com/c1VeLRFcWJAAAAAS/adventuretime-dungeon.gif",
-                            height = 375,
-                            width = 500,
+                            height = 512,
+                            width = 512,
                             )
         lootprivate = interactions.api.models.message.Embed(
             title = f"You looted!",
@@ -1769,8 +1784,8 @@ async def doloot(authorid):
                 highscorename = x["Username"]
         loottenorimage = interactions.EmbedImageStruct(
                             url=highscoremedia,
-                            height = 375,
-                            width = 500,
+                            height = 512,
+                            width = 512,
                             )
         hp_pull = players[str(authorid)]["HP"]
         hp_pull= max(hp_pull - math.ceil(hp_pull/4),0)
