@@ -964,7 +964,7 @@ async def dorest(authorid):
     restembpriv = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} is now resting!",
         color = 0x05ad0b,
-        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}> and immediately gains 1 mana and heals half their missing health rounded up!",
+        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}>, immediately gains 1 mana, and immediately heals half their missing health rounded up!",
         image = restimg,
         fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="HP",value=hpmoji,inline=True)],
         )
