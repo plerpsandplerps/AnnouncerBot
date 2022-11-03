@@ -602,6 +602,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #heavy attack is below
 async def doheavyattack(authorid,targetid):
+    heavyattackurl = "https://i.imgur.com/n6c3tNt.png"
     players = await getplayerdata()
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -619,8 +620,6 @@ async def doheavyattack(authorid,targetid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a heavy attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message(f"<@{authorid}> used a heavy attack on <@{targetid}>! ", channel_id=[channelid])
     else:
         await rage(authorid)
         players = await getplayerdata()
@@ -639,11 +638,36 @@ async def doheavyattack(authorid,targetid):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         if critroll >= 10:
-            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
+            crit = "**CRITICAL HIT!\n\n**"
         else:
             print("nocrit")
-        await send_message(f"<@{targetid}> was hit by a heavy attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message( f"<@{authorid}> used a heavy attack on <@{targetid}>! ", channel_id=[channelid])
+            crit = ""
+        heavyattackimage = interactions.EmbedImageStruct(
+                            url=heavyattackurl,
+                            height = 512,
+                            width = 512,
+                            )
+        heavyattackemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
+            color = 0xed8a34,
+            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+            image = heavyattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+        )
+        attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+        await channel.send(embeds=lightattackemb)
+        heavyattackprivemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
+            color = 0xed8a34,
+            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+            image = heavyattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=heavyattackprivemb)
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=heavyattackprivemb)
 
 @bot.command(
     name="heavyattack",
@@ -680,13 +704,14 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             await queuenexttarget("heavyattack",ctx,targetid)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You heavy attack!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await doheavyattack(ctx.author.id, targetid)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            heavyattackemb = interactions.api.models.message.Embed(
+                title = f"You heavy attack {players[str(targetid)]['Username']}!",
+                color = 0xed8a34,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=heavyattackemb,ephemeral = True)
+            await doheavyattack(ctx.author.id,targetid)
     else:
         await ctx.send(f"You aren't in the competition!", ephemeral=True)
 
