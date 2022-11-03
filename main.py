@@ -2713,7 +2713,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 
 button25hp = interactions.Button(
@@ -2761,7 +2761,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button50hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2808,7 +2808,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button75hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2855,7 +2855,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button100hp = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2902,7 +2902,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 gamblescbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2969,7 +2969,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 #delete below
 
@@ -3014,7 +3014,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button3sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3057,7 +3057,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button4sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3100,7 +3100,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 button5sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3143,7 +3143,7 @@ async def button_response(ctx):
         )
     gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await channel.send(embeds = gamblehp)
+    await ctx.send(embeds = gamblehp)
 
 @bot.command(
     name="gamble",
