@@ -1173,10 +1173,22 @@ async def dofarm(authorid):
     players[str(authorid)]["Lastaction"] = "farm"
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-    #TODO implement channel specific messages... I don't have permission->channel linking in my test env
-    await send_message(f"<@{authorid}> farmed {farmSC} from farming", user_id=[authorid]) #channel_id=[farmland])
-    await send_message(f"<@{authorid}> farmed! ", channel_id=[channelid])
-
+    farmimg = interactions.EmbedImageStruct(
+                        url="https://i.imgur.com/gugGWzp.png",
+                        height = 512,
+                        width = 512,
+                        )
+    farmemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} farms the land!",
+        color = 0x2c3d00,
+        description = f"<@{authorid}> works a sweat in those fields!",
+        image = farmimg,
+        fields = [interactions.EmbedField(name="Farmed SC",value=farmSC,inline=True)],
+        )
+    farmerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=farmerchannel , force='http')
+    await channel.send(embeds=farmemb)
+    
 @bot.command(
     name="farm",
     description="1mana. roll 1d4 gain that many seed coins.",
