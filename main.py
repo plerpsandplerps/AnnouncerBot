@@ -1040,9 +1040,32 @@ async def doexchange(authorid, targetid, readyitem):
     players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{targetid}> was given {readyitem} from <@{authorid}>!", user_id=[authorid, targetid])
-    await send_message(f"<@{authorid}> gave an item to <@{targetid}>! ", channel_id=[channelid], ephemeral=False)
-
+    exchangeurl = "https://i.imgur.com/SMNJPty.png"
+    exchangeimg = interactions.EmbedImageStruct(
+                        url=exchangeurl,
+                        height = 512,
+                        width = 512,
+                        )
+    exchangeemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} gives {players[str(targetid)]['Username']} an item!",
+        color = 0xbaaa1c,
+        description = f"<@{authorid}> is in a corner shaking hands with <@{targetid}>!",
+        image = exchangeimg,
+    )
+    exchangechannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=exchangechannel , force='http')
+    await channel.send(embeds=exchangeemb)
+    exchangeembpriv = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} gives {players[str(targetid)]['Username']} an item!",
+        color = 0xbaaa1c,
+        description = f"<@{authorid}> is in a corner shaking hands with <@{targetid}>!",
+        image = exchangeimg,
+        fields = [interactions.EmbedField(name="Item Given",value=readyitem,inline=True)],
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=exchangeembpriv)
+    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user2.send(embeds=exchangeembpriv)
 
 @bot.command(
     name="exchange",
@@ -1091,13 +1114,14 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             await queuenexttarget("exchange",ctx,targetid,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You exchange!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await doexchange(ctx.author.id, targetid,readyitem)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            exchangeemb = interactions.api.models.message.Embed(
+                title = f"You exchange with {players[str(targetid)]['Username']}!",
+                color = 0xbaaa1c,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=exchangeemb,ephemeral = True)
+            await doexchange(ctx.author.id,targetid,readyitem)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
