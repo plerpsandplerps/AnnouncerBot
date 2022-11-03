@@ -803,7 +803,7 @@ async def dointerrupt(authorid,targetid):
     channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
     await channel.send(embeds=interruptemb)
     interruptembpriv = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']}  tries to interrupt {players[str(targetid)]['Username']}!",
+        title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
         color = 0x8541fa,
         description = f"<@{authorid}> makes distracting noises at <@{targetid}>!\n\n{desc}",
         image = interruptimage,
@@ -2090,13 +2090,14 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             await queuenexttarget("use",ctx,readyitem)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You use an item!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
-            await douse(ctx.author.id, readyitem)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            manaemb = interactions.api.models.message.Embed(
+                title = f"You use the {readyitem}!",
+                color = 0x633914,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=manaemb,ephemeral = True)
+            await douse(ctx.author.id,readyitem)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
@@ -2125,9 +2126,9 @@ async def dolichitem(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "lichitem"
-    targethp=players[str(targetid)]["HP"]
+    targethp=players[str(authorid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
-    user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        lichitem','',1)
@@ -2135,7 +2136,21 @@ async def dolichitem(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"]+"\n        lichitem"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> equipped a lichitem to protect themselves from their next death! ", channel_id=[channelid])
+    itemurl="https://media.tenor.com/tBozA1n6mysAAAAC/lich-skeleton.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips a Lich Item!",
+        color = 0x633914,
+        description = f"<@{authorid}> equips a lich item. It's v icky and v gross. This will protect them from their next death.",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 
 #drinkingmedal is below
@@ -2157,7 +2172,21 @@ async def dodrinkingmedal(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"drinkingmedal"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used drinkingmedal to increase their lightattack damage by 420! ", channel_id=[channelid])
+    itemurl="https://img.gifglobe.com/grabs/peepshow/S08E02/gif/h5CvJrGpnvQ8.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips a Drinking Medal!",
+        color = 0x633914,
+        description = f"<@{authorid}> smiles strangely as they put the medal around their neck. Their light attacks do 420 additional damage.",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 
 #goodiebag is below
@@ -2175,14 +2204,41 @@ async def dogoodiebag(authorid):
     #get a randomitem
     shop = await getshopdata()
     randomitem = random.choice(list(shop))
-    await send_message(f"<@{authorid}> you gained {randomitem} as a random item.", user_id=[authorid])
+    itemurl="https://media2.giphy.com/media/3o6EhZ8YQpXqIndxNm/200.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} opens a Goodie Bag!",
+        color = 0x633914,
+        description = f"<@{authorid}> cracks open a cold Goodie Bag for a **{randomitem}**!",
+        image = itemimg,
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=itememb)
     players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+str(randomitem)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        goodiebag','',1)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used goodiebag to gain a random item! ", channel_id=[channelid])
+    itemurl="https://media2.giphy.com/media/3o6EhZ8YQpXqIndxNm/200.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} opens a Goodie Bag!",
+        color = 0x633914,
+        description = f"<@{authorid}> cracks open a cold Goodie Bag for a random item!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #tractor is below
 
@@ -2202,7 +2258,21 @@ async def dotractor(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"tractor"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used tractor to increase their farm profit by 1! ", channel_id=[channelid])
+    itemurl="https://media.tenor.com/sH_KNNF07EoAAAAC/honest-word-its-honest-work.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips a Tractor!",
+        color = 0x633914,
+        description = f"<@{authorid}> puts a tractor underneath themselves so that they gain an additional SC whenever they /farm!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #critterihardlyknowher is below
 
@@ -2222,7 +2292,21 @@ async def docritterihardlyknowher(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"critterihardlyknowher"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used critterihardlyknowher to increase their crit rolls by 1 for the rest of the game!\n(Crit is a 1d10 roll, a 10 or higher is a crit that increases damage by 50%) \n", channel_id=[channelid])
+    itemurl="https://media0.giphy.com/media/3ohhwDjtC2yP75kota/giphy.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips a Critter I hardly Know her!",
+        color = 0x633914,
+        description = f"<@{authorid}> equips Critter I hardly Know Her and is v ugly. Their critical rolls are increased by 1 for the rest of the game.\n*(Crit is a 1d10 roll, a 10 or higher is a crit that increases damage by 50%)*",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #beer-bandolier is below
 
@@ -2243,7 +2327,21 @@ async def dobeerbando(authorid):
     #add the item to the user's Equippedinventory
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used beerbando to increase their rage by 3! ", channel_id=[channelid])
+    itemurl="https://media.tenor.com/eSp3S65iz6IAAAAM/beer-german.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} cracks open a BeerBando!",
+        color = 0x633914,
+        description = f"<@{authorid}> pulls a beer out of their bandolier and chugs it to increase their Rage:fire: by 3!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #localligmaoutbreak is below
 
@@ -2268,7 +2366,21 @@ async def dolocalligmaoutbreak(authorid):
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        localligmaoutbreak','',1)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used a local ligma outbreak! \n\n\n||LIGMA BALLS|| dealt {ligmadamage_pull} to @everyone in {location}!!", channel_id=[channelid])
+    itemurl="https://media.tenor.com/K9s5fCvjG4AAAAAM/average-ligma-member-ligma.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} activates a Local Ligma Outbreak!",
+        color = 0x633914,
+        description = f"<@{authorid}> activates a local ligma outbreak! \n\n\n||LIGMA BALLS|| dealt {ligmadamage_pull} to @everyone in {location}!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #AWP is below
 
@@ -2288,7 +2400,22 @@ async def doAWP(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"AWP"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> needs to pick up a weel gun! \n\nThey have equipped an AWP, to decrease the mana cost of their heavy attacks to 2! ", channel_id=[channelid])
+    itemurl="https://i.imgur.com/5DIpVK2.png"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips an AWP!",
+        color = 0x633914,
+        description = f"<@{authorid}> needs to pick up a weel gun! They've reduced the mana cost of their heavy attacks to two.",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
+
 
 #Crooked Abacus is below
 
@@ -2308,7 +2435,21 @@ async def docrookedabacus(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"crookedabacus"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used a crookedabacus to gain a seedcoin whenever they /trade or /exchange for the rest of the game! ", channel_id=[channelid])
+    itemurl="https://i.imgur.com/D28u510.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips a Crooked Abacus!",
+        color = 0x633914,
+        description = f"<@{authorid}>'s math seems off. They gain a SC whenever they /trade or /exchange!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 #adventuringgear is below
 
@@ -2328,7 +2469,21 @@ async def doadventuringgear(authorid):
     players[str(authorid)]["EquippedInventory"]=players[str(authorid)]["EquippedInventory"] + "\n        "+"adventuringgear"
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    await send_message(f"<@{authorid}> used adventuringgear to score one higher whenever they /loot for the rest of the game! ", channel_id=[channelid])
+    itemurl="https://media.tenor.com/v8IHthjAtpkAAAAC/the-hobbit-bilbo.gif"
+    itemimg = interactions.EmbedImageStruct(
+                        url=itemurl,
+                        height = 512,
+                        width = 512,
+                        )
+    itememb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} equips Adventuring Gear!",
+        color = 0x633914,
+        description = f"<@{authorid}> equips adventuring gear to score one higher when they /loot!",
+        image = itemimg,
+    )
+    userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=userchannel , force='http')
+    await channel.send(embeds=itememb)
 
 actionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
