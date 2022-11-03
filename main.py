@@ -2196,7 +2196,7 @@ interrupthelpbutton = interactions.Button(
 
 @bot.component("Interrupt")
 async def button_response(ctx):
-    await ctx.send(f"**Interrupt**\n/interrupt\n1 mana. hit a player in your area for 4200 if they are resting or evading. they lose any queued actions.", ephemeral=True)
+    await ctx.send(f"**Interrupt**\n/interrupt\n1 mana. Attack a player in your area for 4200 damage if they are resting or evading. They lose any queued actions.", ephemeral=True)
 
 
 evadehelpbutton = interactions.Button(
@@ -2207,7 +2207,7 @@ evadehelpbutton = interactions.Button(
 
 @bot.component("Evade")
 async def button_response(ctx):
-    await ctx.send(f"**Evade**\n/evade\n1 mana. Receive no damage from light or heavy attacks for 24h.", ephemeral=True)
+    await ctx.send(f"**Evade**\n/evade\n1 mana. You evade for 24h. You receive no damage from light or heavy attacks while evading.", ephemeral=True)
 
 
 resthelpbutton = interactions.Button(
