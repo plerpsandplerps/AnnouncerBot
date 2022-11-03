@@ -3804,7 +3804,7 @@ async def mana(ctx: interactions.CommandContext):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    players[ctx.author.id]["Mana"] = players[ctx.author.id]["Mana"] + 1
+    players[ctx.author.id]["Mana"] = min(players[ctx.author.id]["Mana"] + 1,3)
     players[ctx.author.id]["ReadyDate"] = players[ctx.author.id]["ReadyDate"] - 86400
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -3812,7 +3812,7 @@ async def mana(ctx: interactions.CommandContext):
     manaemb = interactions.api.models.message.Embed(
         title = f"You gain a mana!",
         color = 0x8541fa,
-        fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
     )
     await ctx.send(embeds=manaemb,ephemeral = True)
 
