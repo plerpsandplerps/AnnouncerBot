@@ -2657,8 +2657,8 @@ async def button_response(ctx):
 )
     gambleimg = interactions.EmbedImageStruct(
                         url="https://i.imgur.com/cvbHkgt.png",
-                        height = 512,
-                        width = 512,
+                        height = 64,
+                        width = 64,
                         )
     gamblehp = interactions.api.models.message.Embed(
         title = "Gamble HP",
@@ -2673,7 +2673,7 @@ button5hp = interactions.Button(
     label="5 HP",
     custom_id="button5hp",
 )
- 
+
 @bot.component("button5hp")
 async def button_response(ctx):
     flip =  int(random.randint(1, 2))
@@ -2701,8 +2701,8 @@ async def button_response(ctx):
     hpmoji = await hpmojiconv(targethp)
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -2749,8 +2749,8 @@ async def button_response(ctx):
     hpmoji = await hpmojiconv(targethp)
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -2796,8 +2796,8 @@ async def button_response(ctx):
     hpmoji = await hpmojiconv(targethp)
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -2843,8 +2843,8 @@ async def button_response(ctx):
     hpmoji = await hpmojiconv(targethp)
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -2890,8 +2890,8 @@ async def button_response(ctx):
     hpmoji = await hpmojiconv(targethp)
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -2917,8 +2917,8 @@ async def button_response(ctx):
 )
     gambleimg = interactions.EmbedImageStruct(
                         url="https://i.imgur.com/cvbHkgt.png",
-                        height = 512,
-                        width = 512,
+                        height = 64,
+                        width = 64,
                         )
     gamblesc = interactions.api.models.message.Embed(
         title = "Gamble SC",
@@ -2957,8 +2957,8 @@ async def button_response(ctx):
     targetSC = players[str(ctx.author.id)]["SC"]
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -3002,8 +3002,8 @@ async def button_response(ctx):
     targetSC = players[str(ctx.author.id)]["SC"]
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -3045,8 +3045,8 @@ async def button_response(ctx):
     targetSC = players[str(ctx.author.id)]["SC"]
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -3088,8 +3088,8 @@ async def button_response(ctx):
     targetSC = players[str(ctx.author.id)]["SC"]
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -3131,8 +3131,8 @@ async def button_response(ctx):
     targetSC = players[str(ctx.author.id)]["SC"]
     gambleimg = interactions.EmbedImageStruct(
                 url="https://i.imgur.com/cvbHkgt.png",
-                height = 512,
-                width = 512,
+                height = 64,
+                width = 64,
                 )
     gamblehp = interactions.api.models.message.Embed(
         title = f"{title}",
@@ -3160,8 +3160,8 @@ async def gamble(ctx: interactions.CommandContext,):
 )
     gambleimg = interactions.EmbedImageStruct(
                         url="https://i.imgur.com/cvbHkgt.png",
-                        height = 512,
-                        width = 512,
+                        height = 64,
+                        width = 64,
                         )
     gambleemb = interactions.api.models.message.Embed(
         title = f"What would you like to gamble?",
