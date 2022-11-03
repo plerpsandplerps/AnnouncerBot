@@ -906,7 +906,7 @@ async def doevade(authorid):
 
 @bot.command(
     name="evade",
-    description="1mana. receive no damage from light or heavy attacks for the next 24h",
+    description="1mana. you are evading for the next 24h receiving no dmg from light or heavy attacks",
     scope = guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
@@ -937,6 +937,7 @@ async def evade_command(ctx: interactions.CommandContext):
 #rest is below
 async def dorest(authorid):
     await rage(authorid)
+    resturl = "https://i.imgur.com/x2dKzh5.png"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -944,18 +945,44 @@ async def dorest(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+    players[str(authorid)]["Mana"] = min(players[str(authorid)]["Mana"] + 1,3)
+    mana_pull = players[str(authorid)]["Mana"]
+    manamoji = await manamojiconv(mana_pull)
+    current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "rest"
     players[str(authorid)]["Lastactiontime"] = current_time
+    players[str(authorid)]["RestTimer"] = current_time + 86400
     players[str(authorid)]["HP"] = min(players[str(authorid)]["HP"] + heal, 10000)
     hpmoji = await hpmojiconv(players[str(authorid)]["HP"])
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-    await send_message(f"<@{authorid}> used rest!  \nNew Hp: {hpmoji}", user_id=[authorid])
+    restimg = interactions.EmbedImageStruct(
+                        url=resturl,
+                        height = 512,
+                        width = 512,
+                        )
+    restembpriv = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} is now resting!",
+        color = 0x05ad0b,
+        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}> and immediately gains 1 mana and heals half their missing health rounded up!",
+        image = restimg,
+        fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="HP",value=hpmoji,inline=True)],
+        )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=restembpriv)
+    restemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} is now resting!",
+        color = 0x05ad0b,
+        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}> and immediately gains 1 mana and heals half their missing health rounded up!",
+        image = restimg,
+        )
+    restchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=restchannel , force='http')
+    await channel.send(embeds=restemb)
 
 @bot.command(
     name="rest",
-    description="1mana. heal half your missing health rounded up unless you rested last action.",
+    description="1mana. heal half your missing health rounded up.",
     scope = guildid,
 )
 async def rest_command(ctx: interactions.CommandContext):
@@ -968,20 +995,14 @@ async def rest_command(ctx: interactions.CommandContext):
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if Lastaction_pull == "rest":
                 await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
-        elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
-            with open("players.json", "w") as f:
-                json.dump(players, f, indent=4)
-            await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You rest!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            restemb = interactions.api.models.message.Embed(
+                title = f"You rest!",
+                color = 0x05ad0b,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=restemb,ephemeral = True)
             await dorest(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
