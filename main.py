@@ -273,23 +273,23 @@ async def pollfornext():
                     #do the action
                     loop = asyncio.get_running_loop()
                     if len(words) == 1:
-                        loop.create_task(functiondict[words[0]](**{'authorid': k}))
+                        await loop.create_task(functiondict[words[0]](**{'authorid': k}))
                         print(f"{v['Username']} is doing {words[0]}")
                     elif words[0] == "use":
-                        loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
+                        await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in players:
                         if len(words) == 3:
-                            loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
                             print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
                         else:
                             print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
-                            loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
                     elif words[1] in locations:
-                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                        await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     elif words[1] in shop:
-                        loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
+                        await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
                         print(f"{v['Username']} is doing {words[0]} {words[1]}")
                     players = await getplayerdata()
                     players[k]['Nextaction'] = ""
@@ -309,7 +309,7 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                     elif words[1] in shop:
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-        await asyncio.sleep(180)
+        await asyncio.sleep(60)
 
 async def pollformanagain():
     #run forever
@@ -324,7 +324,7 @@ async def pollformanagain():
                     v['Mana'] = min(v['Mana']+1,3)
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
-        await asyncio.sleep(180)
+        await asyncio.sleep(60)
 
 async def pollformana():
     #run forever
@@ -472,6 +472,7 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
 
 #light attack is below
 async def dolightattack(authorid,targetid):
+    lightattackurl = "https://i.imgur.com/2TlYCY0.png"
     players = await getplayerdata()
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -482,6 +483,7 @@ async def dolightattack(authorid,targetid):
         players = await getplayerdata()
         damage = 0
         targethp = players[str(targetid)]["HP"] - damage
+        critroll = 0
         players[str(targetid)]["HP"] = targethp
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -489,14 +491,12 @@ async def dolightattack(authorid,targetid):
         hpmoji = await hpmojiconv(targethp)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{targetid}> evaded a light attack from <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message(f"<@{authorid}> used a light attack on <@{targetid}>! ", channel_id=[channelid])
     else:
         await rage(authorid)
         players = await getplayerdata()
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
+        critroll = random.randint(1, 10) + EquippedInventory_pull.count("critterihardlyknowher")
         critdmg = max(critroll-9,0)*950
         damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
@@ -509,11 +509,36 @@ async def dolightattack(authorid,targetid):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         if critroll >= 10:
-            send_message( f"<@{authorid}> scored a **CRITICAL HIT** on <@{targetid}>!", channel_id=[channelid])
+            crit = "**CRITICAL HIT!\n\n**"
         else:
             print("nocrit")
-        await send_message(f"<@{targetid}> was hit by a light attack by <@{authorid}>! \nNew HP: {hpmoji} ", user_id=[authorid,targetid])
-        await send_message( f"<@{authorid}> used a light attack on <@{targetid}>! ", channel_id=[channelid])
+            crit = ""
+    lightattackimage = interactions.EmbedImageStruct(
+                        url=lightattackurl,
+                        height = 512,
+                        width = 512,
+                        )
+    lightattackemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} light attacks {players[str(targetid)]['Username']}!",
+        color = 0x34b7eb,
+        description = f"{crit}<@{authorid}> threw a quick jab at <@{targetid}>!",
+        image = lightattackimage,
+        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+    )
+    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+    await channel.send(embeds=lightattackemb)
+    lightattackprivemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} light attacked {players[str(targetid)]['Username']}!",
+        color = 0x34b7eb,
+        description = f"{crit}<@{authorid}> throws a quick jab at <@{targetid}>!",
+        image = lightattackimage,
+        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+    )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=lightattackprivemb)
+    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+    await user2.send(embeds=lightattackprivemb)
 
 @bot.command(
     name="lightattack",
@@ -547,14 +572,15 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("lightattack",ctx,targetid)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that!\n\nThe action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You light attack!\n\nSubmit another action!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull- cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            lightattackemb = interactions.api.models.message.Embed(
+                title = f"You light attack {players[str(targetid)]['Username']}!",
+                color = 0x34b7eb,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=lightattackemb,ephemeral = True)
             await dolightattack(ctx.author.id,targetid)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
@@ -840,7 +866,7 @@ async def rest_command(ctx: interactions.CommandContext):
     if str(ctx.author.id) in players:
         current_time = int(time.time())
         Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
-        cost = 1
+        cost = -1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if Lastaction_pull == "rest":
                 await ctx.send(f"You cannot rest! You rested as your last action!", ephemeral = True)
