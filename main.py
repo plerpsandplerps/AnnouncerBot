@@ -2971,7 +2971,7 @@ async def dotravel(authorid,destination):
             json.dump(players, f, indent=4)
         newtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} travels from {oldlocation} to {newlocation}!",
+            title = f"{players[str(authorid)]['Username']} travels from the {oldlocation} to the {newlocation}!",
             color = 0xad7205,
             description = f"<@{authorid}> saunters over to the {newlocation}!",
             image = travelimg,
@@ -3000,10 +3000,20 @@ async def travel(ctx: interactions.CommandContext):
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if players[str(ctx.author.id)]["Location"] != "Crossroads":
             row = interactions.spread_to_rows(traveltocrossroadsbutton)
-            await ctx.send(f"You aren't in the Crossroads! You must travel to the Crossroads before you travel to another location!", components = row, ephemeral = True)
+            travelemb = interactions.api.models.message.Embed(
+                title = f"You aren't in the Crossroads",
+                color = 0xad7205,
+                description = f"You must travel to the crossroads before you travel to another location!",
+                )
+            await ctx.send(embeds=travelemb, components = row, ephemeral = True)
         else:
             row = interactions.spread_to_rows(traveltodungeonbutton, traveltofarmlandbutton, traveltokeepbutton, traveltolichcastlebutton, traveltoshopbutton, traveltotavernbutton)
-            await ctx.send(f"Where would you like to travel to?", components = row, ephemeral = True)
+            travelemb = interactions.api.models.message.Embed(
+                title = f"You are in the Crossroads",
+                color = 0xad7205,
+                description = f"Where would you like to travel?",
+                )
+            await ctx.send(embeds=travelemb, components = row, ephemeral = True)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
@@ -3029,12 +3039,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 traveltodungeonbutton = interactions.Button(
@@ -3059,12 +3070,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 
@@ -3090,12 +3102,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 traveltokeepbutton = interactions.Button(
@@ -3120,12 +3133,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 traveltolichcastlebutton = interactions.Button(
@@ -3150,12 +3164,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 traveltoshopbutton = interactions.Button(
@@ -3180,12 +3195,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 traveltotavernbutton = interactions.Button(
@@ -3210,12 +3226,13 @@ async def button_response(ctx):
         await queuenexttarget("travel",ctx,destination)
         await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
     else:
-        await ctx.send(f"You travel!\n\nSubmit another command!",ephemeral=True)
-        if Mana_pull - cost > 0:
-            manamoji = await manamojiconv(Mana_pull - cost)
-            await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-        else :
-            await ctx.send(f"Your next action will be queued.",ephemeral=True)
+        manamoji = await manamojiconv(Mana_pull- cost)
+        travelemb = interactions.api.models.message.Embed(
+            title = f"You travel!",
+            color = 0xad7205,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
 
 @bot.command(name="paginatortest", description="Paginator testing")
