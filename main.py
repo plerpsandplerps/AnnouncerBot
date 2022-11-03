@@ -1816,12 +1816,13 @@ async def loot(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You loot!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            manaemb = interactions.api.models.message.Embed(
+                title = f"You attempt to loot!",
+                color = 0x000000,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=manaemb,ephemeral = True)
             await doloot(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
@@ -2028,7 +2029,7 @@ async def battlelich(ctx: interactions.CommandContext):
                 fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
             )
             await ctx.send(embeds=lichemb,ephemeral = True)
-            await dobattlelich(ctx.author.id,targetid)
+            await dobattlelich(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
