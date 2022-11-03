@@ -878,22 +878,35 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 #evade is below
 async def doevade(authorid):
     await rage(authorid)
+    evadeurl = "https://i.imgur.com/auBfBJ8.png"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    players[str(authorid)]["Evade"] = True
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "evade"
     players[str(authorid)]["Lastactiontime"] = current_time
+    players[str(authorid)]["EvadeTimer"] = current_time + 86400
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
-    await send_message(f"<@{authorid}> used evade! ",user_id=[authorid])
+    evadeimg = interactions.EmbedImageStruct(
+                        url=evadeurl,
+                        height = 512,
+                        width = 512,
+                        )
+    evadeemb = interactions.api.models.message.Embed(
+        title = f"{players[str(authorid)]['Username']} is now evading!",
+        color = 0x41faaa,
+        description = f"<@{authorid}> is dodging all hands until <t:{players[str(authorid)]['EvadeTimer']}>!",
+        image = evadeimg,
+        )
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    await user.send(embeds=evadeemb)
 
 @bot.command(
     name="evade",
-    description="1mana. receive no damage from light or heavy attacks",
+    description="1mana. receive no damage from light or heavy attacks for the next 24h",
     scope = guildid,
 )
 async def evade_command(ctx: interactions.CommandContext):
@@ -910,12 +923,13 @@ async def evade_command(ctx: interactions.CommandContext):
             await queuenext(ctx)
             await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
         else:
-            await ctx.send(f"You evade!\n\nSubmit another command!",ephemeral=True)
-            if Mana_pull - cost > 0:
-                manamoji = await manamojiconv(Mana_pull - cost)
-                await ctx.send(f"You have {manamoji} mana remaining",ephemeral=True)
-            else :
-                await ctx.send(f"Your next action will be queued.",ephemeral=True)
+            manamoji = await manamojiconv(Mana_pull- cost)
+            evadeemb = interactions.api.models.message.Embed(
+                title = f"You begin evading!",
+                color = 0x41faaa,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=evadeemb,ephemeral = True)
             await doevade(ctx.author.id)
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
