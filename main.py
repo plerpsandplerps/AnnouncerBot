@@ -1826,19 +1826,26 @@ async def loot(ctx: interactions.CommandContext):
     else:
         await ctx.send(f"You aren't in the competition!" , ephemeral = True)
 
-#battlelich is below
+#dobattlelich is below
 
 async def dobattlelich(authorid):
     await rage(authorid)
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     scores = await getlichdata()
-    Lastaction_pull = players[str(authorid)]["Lastaction"]
     cooldown = basecd
+    Lastaction_pull = players[str(authorid)]["Lastaction"]
+    EquippedInventory_pull=players[str(authorid)]["EquippedInventory"]
     playerroll = int(int(random.randint(1,4)) + (Lastaction_pull.count("battlelich") * 1))
+    current_time = int(time.time())
+    scores[str(authorid)] = {}
+    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
+    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
+    scores[str(authorid)]["Score"] = playerroll
+    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
-    current_time = int(time.time())
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "battlelich"
     with open("players.json","w") as f:
@@ -1871,38 +1878,105 @@ async def dobattlelich(authorid):
         lowscore= min(x["Score"] for x in scores.values() if x["Scoreexpiry"] > current_time)
         print(f"highscore is {highscore}")
         print(f"lowscore is {lowscore}")
-    scores[str(authorid)] = {}
-    scores[str(authorid)]["Username"] = players[str(authorid)]["Username"]
-    scores[str(authorid)]["Media"] = ""
-    scores[str(authorid)]["Score"] = playerroll
-    scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    highscoremedia = "https://i.imgur.com/WoG1ubB.png"
+    for x in scores.values():
+        if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+            highscoremedia = x["Media"]
+            highscorename = x["Username"]
     with open("lichcastle.json","w") as l:
         json.dump(scores,l, indent=4)
-    print("Player Lich Score Saved")
+    print("Player dungeon Score Saved")
     #check if the max is greater than the player's roll
     if highscore > playerroll:
         print(f"playerscore is lower than highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} failed to beat the high score of {highscore}" , channel_id=[locations["Lich's Castle"]["Channel_ID"]])
+        highscoremedia = "https://i.imgur.com/WoG1ubB.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll!"
+        lichimg = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 500,
+                            width = 500,
+                            )
+        lichemb = interactions.api.models.message.Embed(
+            title = f"Defeated by {highscorename}!",
+            color = 0x000000,
+            description = f"<@{authorid}> was tossed around, smacked around, and bashed around! Very embarassing.\n\n{damagedesc} \n\nThey failed to gain the lich item because of {highscorename}!",
+            image = lichimg,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        lichchannel=str(locations["Lich's Castle"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=lichchannel, force='http')
+        await channel.send(embeds=lichemb)
     else:
-        print(f"playerscore is the highscore")
-        await send_message(f"<@{authorid}>'s roll of {playerroll} beat the high score of {highscore} and got the lichitem." , channel_id=[locations["Lich's Castle"]["Channel_ID"]])
-        players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+"lichitem"
+        print(f"playerscore is equal to or higher than the highscore")
+        highscoremedia = "https://i.imgur.com/WoG1ubB.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        if lowscore == playerroll:
+            damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
+        else:
+            damagedesc = "This roll is not the lowest roll!"
+        usernameauthor = players[str(authorid)]["Username"]
+        lichimg = interactions.EmbedImageStruct(
+                            url="https://www.reactiongifs.us/wp-content/uploads/2013/09/kill_it_shaun_of_the_dead.gif",
+                            height = 500,
+                            width = 500,
+                            )
+        lichemb = interactions.api.models.message.Embed(
+            title = f"{usernameauthor} is successful!",
+            color = 0x000000,
+            description = f"<@{authorid}> slayed the lich and zombie hordes, until they were the last one standing!\n\nThey gained the lich item!",
+            image = lichimg,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True)],
+        )
+        lichchannel=str(locations["Lich's Castle"]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=lichchannel, force='http')
+        await channel.send(embeds=lichemb)
+        players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        lichitem"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     if lowscore == playerroll: #check if the min is equal to the player's roll
         print(f"lowscore is equal to playerscore")
+        highscoremedia = "https://i.imgur.com/WoG1ubB.png"
+        for x in scores.values():
+            if x["Score"] == highscore and x["Scoreexpiry"] > current_time:
+                highscoremedia = x["Media"]
+                highscorename = x["Username"]
+        lichimg = interactions.EmbedImageStruct(
+                            url=highscoremedia,
+                            height = 500,
+                            width = 500,
+                            )
         hp_pull = players[str(authorid)]["HP"]
-        hp_pull=max(hp_pull - math.ceil(hp_pull/4),0)
+        hp_pull= max(hp_pull - math.ceil(hp_pull/4),0)
         hpmoji = await hpmojiconv(hp_pull)
-        await send_message(f"<@{authorid}> your roll of {playerroll} is the lowest roll. \nNew HP: {hpmoji}" , user_id=[authorid] )
-        await send_message(f"<@{authorid}>'s roll of {playerroll} is the lowest roll and they lose 1/4 of their current health!" , channel_id=[locations["Lich's Castle"]["Channel_ID"]])
+        lichprivate = interactions.api.models.message.Embed(
+            title = f"Damaged by failed Lich Battle!",
+            color = 0x000000,
+            description = f"You had the lowest roll in the Lich's Castle and lost 1/4 of your current hp!",
+            image = lichimg,
+            fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=lichprivate)
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else :
-        return
+        print(f"lowscore is not equal to playerscore")
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+
 
 async def douse(authorid, readyitem):
     players = await getplayerdata()
