@@ -2942,11 +2942,20 @@ async def status (ctx: interactions.CommandContext):
 #travelto
 async def dotravel(authorid,destination):
     await rage(authorid)
+    travelurl = "https://i.imgur.com/8Mo6OkR.png"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+    travelimg = interactions.EmbedImageStruct(
+                        url=travelurl,
+                        height = 512,
+                        width = 512,
+                        )
     if players[str(authorid)]["Location"] == "Crossroads" or destination == "Crossroads":
+        oldtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        oldlocation = players[str(authorid)]["Location"]
+        newlocation = destination
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "travelto"
         players[str(authorid)]["Location"] = destination
@@ -2960,7 +2969,18 @@ async def dotravel(authorid,destination):
         await user.add_role(role=locations[str(destination)]["Role_ID"], guild_id=guildid)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await send_message(f"<@{authorid}> traveled to {destination}! ",channel_id=[locations[destination]["Channel_ID"]])
+        newtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        travelemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} travels from {oldlocation} to {newlocation}!",
+            color = 0xad7205,
+            description = f"<@{authorid}> saunters over to the {newlocation}!",
+            image = travelimg,
+            fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
+        )
+        newchannel = await interactions.get(bot, interactions.Channel, object_id=newtravelerchannel , force='http')
+        oldchannel = await interactions.get(bot, interactions.Channel, object_id=oldtravelerchannel , force='http')
+        await newchannel.send(embeds=travelemb)
+        await oldchannel.send(embeds=travelemb)
     else:
         user = await interactions.get(bot, interactions.Member, object_id=authorid, force='http')
         await send_message(f"You must travel to the Crossroads before you can travel there!", user_id=[user])
