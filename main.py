@@ -3839,9 +3839,9 @@ async def dorecruit(authorid, targetid):
     if targetid == authorid:
         if "Team" in players[str(authorid)] :
             #targetself leave team
-            if players[str(authorid)]["Team"] != "":
+            if players[str(authorid)]["Team"] != "No Team":
                 oldteam = players[str(authorid)]["Team"]
-                newteam = ""
+                newteam = "No Team"
                 recruitemb = interactions.api.models.message.Embed(
                     title = f"{players[str(authorid)]['Username']} considers leaving their team!",
                     color = 0x2da66c,
@@ -4037,7 +4037,7 @@ async def button_response(ctx: interactions.CommandContext):
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-    await ctx.send(f"You spend a mana to leave {oldteam}", ephemeral=True)
+    await ctx.send(f"You spend a mana to leave your team", ephemeral=True)
 
 stayteambutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
