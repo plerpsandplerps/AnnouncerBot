@@ -184,6 +184,7 @@ async def deadcheck(targethp,targetid,authorid,players):
             await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
             #change players.json location to dead
             players[str(targetid)]["Location"] = "Dead"
+            players[str(targetid)]["Team"] = "No Team"
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else:
@@ -3702,7 +3703,8 @@ async def status (ctx: interactions.CommandContext):
         color = 0xf00c5f,
         fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction)],
     )
-    await ctx.send(embeds=status,ephemeral=True)
+    row = interactions.spread_to_rows(moreinfobutton)
+    await ctx.send(embeds=status,ephemeral=True, components = row)
 
 #travelto
 async def dotravel(authorid,destination):
@@ -4078,7 +4080,7 @@ async def dorecruit(authorid, targetid):
                 recruitemb = interactions.api.models.message.Embed(
                     title = f"{players[str(authorid)]['Username']} considers leaving their team!",
                     color = 0x2da66c,
-                    description = f"<@{authorid}> do you want to leave {oldteam} in the dust?",
+                    description = f"Do you want to leave {oldteam} in the dust?",
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
@@ -4218,13 +4220,12 @@ async def recruit(ctx: interactions.CommandContext, playertarget: str):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    authorid=ctx.author.id
     for k,v in players.items():
         if v['Username']==str(playertarget):
             targetid=k
     print(f"{targetid} is the player target id")
     if str(ctx.author.id) in players:
-        manamoji = await manamojiconv(players[str(authorid)]['Mana'])
+        manamoji = await manamojiconv(players[str(ctx.author.id)]['Mana'])
         manaemb = interactions.api.models.message.Embed(
             title = f"You attempt to recruit {players[str(targetid)]['Username']}!",
             color = 0x2da66c,
@@ -4351,6 +4352,110 @@ async def button_response(ctx: interactions.CommandContext):
                         )
     await ctx.send(f"You do not leave your team!", ephemeral=True)
 
+moreinfobutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="More Info",
+    custom_id="moreinfobutton",
+)
+
+@bot.component("moreinfobutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"More Info",
+        color = 0x2da66c,
+        description = f"What would you like more info on?",
+        )
+    row = interactions.spread_to_rows(currentteamrosterbutton, deadplayersbutton, futureteamrosterbutton)
+    await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
+
+currentteamrosterbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Current Team Roster",
+    custom_id="currentteamrosterbutton",
+)
+
+@bot.component("currentteamrosterbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        teampull = "You aren't on a team"
+    else:
+        teampull = players[str(ctx.author.id)]["Team"]
+    sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
+    if len(sameTeamUsernames) == 0:
+        sameTeamUsernames = "No players are on your current team"
+    else:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"{teampull}",
+        color = 0x2da66c,
+        #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
+        fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
+        )
+    await ctx.send(embeds=buttonemb, ephemeral=True)
+
+
+futureteamrosterbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Proposed Team Roster",
+    custom_id="futureteamrosterbutton",
+)
+
+@bot.component("futureteamrosterbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    if players[str(ctx.author.id)]["NewTeam"] == "No Team":
+        teampull = "You have no future team to join!"
+    else:
+        teampull = players[str(ctx.author.id)]["NewTeam"]
+    sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
+    if len(sameTeamUsernames) == 0:
+        sameTeamUsernames = "No players are on that team"
+    else:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"{teampull}",
+        color = 0x2da66c,
+        #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
+        fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
+        )
+    await ctx.send(embeds=buttonemb, ephemeral=True)
+
+deadplayersbutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Dead Players",
+    custom_id="deadplayersbutton",
+)
+
+@bot.component("deadplayersbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    deadusernames = [v["Username"] for v in players.values() if v['Location'] == "Dead"]
+    if len(deadusernames) == 0:
+        deadusernames = "No players have died"
+    else:
+        deadusernames = '\n'.join(deadusernames)
+    buttonemb = interactions.api.models.message.Embed(
+        color = 0x2da66c,
+        #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
+        fields = [interactions.EmbedField(name="Dead Players",value=deadusernames,inline=True)],
+        )
+    await ctx.send(embeds=buttonemb, ephemeral=True)
+
+
 functiondict = {'lightattack' : dolightattack,
                 'heavyattack' : doheavyattack,
                 'interrupt' : dointerrupt,
@@ -4376,7 +4481,5 @@ functiondict = {'lightattack' : dolightattack,
                 'localligmaoutbreak':dolocalligmaoutbreak,
                 'trade':dotrade,
                 'use' : douse}
-
-
 
 bot.start ()
