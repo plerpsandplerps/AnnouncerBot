@@ -3436,6 +3436,10 @@ async def status (ctx: interactions.CommandContext):
     Rage_pull = players[str(ctx.author.id)]["Rage"]
     ReadyInventory_pull = players[str(ctx.author.id)]["ReadyInventory"]
     EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
+    if EquippedInventory_pull == " ":
+        EquippedInventory_pull = "Nothing in Equipped Inventory"
+    else :
+        EquippedInventory_pull = players[str(ctx.author.id)]["EquippedInventory"]
     Lastaction_pull = players[str(ctx.author.id)]["Lastaction"]
     Nextaction_pull = players[str(ctx.author.id)]["Nextaction"]
     words = players[ctx.author.id]['Nextaction'].split()
@@ -3815,6 +3819,236 @@ async def mana(ctx: interactions.CommandContext):
         fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
     )
     await ctx.send(embeds=manaemb,ephemeral = True)
+
+#recruit
+
+async def dorecruit(authorid, targetid):
+    await rage(authorid)
+    players = await getplayerdata()
+    players[str(authorid)]["Nextaction"] = ""
+    current_time = int(time.time())
+    print(f"{targetid} is the player target")
+    recruitimg = interactions.EmbedImageStruct(
+                        url="https://thumbs.gfycat.com/ArtisticGrippingAbyssiniancat-max-1mb.gif",
+                        height = 512,
+                        width = 512,
+                        )
+    oldteam = ""
+    newteam = ""
+        #targetself
+    if targetid == authorid:
+        if "Team" in players[str(authorid)] :
+            #targetself leave team
+            if players[str(authorid)]["Team"] != "":
+                oldteam = players[str(authorid)]["Team"]
+                newteam = ""
+                recruitemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} considers leaving their team!",
+                    color = 0x2da66c,
+                    description = f"<@{authorid}> do you want to leave {oldteam} in the dust?",
+                    image = recruitimg,
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    )
+                row = interactions.spread_to_rows(leaveteambutton, stayteambutton)
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components = row)
+            #create new team
+            else :
+                oldteam = "No Team"
+                newteam = str(players[str(authorid)]["Username"])+"'s team"
+                recruitemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} considers creating a new team team!",
+                    color = 0x2da66c,
+                    description = f"Press join team below to spend a mana to create the team **{newteam}**",
+                    image = recruitimg,
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    )
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components=row)
+        #create new team
+        else:
+            oldteam = "No Team"
+            newteam = str(players[str(authorid)]["Username"])+"'s team"
+            recruitemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} considers creating a new team team!",
+                color = 0x2da66c,
+                description = f"Press join team below to spend a mana to create the team **{newteam}**",
+                image = recruitimg,
+                fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                )
+            row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=recruitemb, components = row)
+    #target not self
+    else:
+        #check if author has a team key
+        if "Team" in players[str(authorid)]:
+            #check if author has team
+            if players[str(authorid)]["Team"]!= "" :
+                #offer to recruit target to author's existing team
+                if "Team" in players[str(targetid)]:
+                    oldteam = players[str(targetid)]["Team"]
+                else:
+                    oldteam = "No Team"
+                    newteam = str(players[str(authorid)]["Username"])+"'s team"
+                recruitemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} wants to recruit you to {newteam}!",
+                    color = 0x2da66c,
+                    description = f"Do you want to spend a mana to accept their offer and join {newteam}?",
+                    image = recruitimg,
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    )
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components = row)
+                recruitemb2 = interactions.api.models.message.Embed(
+                    title = f"An offer has been sent to {players[str(targetid)]['Username']}!",
+                    color = 0x2da66c,
+                    description = f"You must wait for their reply.",
+                    image = recruitimg,
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    )
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components = row)
+                user2 = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user2.send(embeds=recruitemb2)
+                players[str(targetid)]["NewTeam"] = newteam
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+            #if author doesn't have a team offer to create
+            else:
+                oldteam = "No Team"
+                newteam = str(players[str(authorid)]["Username"])+"'s team"
+                players[str(ctx.author.id)]["NewTeam"] = newteam
+                recruitemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} doesn't have a team!",
+                    color = 0x2da66c,
+                    description = f"Press join team below to spend a mana to create the team **{newteam}** before recruiting!",
+                    image = recruitimg,
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    )
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components = row)
+                players[str(authorid)]["NewTeam"] = newteam
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+        #if author doesn't have a team key offer to create
+        else:
+            oldteam = "No Team"
+            newteam = str(players[str(authorid)]["Username"])+"'s team"
+            recruitemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} doesn't have a team!",
+                color = 0x2da66c,
+                description = f"Press join team below to spend a mana to create the team **{newteam}** before recruiting!",
+                image = recruitimg,
+                fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                )
+            row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds = recruitemb, components = row)
+            players[str(authorid)]["NewTeam"] = newteam
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+
+@bot.command(
+    name="recruit",
+    description="self target to create a team or to leave a team. other targets join your team if they accept.",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="who you want to team up with",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def recruit(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    authorid=ctx.author.id
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    if str(ctx.author.id) in players:
+        manamoji = await manamojiconv(players[str(authorid)]['Mana'])
+        manaemb = interactions.api.models.message.Embed(
+            title = f"You attempt to recruit {players[str(targetid)]['Username']}!",
+            color = 0x2da66c,
+            fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+        )
+        await ctx.send(embeds=manaemb,ephemeral = True)
+        await dorecruit(ctx.author.id,targetid)
+    else:
+        await ctx.send(f"You aren't in the competition!" , ephemeral = True)
+
+@bot.autocomplete("recruit", "playertarget")
+async def recruit_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
+    print (Usernames)
+    items = Usernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
+jointeambutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Join New Team!",
+    custom_id="jointeambutton",
+)
+
+@bot.component("jointeambutton")
+async def button_response(ctx):
+    players = await getplayerdata()
+    newteam = players[str(ctx.user.id)]["NewTeam"]
+    if players[str(ctx.user.id)]["Mana"] <1:
+        await ctx.send(f"You don't have the mana to join {newteam}", ephemeral=True)
+    else :
+        players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
+        players[str(ctx.user.id)]["Team"] = newteam
+        players[str(ctx.user.id)]["Lastaction"] = "recruit"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"You spend a mana to join {newteam}")
+
+leaveteambutton = interactions.Button(
+    style=interactions.ButtonStyle.SUCCESS,
+    label="Leave your team!",
+    custom_id="leaveteambutton",
+)
+
+@bot.component("leaveteambutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    newteam = players[str(ctx.user.id)]["NewTeam"]
+    if players[str(ctx.user.id)]["Mana"] <1:
+        await ctx.send(f"You don't have the mana to leave {oldteam}", ephemeral=True)
+    else :
+        players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
+        players[str(ctx.user.id)]["Team"] = ""
+        players[str(ctx.user.id)]["Lastaction"] = "recruit"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+    await ctx.send(f"You spend a mana to leave {oldteam}", ephemeral=True)
+
+stayteambutton = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Stay with current team!",
+    custom_id="stayteambutton",
+)
+
+@bot.component("stayteambutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    await ctx.send(f"You do not leave your team!", ephemeral=True)
 
 functiondict = {'lightattack' : dolightattack,
                 'heavyattack' : doheavyattack,
