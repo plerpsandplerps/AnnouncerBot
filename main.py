@@ -4041,16 +4041,37 @@ jointeambutton = interactions.Button(
 async def button_response(ctx):
     players = await getplayerdata()
     newteam = players[str(ctx.user.id)]["NewTeam"]
+    recruitimg = interactions.EmbedImageStruct(
+                        url="https://thumbs.gfycat.com/ArtisticGrippingAbyssiniancat-max-1mb.gif",
+                        height = 512,
+                        width = 512,
+                        )
     if players[str(ctx.user.id)]["Mana"] <1:
-        await ctx.send(f"You don't have the mana to join {newteam}", ephemeral=True)
+        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
+        recruitemb = interactions.api.models.message.Embed(
+            title = f"{players[str(ctx.user.id)]['Username']} not enough mana to join {newteam}!",
+            color = 0x2da66c,
+            description = f"You need a mana to join **{newteam}**!",
+            image = recruitimg,
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
+            )
+        await ctx.send(embeds = recruitemb)
     else :
-        players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
+        players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"] - 1,0)
+        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
+        recruitemb = interactions.api.models.message.Embed(
+            title = f"{players[str(ctx.user.id)]['Username']} may join {newteam}!",
+            color = 0x2da66c,
+            description = f"You spend a mana to join **{newteam}**!",
+            image = recruitimg,
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
         players[str(ctx.user.id)]["Team"] = newteam
         players[str(ctx.user.id)]["NewTeam"] = "No Team"
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await ctx.send(f"You spend a mana to join {newteam}")
+        await ctx.send(embeds = recruitemb)
 
 leaveteambutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -4061,16 +4082,37 @@ leaveteambutton = interactions.Button(
 @bot.component("leaveteambutton")
 async def button_response(ctx: interactions.CommandContext):
     players = await getplayerdata()
+    recruitimg = interactions.EmbedImageStruct(
+                        url="https://thumbs.gfycat.com/ArtisticGrippingAbyssiniancat-max-1mb.gif",
+                        height = 512,
+                        width = 512,
+                        )
     newteam = players[str(ctx.user.id)]["NewTeam"]
     if players[str(ctx.user.id)]["Mana"] <1:
-        await ctx.send(f"You don't have the mana to leave your team!", ephemeral=True)
+        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
+        recruitemb = interactions.api.models.message.Embed(
+            title = f"{players[str(ctx.user.id)]['Username']} not enough mana to leave team!",
+            color = 0x2da66c,
+            description = f"You need a mana to leave your team!",
+            image = recruitimg,
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
+            )
+        await ctx.send(embeds = recruitemb)
     else :
-        players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
+        players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"] - 1,0)
         players[str(ctx.user.id)]["Team"] = "No Team"
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-        await ctx.send(f"You spend a mana to leave your team!", ephemeral=True)
+        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
+        recruitemb = interactions.api.models.message.Embed(
+            title = f"{players[str(ctx.user.id)]['Username']} may join {newteam}!",
+            color = 0x2da66c,
+            description = f"You spend a mana to join **{newteam}**!",
+            image = recruitimg,
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+        await ctx.send(embeds = recruitemb)
 
 stayteambutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -4081,6 +4123,11 @@ stayteambutton = interactions.Button(
 @bot.component("stayteambutton")
 async def button_response(ctx: interactions.CommandContext):
     players = await getplayerdata()
+    recruitimg = interactions.EmbedImageStruct(
+                        url="https://thumbs.gfycat.com/ArtisticGrippingAbyssiniancat-max-1mb.gif",
+                        height = 512,
+                        width = 512,
+                        )
     await ctx.send(f"You do not leave your team!", ephemeral=True)
 
 functiondict = {'lightattack' : dolightattack,
