@@ -3024,7 +3024,7 @@ async def help(ctx: interactions.CommandContext,):
         title = f"Help",
         color = 0x000000,
         description = f"What would you like help with?",)
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
 
 gamblehpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
