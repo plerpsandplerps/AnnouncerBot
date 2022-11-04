@@ -2820,7 +2820,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Adventuring Gear",
         color = 0x000000,
-        description = f"Spend 2 mana to increase your loot score by 1 for the rest of the game.",
+        description = f"Spend 2 mana to increase your /loot rolls by 1 for the rest of the game.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
