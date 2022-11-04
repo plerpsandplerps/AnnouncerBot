@@ -948,7 +948,6 @@ async def evade_command(ctx: interactions.CommandContext):
 
 #rest is below
 async def dorest(authorid):
-    await rage(authorid)
     resturl = "https://i.imgur.com/x2dKzh5.png"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
@@ -2505,29 +2504,46 @@ actionhelpbutton = interactions.Button(
 
 @bot.component("Actions")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton,useitemhelpbutton)
-    await ctx.send(f"**Actions**\nActions are what players do!\n\nMost actions cost mana. You generate one mana every {int(basecd/60/60)} hours. Players can't take any actions that would make their mana negative.\n\nWhen you attempt to perform an action and you don't have the mana, you will instead queue that action. The bot will make you perform that action after you have the mana.\n\nFind out more:", components=row, ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Actions",
+        color = 0x000000,
+        description = f"Actions are what you do! Most actions cost mana. You generate one mana every {int(basecd/60/60)} hours and can hold up to three mana at a time. Players can't take actions that would make their mana negative.\n\nWhen you attempt to perform an action but don't have enough mana, you instead queue the action. You perform that action when you have enough mana.\n\nFind out more:",
+        )
+    row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton, recruithelpbutton, useitemhelpbutton, gamblehelpbutton )
+    await ctx.send(embeds = buttonemb, components=row, ephemeral=True)
 
 
 lightattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
-    label="Lightattack",
+    label="Light Attack",
     custom_id="Lightattack",
 )
 
 @bot.component("Lightattack")
 async def button_response(ctx):
-    await ctx.send(f"**Light Attack**\n/lightattack\n1 mana. gain 1 rage. attack a player in your area for 800 to 1100 damage.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Lightattack",
+        color = 0x000000,
+        description = f"Spend 1 mana to gain a Rage and attack an opponent in your area for 800 to 1100 damage.",
+        fields = [interactions.EmbedField(name="Command",value="/lightattack",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
-    label="Heavyattack",
+    label="Heavy Attack",
     custom_id="Heavyattack",
 )
 
 @bot.component("Heavyattack")
 async def button_response(ctx):
-    await ctx.send(f"**Heavy Attack**\n/heavyattack\n3 mana. gain 6 rage. attack a player in your area for 3500 to 3800 damage.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Heavy Attack",
+        color = 0x000000,
+        description = f"Spend 3 mana to gain 6 Rage and attack an opponent in your area for 3500 to 3800 damage.",
+        fields =  [interactions.EmbedField(name="Command",value="/heavyattack",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 interrupthelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2537,8 +2553,30 @@ interrupthelpbutton = interactions.Button(
 
 @bot.component("Interrupt")
 async def button_response(ctx):
-    await ctx.send(f"**Interrupt**\n/interrupt\n1 mana. Attack a player in your area for 4200 damage if they are resting or evading. They lose any queued actions.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Interrupt",
+        color = 0x000000,
+        description = f"Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. The target loses all queued actions, regardless of whether they were resting/evading or not.",
+        fields = [interactions.EmbedField(name="Command",value="/interrupt",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
+
+gamblehelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Gamble",
+    custom_id="gamblehelp",
+)
+
+@bot.component("gamblehelp")
+async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Gamble",
+        color = 0x000000,
+        description = f"Wager your health or SC on a 50/50 chance. If you lose the 50/50, you lose that much SC/HP. If you win the 50/50, you gain that much SC/HP!\n\n*This does not cost mana.*",
+        fields = [interactions.EmbedField(name="Command",value="/gamble",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 evadehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2548,7 +2586,13 @@ evadehelpbutton = interactions.Button(
 
 @bot.component("Evade")
 async def button_response(ctx):
-    await ctx.send(f"**Evade**\n/evade\n1 mana. You evade for 24h. You receive no damage from light or heavy attacks while evading.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Evade",
+        color = 0x000000,
+        description = f"Spend 1 mana to receive no damage from light or heavy attacks while you are evading. You are evading for the next 24 hours.\n\n*You can still take actions while evading, but you are susceptible to interrupt damage.*",
+        fields = [interactions.EmbedField(name="Command",value="/evade",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 
 resthelpbutton = interactions.Button(
@@ -2559,29 +2603,63 @@ resthelpbutton = interactions.Button(
 
 @bot.component("Rest")
 async def button_response(ctx):
-    await ctx.send(f"**Rest**\n/rest\nYou rest for 24h, gain a mana, and heal half your missing health rounded up. You cannot rest while you are resting.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Rest",
+        color = 0x000000,
+        description = f"Gain a mana and heal half your missing health rounded up. You are resting for the next 24 hours and cannot rest while you are resting.\n\n*You can still take actions while resting, but you are susceptible to interrupt damage.*",
+        fields = [interactions.EmbedField(name="Command",value="/rest",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
-    label="AreaAction",
+    label="Location Action",
     custom_id="AreaAction",
 )
 
 @bot.component("AreaAction")
 async def button_response(ctx):
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the Crossroads using /travel \n\nYou can travel from the Crossroads to any area using /travel \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Locations",
+        color = 0x000000,
+        description = f"You can travel from any location to the Crossroads using /travel and you can travel from the Crossroads to any location using /travel \n\nLocations each have their own unique location action! Location actions cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the various location actions:",
+        fields = [interactions.EmbedField(name="Command",value="/travel",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
 
 useitemhelpbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Use an Item",
     custom_id="useitem",
 )
 
 @bot.component("useitem")
 async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Items",
+        color = 0x000000,
+        description = f"Items fall into two broad categories: \n\n**Ready Items**\nItems you can use for effects that can be instantaneous or passive in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about each item below",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
+        )
     row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
-    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+
+recruithelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Recruit",
+    custom_id="Recruit",
+)
+
+@bot.component("Recruit")
+async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Recruit",
+        color = 0x000000,
+        description = f"Choose a player. If you choose yourself and belong to a team, you may leave your current team by spending a mana. If you choose yourself and don't belong to a team, you may join your own team by spending a mana. If you chose another player, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
+        fields = [interactions.EmbedField(name="Command",value="/recruit",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 locationhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2591,8 +2669,14 @@ locationhelpbutton = interactions.Button(
 
 @bot.component("Locations")
 async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Locations",
+        color = 0x000000,
+        description = f"You can travel from any location to the Crossroads using /travel and you can travel from the Crossroads to any location using /travel \n\nLocations each have their own unique location action! Location actions cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the various location actions:",
+        fields = [interactions.EmbedField(name="Command",value="/travel",inline=True)],
+        )
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(f"**Locations** \nYou can travel from any location to the crossroads using /travel  \n\nYou can travel from the crossroads to any area using /travel \nLocations each have their own unique area action!\n\nArea actions always cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the area actions:", components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
 
 crossroadshelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2602,7 +2686,13 @@ crossroadshelpbutton = interactions.Button(
 
 @bot.component("Crossroads")
 async def button_response(ctx):
-    await ctx.send(f"**Crossroads**\n/exchange\n1 mana. give a player in your area a ready item from your inventory.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Crossroads",
+        color = 0x000000,
+        description = f"Spend 1 mana to give a player in your area a ready item from your inventory.",
+        fields = [interactions.EmbedField(name="Command",value="/exchange",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 dungeonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2612,7 +2702,13 @@ dungeonhelpbutton = interactions.Button(
 
 @bot.component("Dungeon")
 async def button_response(ctx):
-    await ctx.send(f"**Dungeon**\n/loot\n1 mana. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Dungeon",
+        color = 0x000000,
+        description = f"Spend 1 mana to roll 1d4. If you roll the highest roll, gain a random item. If you roll the lowest roll, lose 1/4 of your current health.",
+        fields = [interactions.EmbedField(name="Command",value="/loot",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 farmlandhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2622,7 +2718,13 @@ farmlandhelpbutton = interactions.Button(
 
 @bot.component("Farmland")
 async def button_response(ctx):
-    await ctx.send(f"**Farmland**\n/farm\n1 mana. score 1d4. gain your score seed coins.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Farmland",
+        color = 0x000000,
+        description = f"Spend 1 mana to roll 1d4. Gain the result of that roll in SCs.",
+        fields = [interactions.EmbedField(name="Command",value="/farm",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 
 keephelpbutton = interactions.Button(
@@ -2633,7 +2735,13 @@ keephelpbutton = interactions.Button(
 
 @bot.component("Keep")
 async def button_response(ctx):
-    await ctx.send(f"**Keep**\n/aid\n1 mana. heal the chosen player 1/4 of their missing health.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Keep",
+        color = 0x000000,
+        description = f"Spend 1 mana to heal the chosen player for 1/4 of their missing health.",
+        fields = [interactions.EmbedField(name="Command",value="/aid",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 
 lichcastlehelpbutton = interactions.Button(
@@ -2644,7 +2752,13 @@ lichcastlehelpbutton = interactions.Button(
 
 @bot.component("lichcastle")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Castle**\n/battlelich\n1 mana. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Lich's Castle",
+        color = 0x000000,
+        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain the lich's item. If you roll the low roll, lose 1/4 of your current health.",
+        fields = [interactions.EmbedField(name="Command",value="/battlelich",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 shophelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2654,7 +2768,13 @@ shophelpbutton = interactions.Button(
 
 @bot.component("Shop")
 async def button_response(ctx):
-    await ctx.send(f"**Shop**\n/trade\n1 mana. exchange seed coins for a shop item.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Shop",
+        color = 0x000000,
+        description = f"Spend 1 mana to exchange seed coins for a shop item.",
+        fields = [interactions.EmbedField(name="Command",value="/trade",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 tavernhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2664,7 +2784,13 @@ tavernhelpbutton = interactions.Button(
 
 @bot.component("Tavern")
 async def button_response(ctx):
-    await ctx.send(f"**Tavern**\n/drink\n1 mana. score 1d4. high score: gain an equipped drinking medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Tavern",
+        color = 0x000000,
+        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in your equipped inventory. If you roll the low roll, lose 1/4 of your current health. If you don't roll the low roll, heal for 1/4 of your missing health.",
+        fields = [interactions.EmbedField(name="Command",value="/drink",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2674,8 +2800,14 @@ itemhelpbutton = interactions.Button(
 
 @bot.component("Items")
 async def button_response(ctx):
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, localligmaoutbreakhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
-    await ctx.send(f"**Items** \nItems fall into two broad categories: \n\n**Ready Items**\nItems you can use for benefits that can be instantaneous, duration, or permanent in nature.\nWhen you use a Ready Item it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about the items below:", components = row, ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Items",
+        color = 0x000000,
+        description = f"Items fall into two broad categories: \n\n**Ready Items**\nItems you can use for effects that can be instantaneous or passive in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about each item below",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
+        )
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
 
 adventuringgearhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2685,7 +2817,13 @@ adventuringgearhelpbutton = interactions.Button(
 
 @bot.component("adventuringgear")
 async def button_response(ctx):
-    await ctx.send(f"**Adventuring Gear**\n5 SC cost \n2 mana. increase your loot score by 1 for the rest of the game.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Adventuring Gear",
+        color = 0x000000,
+        description = f"Spend 2 mana to increase your loot score by 1 for the rest of the game.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 
 localligmaoutbreakhelpbutton = interactions.Button(
@@ -2696,7 +2834,13 @@ localligmaoutbreakhelpbutton = interactions.Button(
 
 @bot.component("localligmaoutbreak")
 async def button_response(ctx):
-    await ctx.send(f"**Local Ligma Outbreak**\n5 SC cost \n2 mana. deal the current ligma damage to everyone in your area (including yourself).", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Local Ligma Outbreak",
+        color = 0x000000,
+        description = f"Spend 2 mana to deal the current ligma damage to everyone in your area (including yourself).",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 AWPhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2706,7 +2850,13 @@ AWPhelpbutton = interactions.Button(
 
 @bot.component("AWP")
 async def button_response(ctx):
-    await ctx.send(f"**Aim Training**\n8 SC cost\n3 mana. Reduce heavy attack mana cost to two for the rest of the game. doesn't stack.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"AWP",
+        color = 0x000000,
+        description = f"Spend 3 mana to reduce the heavy attack mana cost to two for the rest of the game. doesn't stack.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="3",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 crookedabacushelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2716,7 +2866,13 @@ crookedabacushelpbutton = interactions.Button(
 
 @bot.component("crookedabacus")
 async def button_response(ctx):
-    await ctx.send(f"**Crooked Abacus**\n5 SC cost\n2 mana. Whenever you exchange or trade, gain a seed coin for the rest of the game.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"AWP",
+        color = 0x000000,
+        description = f"Spend 2 mana to gain a seed coin whenever you /trade or /exchange for the rest of the game.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 goodiebaghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2726,7 +2882,13 @@ goodiebaghelpbutton = interactions.Button(
 
 @bot.component("goodiebag")
 async def button_response(ctx):
-    await ctx.send(f"**Goodie Bag**\n8 SC cost\n1 mana. Add a random ready item to your inventory.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Goodie Bag",
+        color = 0x000000,
+        description = f"Spend 1 mana to add a random ready item to your ready inventory.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 tractorhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2736,17 +2898,29 @@ tractorhelpbutton = interactions.Button(
 
 @bot.component("tractor")
 async def button_response(ctx):
-    await ctx.send(f"**Tractor**\n5 SC cost\n2 mana. Whenever you farm, gain an additional seed coin for the rest of the game.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Tractor",
+        color = 0x000000,
+        description = f"Spend 2 mana to gain an additional seed coin whenever you farm for the rest of the gam",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 drinkingmedalhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
-    label="Drinking Medal ",
+    label="Drinking Medal",
     custom_id="drinkingmedal",
 )
 
 @bot.component("drinkingmedal")
 async def button_response(ctx):
-    await ctx.send(f"**Drinking Medal**\n6 SC cost\n2 mana. Increase the damage of your light attack by 420 for the rest of the game.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Drinking Medal",
+        color = 0x000000,
+        description = f"Spend 2 mana to increase the damage of your light attack by 420 for the rest of the game.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 lichitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2756,7 +2930,13 @@ lichitemhelpbutton = interactions.Button(
 
 @bot.component("lichitem")
 async def button_response(ctx):
-    await ctx.send(f"**Lich's Item**\n15 SC cost\n2 mana. The next time you would die, set your HP to 4200 instead.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Lich's Item",
+        color = 0x000000,
+        description = f"Spend 2 mana to prevent your next death. This prevention will set your HP to 4200.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="15",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 beerbandohelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2766,7 +2946,13 @@ beerbandohelpbutton = interactions.Button(
 
 @bot.component("beerbando")
 async def button_response(ctx):
-    await ctx.send(f"**Beer Bandolier**\n3 SC cost\n1 mana. You gain three rage.", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Beer Bandolier",
+        color = 0x000000,
+        description = f"Spend 1 mana to gain three rage.",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="3",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 critterihardlyknowherhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2776,7 +2962,13 @@ critterihardlyknowherhelpbutton = interactions.Button(
 
 @bot.component("critterihardlyknowher")
 async def button_response(ctx):
-    await ctx.send(f"**Critter? I hardly know her**\n6 SC cost \n2 mana. increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*", ephemeral=True)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Critter? I hardly know her",
+        color = 0x000000,
+        description = f"Spend 2 mana to increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*",
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 Ligmahelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2786,7 +2978,17 @@ Ligmahelpbutton = interactions.Button(
 
 @bot.component("Ligma")
 async def button_response(ctx):
-    await ctx.send(f"**Ligma**\n\nWhen the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\nWhenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\nThen the ligma timer restarts with 10% less time.", ephemeral=True)
+    ligma = await getligmadata()
+    nextligma= ligma["ligmadate"]
+    nextligma = f"<t:{nextligma}>"
+    ligmadamage= ligma["ligmadamage"] + 100
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Ligma",
+        color = 0x000000,
+        description = f"When the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\nWhenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\nThen the ligma timer restarts with 10% less time.",
+        fields = [interactions.EmbedField(name="Next Ligma Time",value=nextligma,inline=True),interactions.EmbedField(name="Next Ligma Damage",value=ligmadamage,inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2796,7 +2998,16 @@ Ragehelpbutton = interactions.Button(
 
 @bot.component("Rage")
 async def button_response(ctx):
-    await ctx.send(f"**Rage**\n\nWhenever you take an action, you heal equal to your Rage times 420hp. Then you lose one Rage.", ephemeral=True)
+    players = await getplayerdata()
+    rage = players[str(ctx.user.id)]["Rage"]
+    rageheal = rage*420
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Rage",
+        color = 0x000000,
+        description = f"When you take an action that costs mana, you heal equal to your Rage times 420hp. Then you lose one Rage.",
+        fields = [interactions.EmbedField(name=":fire:Rage",value=rage,inline=True),interactions.EmbedField(name="Next Rage Heal",value=rageheal,inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 @bot.command(
     name="help",
@@ -2807,7 +3018,7 @@ async def help(ctx: interactions.CommandContext,):
     current_time = int(time.time())
     channelid=ctx.channel_id
     row = interactions.ActionRow(
-    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton ]
+    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton]
 )
     await ctx.send(f"What would you like help with?", components = row, ephemeral = True)
 
