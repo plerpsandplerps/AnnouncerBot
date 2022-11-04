@@ -4060,17 +4060,20 @@ async def button_response(ctx):
         players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"] - 1,0)
         manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
         recruitemb = interactions.api.models.message.Embed(
-            title = f"{players[str(ctx.user.id)]['Username']} may join {newteam}!",
+            title = f"{players[str(ctx.user.id)]['Username']} joined {newteam}!",
             color = 0x2da66c,
-            description = f"You spend a mana to join **{newteam}**!",
+            description = f"{players[str(ctx.user.id)]['Username']} spent a mana to join **{newteam}**!",
             image = recruitimg,
-            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True)],
             )
         players[str(ctx.user.id)]["Team"] = newteam
         players[str(ctx.user.id)]["NewTeam"] = "No Team"
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
+        locchannel=str(locations[players[str(ctx.user.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=locchannel , force='http')
+        await channel.send(embeds = recruitemb)
         await ctx.send(embeds = recruitemb)
 
 leaveteambutton = interactions.Button(
@@ -4106,12 +4109,15 @@ async def button_response(ctx: interactions.CommandContext):
             json.dump(players, f, indent=4)
         manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
         recruitemb = interactions.api.models.message.Embed(
-            title = f"{players[str(ctx.user.id)]['Username']} may join {newteam}!",
+            title = f"{players[str(ctx.user.id)]['Username']} left their team!",
             color = 0x2da66c,
-            description = f"You spend a mana to join **{newteam}**!",
+            description = f"{players[str(ctx.user.id)]['Username']} spent a mana to leave their team!",
             image = recruitimg,
-            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True)],
             )
+        locchannel=str(locations[players[str(ctx.user.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=locchannel , force='http')
+        await channel.send(embeds = recruitemb)
         await ctx.send(embeds = recruitemb)
 
 stayteambutton = interactions.Button(
