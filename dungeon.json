@@ -2,19 +2,19 @@
     "NPC5": {
         "Username": "Dungeon Tire",
         "Media": "https://j.gifs.com/Brm9jW.gif",
-        "Score": 1,
-        "Scoreexpiry": 1667418230
+        "Score": 2,
+        "Scoreexpiry": 1667558652
     },
     "NPC6": {
         "Username": "Lord of the Orb",
         "Media": "https://j.gifs.com/PjEWA2.gif",
         "Score": 1,
-        "Scoreexpiry": 1667418230
+        "Scoreexpiry": 1667558652
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/192697820875194368/avatars/c29ad95202994b1f7949129d3add67fa.png",
-        "Score": 5,
-        "Scoreexpiry": 1667425509
+        "Score": 4,
+        "Scoreexpiry": 1667558695
     }
 }

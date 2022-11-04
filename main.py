@@ -48,7 +48,7 @@ async def on_ready():
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)'\s*,.*?,\s*bot=(\w+),"
     membersdict = re.findall(membersdictfind, membersdict)
     membersdict = dict([(a, (b, c)) for a, b, c in membersdict])
-    membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"" } for k, v in membersdict.items() if v[1] != 'True'}
+    membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"",'Team':"No Team",'NewTeam':"No Team", } for k, v in membersdict.items() if v[1] != 'True'}
     players = await getplayerdata()
     bounty = await getbountydata()
     for key in bounty.keys():
@@ -597,7 +597,11 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     LocationPull = players[str(ctx.author.id)]["Location"]
     sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        TeamPull = "Null"
+    else:
+        TeamPull = players[str(ctx.author.id)]["Team"]
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
     print (LocationPull)
     print (sameLocationUsernames)
     items = sameLocationUsernames
@@ -733,7 +737,11 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     LocationPull = players[str(ctx.author.id)]["Location"]
     sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        TeamPull = "Null"
+    else:
+        TeamPull = players[str(ctx.author.id)]["Team"]
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
     print (LocationPull)
     print (sameLocationUsernames)
     items = sameLocationUsernames
@@ -866,7 +874,11 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     players = await getplayerdata()
     LocationPull = players[str(ctx.author.id)]["Location"]
     sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        TeamPull = "Null"
+    else:
+        TeamPull = players[str(ctx.author.id)]["Team"]
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
     print (LocationPull)
     print (sameLocationUsernames)
     items = sameLocationUsernames
@@ -3467,11 +3479,13 @@ async def status (ctx: interactions.CommandContext):
         ReadyInventory_pull = ReadyInventory_pull
     print(displayaction)
     mana_date = "<t:"+str(mana_date)+">"
+    Team_pull = players[str(ctx.author.id)]["Team"]
+    TeamOffer_pull = players[str(ctx.author.id)]["NewTeam"]
     hpmoji = await hpmojiconv(hp_pull)
     status = interactions.api.models.message.Embed(
         title = "Status",
         color = 0xf00c5f,
-        fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction)],
+        fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction)],
     )
     await ctx.send(embeds=status,ephemeral=True)
 
@@ -3823,6 +3837,7 @@ async def mana(ctx: interactions.CommandContext):
 #recruit
 
 async def dorecruit(authorid, targetid):
+    print("recruit")
     await rage(authorid)
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
@@ -3837,9 +3852,12 @@ async def dorecruit(authorid, targetid):
     newteam = ""
         #targetself
     if targetid == authorid:
+        print("case1")
         if "Team" in players[str(authorid)] :
+            print("case1.1")
             #targetself leave team
             if players[str(authorid)]["Team"] != "No Team":
+                print("case1.1.1")
                 oldteam = players[str(authorid)]["Team"]
                 newteam = "No Team"
                 recruitemb = interactions.api.models.message.Embed(
@@ -3854,6 +3872,7 @@ async def dorecruit(authorid, targetid):
                 await user.send(embeds=recruitemb, components = row)
             #create new team
             else :
+                print("case1.1.2")
                 oldteam = "No Team"
                 newteam = str(players[str(authorid)]["Username"])+"'s team"
                 recruitemb = interactions.api.models.message.Embed(
@@ -3863,11 +3882,16 @@ async def dorecruit(authorid, targetid):
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
+
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton)
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components=row)
+                players[str(targetid)]["NewTeam"] = newteam
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
         #create new team
         else:
+            print("case1.2")
             oldteam = "No Team"
             newteam = str(players[str(authorid)]["Username"])+"'s team"
             recruitemb = interactions.api.models.message.Embed(
@@ -3882,14 +3906,20 @@ async def dorecruit(authorid, targetid):
             await user.send(embeds=recruitemb, components = row)
     #target not self
     else:
+        print("case2")
         #check if author has a team key
         if "Team" in players[str(authorid)]:
+            print("case2.1")
             #check if author has team
             if players[str(authorid)]["Team"]!= "" :
+                print("case2.1.1")
                 #offer to recruit target to author's existing team
                 if "Team" in players[str(targetid)]:
+                    print("case2.1.1.1")
+                    newteam = str(players[str(authorid)]["Username"])+"'s team"
                     oldteam = players[str(targetid)]["Team"]
                 else:
+                    print("case2.1.1.2")
                     oldteam = "No Team"
                     newteam = str(players[str(authorid)]["Username"])+"'s team"
                 recruitemb = interactions.api.models.message.Embed(
@@ -3919,6 +3949,7 @@ async def dorecruit(authorid, targetid):
                     json.dump(players, f, indent=4)
             #if author doesn't have a team offer to create
             else:
+                print("case2.1.2")
                 oldteam = "No Team"
                 newteam = str(players[str(authorid)]["Username"])+"'s team"
                 players[str(ctx.author.id)]["NewTeam"] = newteam
@@ -3937,6 +3968,7 @@ async def dorecruit(authorid, targetid):
                     json.dump(players, f, indent=4)
         #if author doesn't have a team key offer to create
         else:
+            print("case2.2")
             oldteam = "No Team"
             newteam = str(players[str(authorid)]["Username"])+"'s team"
             recruitemb = interactions.api.models.message.Embed(
@@ -4014,6 +4046,7 @@ async def button_response(ctx):
     else :
         players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
         players[str(ctx.user.id)]["Team"] = newteam
+        players[str(ctx.user.id)]["NewTeam"] = "No Team"
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
@@ -4030,14 +4063,14 @@ async def button_response(ctx: interactions.CommandContext):
     players = await getplayerdata()
     newteam = players[str(ctx.user.id)]["NewTeam"]
     if players[str(ctx.user.id)]["Mana"] <1:
-        await ctx.send(f"You don't have the mana to leave {oldteam}", ephemeral=True)
+        await ctx.send(f"You don't have the mana to leave your team!", ephemeral=True)
     else :
         players[str(ctx.user.id)]["Mana"] = players[str(ctx.user.id)]["Mana"] - 1
-        players[str(ctx.user.id)]["Team"] = ""
+        players[str(ctx.user.id)]["Team"] = "No Team"
         players[str(ctx.user.id)]["Lastaction"] = "recruit"
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
-    await ctx.send(f"You spend a mana to leave your team", ephemeral=True)
+        await ctx.send(f"You spend a mana to leave your team!", ephemeral=True)
 
 stayteambutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
