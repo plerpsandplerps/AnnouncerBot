@@ -3023,7 +3023,7 @@ async def help(ctx: interactions.CommandContext,):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Help",
         color = 0x000000,
-        description = f"What would you like help with?",
+        description = f"What would you like help with?",)
     await ctx.send(embeds = buttonemb, ephemeral=True)
 
 gamblehpbutton = interactions.Button(
