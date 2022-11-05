@@ -4169,7 +4169,7 @@ async def dorecruit(authorid, targetid):
                 print("case2.1.2")
                 oldteam = "No Team"
                 newteam = str(players[str(authorid)]["Username"])+"'s team"
-                players[str(ctx.author.id)]["NewTeam"] = newteam
+                players[str(authorid)]["NewTeam"] = newteam
                 recruitemb = interactions.api.models.message.Embed(
                     title = f"{players[str(authorid)]['Username']} doesn't have a team!",
                     color = 0x2da66c,
