@@ -4383,10 +4383,10 @@ async def button_response(ctx: interactions.CommandContext):
     #teamhp = await hpmojiconv(teamhp)
     #teammana = #X
     #teammana = await manamojiconv(teammana)
-    if players[str(ctx.author.id)]["Team"] == "No Team":
+    if players[str(ctx.user.id)]["Team"] == "No Team":
         teampull = "You aren't on a team"
     else:
-        teampull = players[str(ctx.author.id)]["Team"]
+        teampull = players[str(ctx.user.id)]["Team"]
     sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on your current team"
@@ -4414,10 +4414,10 @@ async def button_response(ctx: interactions.CommandContext):
     #teamhp = await hpmojiconv(teamhp)
     #teammana = #X
     #teammana = await manamojiconv(teammana)
-    if players[str(ctx.author.id)]["NewTeam"] == "No Team":
+    if players[str(ctx.user.id)]["NewTeam"] == "No Team":
         teampull = "You have no future team to join!"
     else:
-        teampull = players[str(ctx.author.id)]["NewTeam"]
+        teampull = players[str(ctx.user.id)]["NewTeam"]
     sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on that team"
