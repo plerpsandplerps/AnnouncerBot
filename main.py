@@ -185,6 +185,7 @@ async def deadcheck(targethp,targetid,authorid,players):
             #change players.json location to dead
             players[str(targetid)]["Location"] = "Dead"
             players[str(targetid)]["Team"] = "No Team"
+            players[str(targetid)]["Nextaction"] = ""
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else:
