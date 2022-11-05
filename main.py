@@ -4085,7 +4085,7 @@ async def dorecruit(authorid, targetid):
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
-                row = interactions.spread_to_rows(leaveteambutton, stayteambutton)
+                row = interactions.spread_to_rows(leaveteambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components = row)
             #create new team
@@ -4101,7 +4101,7 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
 
-                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components=row)
                 players[str(targetid)]["NewTeam"] = newteam
@@ -4119,7 +4119,7 @@ async def dorecruit(authorid, targetid):
                 image = recruitimg,
                 fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                 )
-            row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+            row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
             user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
             await user.send(embeds=recruitemb, components = row)
     #target not self
@@ -4147,7 +4147,7 @@ async def dorecruit(authorid, targetid):
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
-                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components = row)
                 recruitemb2 = interactions.api.models.message.Embed(
@@ -4157,7 +4157,7 @@ async def dorecruit(authorid, targetid):
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
-                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components = row)
                 user2 = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -4178,7 +4178,7 @@ async def dorecruit(authorid, targetid):
                     image = recruitimg,
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
-                row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+                row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components = row)
                 players[str(authorid)]["NewTeam"] = newteam
@@ -4196,7 +4196,7 @@ async def dorecruit(authorid, targetid):
                 image = recruitimg,
                 fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                 )
-            row = interactions.spread_to_rows(jointeambutton, stayteambutton)
+            row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
             user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
             await user.send(embeds = recruitemb, components = row)
             players[str(authorid)]["NewTeam"] = newteam
