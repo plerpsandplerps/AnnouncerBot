@@ -4128,7 +4128,7 @@ async def dorecruit(authorid, targetid):
         if "Team" in players[str(authorid)]:
             print("case2.1")
             #check if author has team
-            if players[str(authorid)]["Team"]!= "" :
+            if players[str(authorid)]["Team"]!= "No Team" :
                 print("case2.1.1")
                 #offer to recruit target to author's existing team
                 if "Team" in players[str(targetid)]:
