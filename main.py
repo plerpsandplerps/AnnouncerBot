@@ -4371,7 +4371,7 @@ async def button_response(ctx: interactions.CommandContext):
     await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
 
 currentteamrosterbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Current Team Roster",
     custom_id="currentteamrosterbutton",
 )
@@ -4402,7 +4402,7 @@ async def button_response(ctx: interactions.CommandContext):
 
 
 futureteamrosterbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Proposed Team Roster",
     custom_id="futureteamrosterbutton",
 )
@@ -4432,7 +4432,7 @@ async def button_response(ctx: interactions.CommandContext):
     await ctx.send(embeds=buttonemb, ephemeral=True)
 
 deadplayersbutton = interactions.Button(
-    style=interactions.ButtonStyle.SUCCESS,
+    style=interactions.ButtonStyle.PRIMARY,
     label="Dead Players",
     custom_id="deadplayersbutton",
 )
