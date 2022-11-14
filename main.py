@@ -970,7 +970,7 @@ async def dorest(authorid):
     restembpriv = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} is now resting!",
         color = 0x05ad0b,
-        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}>, immediately gains 1 mana, and immediately heals half their missing health rounded up!\n\n*They may continue to take actions while resting, but are susceptible to interrupt damage.*",
+        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}>, immediately gains 1 mana, and immediately heals half their missing health rounded up!\n\n*They may continue to take actions while resting, but they are susceptible to interrupt damage.*",
         image = restimg,
         fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="HP",value=hpmoji,inline=True)],
         )
@@ -979,7 +979,7 @@ async def dorest(authorid):
     restemb = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} is now resting!",
         color = 0x05ad0b,
-        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}> and immediately gains 1 mana and heals half their missing health rounded up!\n\n*They may continue to take actions while resting, but are susceptible to interrupt damage.*",
+        description = f"<@{authorid}> is resting until <t:{players[str(authorid)]['RestTimer']}> and immediately gains 1 mana and heals half their missing health rounded up!\n\n*They may continue to take actions while resting, but they are susceptible to interrupt damage.*",
         image = restimg,
         )
     restchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
