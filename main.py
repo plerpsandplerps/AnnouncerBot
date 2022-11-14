@@ -4373,27 +4373,42 @@ currentteamrosterbutton = interactions.Button(
 @bot.component("currentteamrosterbutton")
 async def button_response(ctx: interactions.CommandContext):
     players = await getplayerdata()
-    #teamhp = #X
-    #teamhp = await hpmojiconv(teamhp)
-    #teammana = #X
-    #teammana = await manamojiconv(teammana)
+    teamhp = 0
+    teamcount = 0
+    teammana = 0
+    teaminventory = " "
     if players[str(ctx.user.id)]["Team"] == "No Team":
         teampull = "You aren't on a team"
     else:
         teampull = players[str(ctx.user.id)]["Team"]
+    for v in players.values():
+        if v['Team']== teampull and v['Location'] != 'Dead':
+            teamhp = int(v["HP"]) + teamhp
+            teamcount = teamcount+1
+    teammojihp = await hpmojiconv(teamhp/teamcount)
+    for v in players.values():
+        if v['Team']== teampull and v['Location'] != 'Dead':
+            teammana = int(v["Mana"]) + teammana
+    teammojimana = await manamojiconv(teammana/teamcount)
+    for v in players.values():
+        if v['Team']== teampull and v['Location'] != 'Dead':
+            teaminventory = v["ReadyInventory"] + teaminventory
     sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on your current team"
+        teammojimana = await manamojiconv(players[str(ctx.user.id)]["Mana"])
+        teammojihp = await hpmojiconv(players[str(ctx.user.id)]["HP"])
+        teaminventory = players[str(ctx.user.id)]["ReadyInventory"]
     elif len(str(sameTeamUsernames)) > 1000:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
-        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
+        sameTeamUsernames = sameTeamUsernames[:900]+ "\n...too many players to display!"
     else:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
     buttonemb = interactions.api.models.message.Embed(
         title = f"{teampull}",
         color = 0x2da66c,
         #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
-        fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
+        fields = [interactions.EmbedField(name="Average Team Health",value=teammojihp,inline=False),interactions.EmbedField(name="Average Team Mana",value=teammojimana,inline=False),interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=False),interactions.EmbedField(name="Team Ready Inventory",value=teaminventory,inline=False),],
         )
     await ctx.send(embeds=buttonemb, ephemeral=True)
 
@@ -4450,7 +4465,7 @@ async def button_response(ctx: interactions.CommandContext):
         sameTeamUsernames = "No players are on that team"
     elif len(str(sameTeamUsernames)) > 1000:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
-        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
+        sameTeamUsernames = sameTeamUsernames[:900]+ "\n...too many players to display!"
     else:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
     buttonemb = interactions.api.models.message.Embed(
@@ -4479,7 +4494,7 @@ async def button_response(ctx: interactions.CommandContext):
         deadusernames = "No players have died"
     elif len(str(sameTeamUsernames)) > 1000:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
-        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
+        sameTeamUsernames = sameTeamUsernames[:900]+ "\n...too many players to display!"
     else:
         deadusernames = '\n'.join(deadusernames)
     buttonemb = interactions.api.models.message.Embed(
