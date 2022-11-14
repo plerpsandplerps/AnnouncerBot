@@ -4361,7 +4361,7 @@ async def button_response(ctx: interactions.CommandContext):
         color = 0x2da66c,
         description = f"What would you like more info on?",
         )
-    row = interactions.spread_to_rows(currentteamrosterbutton, deadplayersbutton, futureteamrosterbutton)
+    row = interactions.spread_to_rows(currentteamrosterbutton,futureteamrosterbutton, allplayerbutton, deadplayersbutton)
     await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
 
 currentteamrosterbutton = interactions.Button(
@@ -4384,10 +4384,43 @@ async def button_response(ctx: interactions.CommandContext):
     sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on your current team"
+    elif len(str(sameTeamUsernames)) > 1000:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
     else:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
     buttonemb = interactions.api.models.message.Embed(
         title = f"{teampull}",
+        color = 0x2da66c,
+        #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
+        fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
+        )
+    await ctx.send(embeds=buttonemb, ephemeral=True)
+
+allplayerbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Living Players",
+    custom_id="allplayerbutton",
+)
+
+@bot.component("allplayerbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Location'] != 'Dead']
+    print(len(str(sameTeamUsernames)))
+    if len(sameTeamUsernames) == 0:
+        sameTeamUsernames = "No players are alive"
+    elif len(str(sameTeamUsernames)) > 1000:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+        sameTeamUsernames = sameTeamUsernames[:950]+ "\n...too many players to display!"
+    else:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Living Players",
         color = 0x2da66c,
         #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
         fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
@@ -4409,12 +4442,15 @@ async def button_response(ctx: interactions.CommandContext):
     #teammana = #X
     #teammana = await manamojiconv(teammana)
     if players[str(ctx.user.id)]["NewTeam"] == "No Team":
-        teampull = "You have no future team to join!"
+        teampull = "You have no possible team to join!"
     else:
         teampull = players[str(ctx.user.id)]["NewTeam"]
     sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on that team"
+    elif len(str(sameTeamUsernames)) > 1000:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
     else:
         sameTeamUsernames = '\n'.join(sameTeamUsernames)
     buttonemb = interactions.api.models.message.Embed(
@@ -4441,6 +4477,9 @@ async def button_response(ctx: interactions.CommandContext):
     deadusernames = [v["Username"] for v in players.values() if v['Location'] == "Dead"]
     if len(deadusernames) == 0:
         deadusernames = "No players have died"
+    elif len(str(sameTeamUsernames)) > 1000:
+        sameTeamUsernames = '\n'.join(sameTeamUsernames)
+        sameTeamUsernames = sameTeamUsernames[:75]+ "\n...too many players to display!"
     else:
         deadusernames = '\n'.join(deadusernames)
     buttonemb = interactions.api.models.message.Embed(
