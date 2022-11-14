@@ -81,22 +81,8 @@ async def on_ready():
             ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
             nextligmatime=int(current_time+ligmatimer_pull)
             print(f"{ligmadamage_pull} ligma damage at {nextligmatime} and {ligmatimer_pull} days till next ligma")
-            players = await getplayerdata ()
-            print ("before")
-            print (players)
-            players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
-            print ("after")
-            print (players)
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
-            await channel.send(f"Oh no a Ligma outbreak! ||LIGMA BALLS|| damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma outbreak timer decreases by 10%! \nThe next ligma outbreak occurs at <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
-            ligma["ligmadate"] = nextligmatime
-            ligma["ligmadamage"] = ligmadamage_pull
-            ligma["ligmatimer"] = ligmatimer_pull
-            with open("ligma.json","w") as h:
-               json.dump(ligma,h, indent=4)
+            await ligmaiterate()
         else:
-            print("hi")
             currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
             print(f"currenttimeofday={currenttimeofday}")
             announcementtime = int((1*60*60*10.5)) #10:30am
@@ -127,28 +113,35 @@ async def on_ready():
         ligmadamage_pull = ligma["ligmadamage"]
         ligmatimer_pull = ligma["ligmatimer"]
         await channel.send(f"The first ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
+    ligmadate_pull = ligma["ligmadate"]
     await asyncio.sleep(int(ligmadate_pull-current_time))
     while ligmadamage_pull < 500000:
-        ligmadamage_pull= min(ligma["ligmadamage"] +100, 1500)
-        ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
-        nextligmatime=int(current_time+ligmatimer_pull)
-        print(f"{ligmadamage_pull} ligma damage at {nextligmatime} and {ligmatimer_pull} seconds till next ligma")
-        await channel.send(f"Ligma damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe time between ligma damage decreases by 10%! \nThe next ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
-        players = await getplayerdata ()
-        print ("before")
-        print (players)
-        players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
-        print ("after")
-        print (players)
-        with open("players.json","w") as f:
-            json.dump(players,f, indent=4)
-        ligma["ligmadate"] = nextligmatime
-        ligma["ligmadamage"] = ligmadamage_pull
-        ligma["ligmatimer"] = ligmatimer_pull
-        with open("ligma.json","w") as h:
-          json.dump(ligma,h, indent=4)
-        await asyncio.sleep(nextligmatime-current_time)
+        await ligmaiterate()
+        ligmadate_pull = ligma["ligmadate"]
+        await asyncio.sleep(ligmadate_pull-current_time)
 
+async def ligmaiterate():
+    print(f"iterating ligma at:{int(time.time())}")
+    ligma = await getligmadata()
+    current_time = int(time.time())
+    channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
+    with open("ligma.json", "r") as h:
+        ligmadate_pull = ligma["ligmadate"]
+        ligmadamage_pull = ligma["ligmadamage"]
+        ligmatimer_pull = ligma["ligmatimer"]
+    ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
+    ligmadamage_pull= min(ligma["ligmadamage"] +100, 1500)
+    nextligmatime=int(current_time+ligmatimer_pull)
+    players = await getplayerdata ()
+    players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+    with open("players.json","w") as f:
+        json.dump(players,f, indent=4)
+    ligma["ligmadate"] = nextligmatime
+    ligma["ligmadamage"] = ligmadamage_pull
+    ligma["ligmatimer"] = ligmatimer_pull
+    with open("ligma.json","w") as h:
+       json.dump(ligma,h, indent=4)
+    await channel.send(f"Oh no a Ligma outbreak! ||LIGMA BALLS|| damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma outbreak timer decreases by 10%! \nThe next ligma outbreak occurs at <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
 
 
 @bot.event(name="on_message_create")
