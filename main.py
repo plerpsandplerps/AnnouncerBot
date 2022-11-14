@@ -1007,8 +1007,9 @@ async def rest_command(ctx: interactions.CommandContext):
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if resting:
                 manamoji = await manamojiconv(Mana_pull)
+                resttimer = players[str(ctx.author.id)]["RestTimer"]
                 restemb = interactions.api.models.message.Embed(
-                    title = f"You cannot rest! You are still resting from your last rest!",
+                    title = f"You cannot rest! You are still resting from your last rest! You must wait until {resttimer}, before you can rest!",
                     color = 0x05ad0b,
                     fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
                 )
