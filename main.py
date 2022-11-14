@@ -141,6 +141,38 @@ async def ligmaiterate():
     ligma["ligmatimer"] = ligmatimer_pull
     with open("ligma.json","w") as h:
        json.dump(ligma,h, indent=4)
+    # check for dead?
+    print(f"\ndead?:{int(time.time())}")
+    for v in players.values():
+        if v['HP'] <= 0:
+            EquippedInventory_pull = v["EquippedInventory"]
+            targetlichprot = EquippedInventory_pull.count("lichitem")
+            print(f"\n the target died!")
+            user = await interactions.get(bot, interactions.Member, object_id=v, guild_id=guildid, force='http')
+            if targetlichprot > 0:
+                v["HP"] = 4200
+                #replace first instance of item in user's readyinventory
+                players[str(v)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
+                await send_message(f"<@{v}> would have died because of ||LIGMA BALLS||, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
+            else:
+                await send_message(f"<@{v}> died because of ||LIGMA BALLS||!", channel_id=[general])
+                #give dead role
+                await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+                #remove all location roles and playing roles to hopefully block all commands?
+                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+                #change players.json location to dead
+                v["Location"] = "Dead"
+                v["Team"] = "No Team"
+                v["Nextaction"] = ""
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
     await channel.send(f"Oh no a Ligma outbreak! ||LIGMA BALLS|| damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma outbreak timer decreases by 10%! \nThe next ligma outbreak occurs at <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
 
 
