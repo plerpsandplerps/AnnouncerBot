@@ -4386,18 +4386,17 @@ async def button_response(ctx: interactions.CommandContext):
         if v['Team']== teampull and v['Location'] != 'Dead':
             teamhp = int(v["HP"]) + teamhp
             teamcount = teamcount+1
-    teammojihp = await hpmojiconv(teamhp/teamcount)
+    #hpmoji
+    numofgreensqs = math.floor(teamhp/(teamcount*1000))
+    numofredsqs = math.floor(((teamcount*10000)-teamhp)/(teamcount*1000))
+    yellowsq = math.ceil((teamhp-(numofgreensqs*(teamcount*1000)))/(teamcount*1000))
+    teammojihp = str(numofgreensqs*":green_square:")+(yellowsq*":yellow_square:")+str(numofredsqs*":red_square:")+f"({teamhp:,}/{(teamcount*10000):,})"
     for v in players.values():
         if v['Team']== teampull and v['Location'] != 'Dead':
-            teammana = int(v["Mana"]) + teammana
-    teammojimana = await manamojiconv(teammana/teamcount)
-    for v in players.values():
-        if v['Team']== teampull and v['Location'] != 'Dead':
-            teaminventory = v["ReadyInventory"] + teaminventory
-    sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
+            teaminventory = "**"+v["Username"]+"**"+ v["ReadyInventory"]+"\n\n" + teaminventory
+    sameTeamUsernames = [str(v["Mana"]*":blue_square:")+str((3-v["Mana"])*":purple_square:")+str(math.floor(v["HP"]/2500)*":green_square:")+str(math.ceil((10000-(max(v["HP"],0)))/2500)*":red_square:")+" - "+(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Team'] == teampull and v['Location'] != 'Dead']
     if len(sameTeamUsernames) == 0:
         sameTeamUsernames = "No players are on your current team"
-        teammojimana = await manamojiconv(players[str(ctx.user.id)]["Mana"])
         teammojihp = await hpmojiconv(players[str(ctx.user.id)]["HP"])
         teaminventory = players[str(ctx.user.id)]["ReadyInventory"]
     elif len(str(sameTeamUsernames)) > 1000:
@@ -4409,7 +4408,7 @@ async def button_response(ctx: interactions.CommandContext):
         title = f"{teampull}",
         color = 0x2da66c,
         #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
-        fields = [interactions.EmbedField(name="Average Team Health",value=teammojihp,inline=False),interactions.EmbedField(name="Average Team Mana",value=teammojimana,inline=False),interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=False),interactions.EmbedField(name="Team Ready Inventory",value=teaminventory,inline=False),],
+        fields = [interactions.EmbedField(name="Total Team Health",value=teammojihp,inline=False),interactions.EmbedField(name="Mana - Players - Locations",value=sameTeamUsernames,inline=False),interactions.EmbedField(name="Team Ready Inventory",value=teaminventory,inline=False),],
         )
     await ctx.send(embeds=buttonemb, ephemeral=True)
 
