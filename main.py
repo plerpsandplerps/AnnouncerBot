@@ -3799,7 +3799,7 @@ async def dotravel(authorid,destination):
             json.dump(players, f, indent=4)
         newtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} travels from the {oldlocation} to the {newlocation}!",
+            title = f"{players[str(authorid)]['Username']} arrives at {newlocation} from the {oldlocation}!",
             color = 0xad7205,
             description = f"<@{authorid}> saunters over to the {newlocation}!",
             image = travelimg,
@@ -3815,7 +3815,7 @@ async def dotravel(authorid,destination):
                             width = 512,
                             )
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} travels from the {oldlocation} to the {newlocation}!",
+            title = f"{players[str(authorid)]['Username']} leaves the {oldlocation} for the {newlocation}!",
             color = 0xad7205,
             description = f"<@{authorid}> saunters over to the {newlocation}!",
             image = travelimg,
