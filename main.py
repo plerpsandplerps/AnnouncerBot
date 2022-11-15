@@ -60,6 +60,7 @@ async def on_ready():
     for key in newplayers.keys():
         if key not in players.keys():
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
+            await user.remove_role(locations["Dead"]["Role_ID"], guildid)
             await user.add_role(locations["Crossroads"]["Role_ID"], guildid)
             await user.add_role(locations["Playing"]["Role_ID"], guildid)
     loop = asyncio.get_running_loop()
@@ -3807,6 +3808,19 @@ async def dotravel(authorid,destination):
         newchannel = await interactions.get(bot, interactions.Channel, object_id=newtravelerchannel , force='http')
         oldchannel = await interactions.get(bot, interactions.Channel, object_id=oldtravelerchannel , force='http')
         await newchannel.send(embeds=travelemb)
+        travelurl = "https://i.imgur.com/h9PlSNK.png"
+        travelimg = interactions.EmbedImageStruct(
+                            url=travelurl,
+                            height = 512,
+                            width = 512,
+                            )
+        travelemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} travels from the {oldlocation} to the {newlocation}!",
+            color = 0xad7205,
+            description = f"<@{authorid}> saunters over to the {newlocation}!",
+            image = travelimg,
+            fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
+        )
         await oldchannel.send(embeds=travelemb)
     else:
         user = await interactions.get(bot, interactions.Member, object_id=authorid, force='http')
