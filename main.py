@@ -157,7 +157,7 @@ async def ligmaiterate():
             else:
                 await send_message(f"<@{v}> died because of ||LIGMA BALLS||!", channel_id=[general])
                 #give dead role
-                await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
+                await user.add_role(role=locations ["Dead"]["Role_ID"], guild_id=guildid)
                 #remove all location roles and playing roles to hopefully block all commands?
                 await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
                 await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
@@ -401,7 +401,7 @@ async def pollforqueue():
         for key in noqueueplayers:
           if key in reminders:
             print(key)
-            user = await interactions.get(bot, interactions.Member, object_id=[key], guild_id=guildid, force='http')
+            user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
             await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*48)) #timer
