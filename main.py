@@ -2401,6 +2401,39 @@ async def dolocalligmaoutbreak(authorid):
     for key in players.keys():
       if key in samelocationUserIDs:
         players[key]['HP'] = players[key]['HP'] - ligmadamage_pull
+    # check for dead?
+    print(f"\ndead?:{int(time.time())}")
+    for v in players.values():
+        if v in samelocationUserIDs:
+            if v['HP'] <= 0:
+                EquippedInventory_pull = v["EquippedInventory"]
+                targetlichprot = EquippedInventory_pull.count("lichitem")
+                print(f"\n the target died!")
+                user = await interactions.get(bot, interactions.Member, object_id=v, guild_id=guildid, force='http')
+                if targetlichprot > 0:
+                    v["HP"] = 4200
+                    #replace first instance of item in user's readyinventory
+                    players[str(v)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
+                    await send_message(f"<@{v}> would have died because of <@{authorid}> ||LIGMA BALLS||, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
+                else:
+                    await send_message(f"<@{v}> died because of <@{authorid}> ||LIGMA BALLS||!", channel_id=[general])
+                    #give dead role
+                    await user.add_role(role=locations ["Dead"]["Role_ID"], guild_id=guildid)
+                    #remove all location roles and playing roles to hopefully block all commands?
+                    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+                    #change players.json location to dead
+                    v["Location"] = "Dead"
+                    v["Team"] = "No Team"
+                    v["Nextaction"] = ""
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
     players[str(authorid)]["ReadyInventory"]=userreadyinventory.replace('\n        localligmaoutbreak','',1)
