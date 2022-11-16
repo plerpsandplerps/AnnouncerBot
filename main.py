@@ -1284,7 +1284,7 @@ async def doaid(authorid, targetid):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     aidimg = interactions.EmbedImageStruct(
-                        url="https://i.imgur.com/Uj6IStN.png",
+                        url="https://media.tenor.com/5_-Wx7KMJIEAAAAC/ohyeah-hi.gif",
                         height = 512,
                         width = 512,
                         )
