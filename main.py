@@ -639,7 +639,7 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 
 #heavy attack is below
 async def doheavyattack(authorid,targetid):
-    heavyattackurl = "https://i.imgur.com/n6c3tNt.png"
+    heavyattackurl = "https://media.tenor.com/0dRjVrsqP8cAAAAC/smash-bros.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
