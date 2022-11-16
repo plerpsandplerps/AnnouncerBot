@@ -1396,7 +1396,7 @@ async def dotrade(authorid, itemtarget):
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
     tradeimg = interactions.EmbedImageStruct(
-                        url="https://i.imgur.com/rMJUaGR.png",
+                        url="https://media.tenor.com/mt-AI5e-0nsAAAAC/fry-shut-up-and-take-my-money.gif",
                         height = 512,
                         width = 512,
                         )
