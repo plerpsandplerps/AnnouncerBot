@@ -398,7 +398,6 @@ async def pollforqueue():
         players = await getplayerdata()
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         reminders = await getreminderdata()
-        print(noqueueplayers)
         for key in noqueueplayers:
           if key in reminders:
             print(key)
