@@ -3799,9 +3799,9 @@ async def dotravel(authorid,destination):
             json.dump(players, f, indent=4)
         newtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} arrives at the {newlocation} from the {oldlocation}!",
+            title = f"{players[str(authorid)]['Username']} arrives at the {newlocation}!",
             color = 0xad7205,
-            description = f"<@{authorid}> saunters over to the {newlocation}!",
+            description = f"<@{authorid}> saunters over from the {oldlocation}!",
             image = travelimg,
             fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
         )
@@ -3815,7 +3815,7 @@ async def dotravel(authorid,destination):
                             width = 512,
                             )
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} leaves the {oldlocation} for the {newlocation}!",
+            title = f"{players[str(authorid)]['Username']} leaves the {oldlocation}!",
             color = 0xad7205,
             description = f"<@{authorid}> saunters over to the {newlocation}!",
             image = travelimg,
@@ -3841,17 +3841,31 @@ async def travel(ctx: interactions.CommandContext):
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if players[str(ctx.author.id)]["Location"] != "Crossroads":
             row = interactions.spread_to_rows(traveltocrossroadsbutton)
+            travelurl = "https://i.makeagif.com/media/8-16-2015/tMsEme.gif"
+            travelimg = interactions.EmbedImageStruct(
+                                url=travelurl,
+                                height = 512,
+                                width = 512,
+                                )
             travelemb = interactions.api.models.message.Embed(
                 title = f"You aren't in the Crossroads",
                 color = 0xad7205,
+                image = travelimg,
                 description = f"You must travel to the crossroads before you travel to another location!",
                 )
             await ctx.send(embeds=travelemb, components = row, ephemeral = True)
         else:
             row = interactions.spread_to_rows(traveltodungeonbutton, traveltofarmlandbutton, traveltokeepbutton, traveltolichcastlebutton, traveltoshopbutton, traveltotavernbutton)
+            travelurl = "https://i.makeagif.com/media/8-16-2015/tMsEme.gif"
+            travelimg = interactions.EmbedImageStruct(
+                                url=travelurl,
+                                height = 512,
+                                width = 512,
+                                )
             travelemb = interactions.api.models.message.Embed(
                 title = f"You are in the Crossroads",
                 color = 0xad7205,
+                image = travelimg,
                 description = f"Where would you like to travel?",
                 )
             await ctx.send(embeds=travelemb, components = row, ephemeral = True)
