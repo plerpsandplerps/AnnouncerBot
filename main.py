@@ -780,7 +780,7 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
 #interrupt is below
 async def dointerrupt(authorid,targetid):
     await rage(authorid)
-    interrupturl = "https://i.imgur.com/elTFUmW.png"
+    interrupturl = "https://thumbs.gfycat.com/EnragedGleamingIberianmidwifetoad-max-1mb.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
