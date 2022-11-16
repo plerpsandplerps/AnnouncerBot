@@ -3770,7 +3770,7 @@ async def status (ctx: interactions.CommandContext):
 #travelto
 async def dotravel(authorid,destination):
     await rage(authorid)
-    travelurl = "https://i.imgur.com/8Mo6OkR.png"
+    travelurl = "https://media.tenor.com/Wm6TRmkD-_IAAAAC/juggernaut-xmen.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
@@ -3799,7 +3799,7 @@ async def dotravel(authorid,destination):
             json.dump(players, f, indent=4)
         newtravelerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         travelemb = interactions.api.models.message.Embed(
-            title = f"{players[str(authorid)]['Username']} arrives at {newlocation} from the {oldlocation}!",
+            title = f"{players[str(authorid)]['Username']} arrives at the {newlocation} from the {oldlocation}!",
             color = 0xad7205,
             description = f"<@{authorid}> saunters over to the {newlocation}!",
             image = travelimg,
@@ -3808,7 +3808,7 @@ async def dotravel(authorid,destination):
         newchannel = await interactions.get(bot, interactions.Channel, object_id=newtravelerchannel , force='http')
         oldchannel = await interactions.get(bot, interactions.Channel, object_id=oldtravelerchannel , force='http')
         await newchannel.send(embeds=travelemb)
-        travelurl = "https://i.imgur.com/h9PlSNK.png"
+        travelurl = "https://media.tenor.com/IvLly3CfFLIAAAAC/juggernaut-xmen.gif"
         travelimg = interactions.EmbedImageStruct(
                             url=travelurl,
                             height = 512,
