@@ -975,7 +975,7 @@ async def evade_command(ctx: interactions.CommandContext):
 
 #rest is below
 async def dorest(authorid):
-    resturl = "https://i.imgur.com/x2dKzh5.png"
+    resturl = "https://media.tenor.com/WB1nsdk07-IAAAAC/yaziprint-0020cm.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
