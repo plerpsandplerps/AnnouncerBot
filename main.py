@@ -920,6 +920,7 @@ async def doevade(authorid):
     evadeurl = "https://i.imgur.com/4CKqGIw.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
+    current_time = int(time.time())
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
