@@ -917,7 +917,7 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
 #evade is below
 async def doevade(authorid):
     await rage(authorid)
-    evadeurl = "https://i.imgur.com/auBfBJ8.png"
+    evadeurl = "https://i.imgur.com/4CKqGIw.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
