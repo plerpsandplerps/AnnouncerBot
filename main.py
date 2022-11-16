@@ -499,7 +499,7 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
 
 #light attack is below
 async def dolightattack(authorid,targetid):
-    lightattackurl = "https://i.imgur.com/2TlYCY0.png"
+    lightattackurl = "https://media.tenor.com/nmEa-Paa3XgAAAAd/the-slap2-slap.gif"
     players = await getplayerdata()
     players[str(authorid)]["Nextaction"] = ""
     current_time = int(time.time())
