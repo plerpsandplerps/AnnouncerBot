@@ -1080,7 +1080,7 @@ async def doexchange(authorid, targetid, readyitem):
     players[str(authorid)]["ReadyInventory"] = ReadyInventory_pull
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    exchangeurl = "https://i.imgur.com/SMNJPty.png"
+    exchangeurl = "https://media.tenor.com/838Jvd_ARZAAAAAd/exchange-luggage-delivery.gif"
     exchangeimg = interactions.EmbedImageStruct(
                         url=exchangeurl,
                         height = 512,
