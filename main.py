@@ -1214,7 +1214,7 @@ async def dofarm(authorid):
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     farmimg = interactions.EmbedImageStruct(
-                        url="https://i.imgur.com/gugGWzp.png",
+                        url="https://media.tenor.com/0CleP8SBHpgAAAAC/doja-cat-moo.gif",
                         height = 512,
                         width = 512,
                         )
