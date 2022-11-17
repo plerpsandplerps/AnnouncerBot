@@ -4472,6 +4472,7 @@ async def button_response(ctx: interactions.CommandContext):
     teaminventory = " "
     if players[str(ctx.user.id)]["Team"] == "No Team":
         teampull = "You aren't on a team"
+        teamcount = 1
     else:
         teampull = players[str(ctx.user.id)]["Team"]
     for v in players.values():
