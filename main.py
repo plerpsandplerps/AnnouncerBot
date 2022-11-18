@@ -805,6 +805,8 @@ async def dointerrupt(authorid,targetid):
         await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Lastaction"] = "interrupt"
         hpmoji = await hpmojiconv(targethp)
+        players[str(targetid)]["RestTimer"] = current_time
+        players[str(targetid)]["EvadeTimer"] = current_time
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
     else:
@@ -823,16 +825,19 @@ async def dointerrupt(authorid,targetid):
     newnextaction = ""
     players[str(targetid)]["Nextaction"] = ""
     desc = ""
+    desc2 = ""
     removequeue = "No"
     if oldnextaction != newnextaction:
         desc = f"Removed the queued action: **{oldnextaction}**"
         removequeue = "Yes"
+    if damage == 4200:
+        desc2 = f"Target took 4200 damage and is no longer resting or evading."
     interruptemb = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
         color = 0x8541fa,
         description = f"<@{authorid}> makes distracting noises at <@{targetid}>!",
         image = interruptimage,
-        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
+        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True),interactions.EmbedField(name="Interrupted Damage:",value=damage,inline=True)],
         )
     attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
     channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
@@ -853,7 +858,7 @@ async def dointerrupt(authorid,targetid):
 
 @bot.command(
     name="interrupt",
-    description="1mana. 4200dmg to a target in area if they are resting/evading. they lose any queued actions.",
+    description="1mana. 4200dmg to an opponent in your area if they are rest/evading. stop their queue/rest/evading.",
     scope = guildid,
     options=[
         interactions.Option(
@@ -2618,7 +2623,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Interrupt",
         color = 0x000000,
-        description = f"Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. The target loses all queued actions, regardless of whether they were resting/evading or not.",
+        description = f"Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. They stop resting/evading. The target loses all queued actions, regardless of whether they were resting/evading or not.",
         fields = [interactions.EmbedField(name="Command",value="/interrupt",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
