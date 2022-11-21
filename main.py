@@ -131,8 +131,8 @@ async def ligmaiterate():
         ligmadamage_pull = ligma["ligmadamage"]
         ligmatimer_pull = ligma["ligmatimer"]
     ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
-    ligmadamage_pull= min(ligma["ligmadamage"] +100, 1500)
-    nextligmatime=int(current_time+ligmatimer_pull)
+    ligmadamage_pull= min(ligma["ligmadamage"] + 100, 1500)
+    nextligmatime= int(current_time + ligmatimer_pull)
     players = await getplayerdata ()
     players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
     with open("players.json","w") as f:
@@ -145,7 +145,7 @@ async def ligmaiterate():
     # check for dead?
     print(f"\ndead?:{int(time.time())}")
     for k,v in players.items():
-        if v['HP'] <= 0:
+        if v['HP'] <= 0 and v['Location'] != "Dead":
             EquippedInventory_pull = v["EquippedInventory"]
             targetlichprot = EquippedInventory_pull.count("lichitem")
             print(f"\n the target died!")
@@ -794,7 +794,7 @@ async def dointerrupt(authorid,targetid):
         if current_time < players[str(targetid)]["EvadeTimer"]:
             evading = True
             print("evading")
-    elif "RestTimer" in players[str(targetid)] :
+    if "RestTimer" in players[str(targetid)] :
         if current_time < players[str(targetid)]["RestTimer"]:
             resting = True
             print("resting")
