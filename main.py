@@ -2410,7 +2410,7 @@ async def dolocalligmaoutbreak(authorid):
     # check for dead?
     print(f"\ndead?:{int(time.time())}")
     for k,v in players.items():
-        if v['HP'] <= 0:
+        if v['HP'] <= 0 and v['Location'] != "Dead":
             EquippedInventory_pull = v["EquippedInventory"]
             targetlichprot = EquippedInventory_pull.count("lichitem")
             print(f"\n the target died!")
