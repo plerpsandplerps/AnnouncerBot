@@ -228,7 +228,7 @@ async def ligmaiterate():
                         )
     ligmaemb = interactions.api.models.message.Embed(
         title = f"Oh no a Ligma outbreak!",
-        color = 0x633914,
+        color = 0x5764EF,
         description = f"\n||LIGMA BALLS|| damage increased at the {ligmalocation_pull} then ||LIGMA BALLS|| dealt damage at all ligma outbreak locations! \n\n",
         image = ligmaimg,
         fields = [interactions.EmbedField(name="Next Ligma Time",value=f"<t:{nextligmatime}>",inline=False),interactions.EmbedField(name="Next Ligma Outbreak Location",value=randomloc,inline=False),interactions.EmbedField(name="Crossroads",value=crossroadsdamage,inline=False),interactions.EmbedField(name="Dungeon",value=dungeondamage,inline=False),interactions.EmbedField(name="Farmland",value=farmlanddamage,inline=False),interactions.EmbedField(name="Keep",value=keepdamage,inline=False),interactions.EmbedField(name="Lich's Castle",value=lichdamage,inline=False),interactions.EmbedField(name="Shop",value=shopdamage,inline=False),interactions.EmbedField(name="Tavern",value=taverndamage,inline=False)],
@@ -3159,7 +3159,7 @@ async def button_response(ctx):
                         )
     ligmaemb = interactions.api.models.message.Embed(
         title = f"Ligma",
-        color = 0x633914,
+        color = 0x5764EF,
         description = f"When the game begins a 7-day timer starts and a random location is chosen. When the timer ends, a ligma outbreak occurs at the location. The ligma damage at the random location increases by 250. Then each location does damage to each player inside equal to its own ligma damage. \n\nFinally, a new location is chosen at random and the timer is restarted with 10% less time.",
         image = ligmaimg,
         fields = [interactions.EmbedField(name="Next Ligma Time:",value=f"<t:{nextligmatime}>",inline=False),interactions.EmbedField(name="Next Ligma Outbreak Location:",value=randomloc,inline=False),interactions.EmbedField(name="Crossroads:",value=crossroadsdamage,inline=False),interactions.EmbedField(name="Dungeon:",value=dungeondamage,inline=False),interactions.EmbedField(name="Farmland:",value=farmlanddamage,inline=False),interactions.EmbedField(name="Keep:",value=keepdamage,inline=False),interactions.EmbedField(name="Lich's Castle:",value=lichdamage,inline=False),interactions.EmbedField(name="Shop:",value=shopdamage,inline=False),interactions.EmbedField(name="Tavern:",value=taverndamage,inline=False)],
