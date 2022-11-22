@@ -68,87 +68,111 @@ async def on_ready():
     loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
+    loop.create_task(pollforbackup())
     print(f"Started at {current_time}")
     ligma = await getligmadata()
     channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
     if str("ligmadate") in ligma:
         print(f"ligma date already exists!")
-        with open("ligma.json", "r") as h:
-            ligmadate_pull = ligma["ligmadate"]
-            ligmadamage_pull = ligma["ligmadamage"]
-            ligmatimer_pull = ligma["ligmatimer"]
-        print (f"ligma date pulled as {ligmadate_pull}, ligma timer pulled as {ligmatimer_pull}, and ligmadamage pulled as {ligmadamage_pull}")
-        if ligmadate_pull < current_time :
-            ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
-            nextligmatime=int(current_time+ligmatimer_pull)
-            print(f"{ligmadamage_pull} ligma damage at {nextligmatime} and {ligmatimer_pull} days till next ligma")
-            await ligmaiterate()
-        else:
-            currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
-            print(f"currenttimeofday={currenttimeofday}")
-            announcementtime = int((1*60*60*10.5)) #10:30am
-            print(f"announcementtime={announcementtime}")
-            timeuntilannounce = announcementtime - currenttimeofday
-            print(f"timeuntilannounce={timeuntilannounce}")
-            if announcementtime < currenttimeofday:
-                await asyncio.sleep(int(timeuntilannounce+86400))
-            else:
-                await asyncio.sleep(int(timeuntilannounce))
-            await channel.send(f"The next ligma comes <t:{ligmadate_pull}> ({int(ligmadate_pull-current_time)} seconds) to deal {int(ligmadamage_pull+100)} damage.")
+        loop.create_task(pollforligma())
     else:
-        smalltime=int(basecd) #set to 86400 (seconds in a day) when golive and blank ligma.json
+        smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank ligma.json
         smalltimeunit="days" #set to days on golive
         firstcountdown=int(7*smalltime)
         nextligmatime=current_time+firstcountdown
         ligma = {}
         ligma["ligmadate"] = nextligmatime
         ligma["firstligmadate"] = nextligmatime
-        ligma["ligmadamage"] = 650
+        locs = list(locations)
+        reallocs = []
+        for location in locs:
+            if location != "Dead" and location != "Playing":
+                reallocs.append(location)
+        randomloc = random.choice(reallocs)
+        print (randomloc)
+        ligma["nextlocation"] = randomloc
         ligma["ligmatimer"] = firstcountdown
-        ligmadamage_pull = ligma["ligmadamage"]
+        ligma["Crossroads"] = 0
+        ligma["Dungeon"] = 0
+        ligma["Farmland"] = 0
+        ligma["Keep"] = 0
+        ligma["Lich's Castle"] = 0
+        ligma["Shop"] = 0
+        ligma["Tavern"] = 0
+        ligma[randomloc] = ligma[randomloc]+1
+        ligmadamage_pull = (ligma[str(randomloc)]*250)
         ligmatimer_pull = firstcountdown
         with open("ligma.json","w") as h:
             json.dump(ligma,h, indent=4)
         ligma = await getligmadata()
         ligmadate_pull = ligma["ligmadate"]
-        ligmadamage_pull = ligma["ligmadamage"]
+        ligmalocation = str(randomloc)
         ligmatimer_pull = ligma["ligmatimer"]
-        await channel.send(f"The first ligma damage occurs on <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
-    ligmadate_pull = ligma["ligmadate"]
-    await asyncio.sleep(int(ligmadate_pull-current_time))
-    while ligmadamage_pull < 500000:
-        await ligmaiterate()
-        ligmadate_pull = ligma["ligmadate"]
-        await asyncio.sleep(ligmadate_pull-current_time)
+        await channel.send(f"The first ligma outbreak will deal 250 on <t:{nextligmatime}> at the **{randomloc}**")
+        loop.create_task(pollforligma())
 
 async def ligmaiterate():
     print(f"iterating ligma at:{int(time.time())}")
     ligma = await getligmadata()
     current_time = int(time.time())
     channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
-    with open("ligma.json", "r") as h:
-        ligmadate_pull = ligma["ligmadate"]
-        ligmadamage_pull = ligma["ligmadamage"]
-        ligmatimer_pull = ligma["ligmatimer"]
-    ligmatimer_pull=max(math.ceil(ligmatimer_pull*.9),basecd)
-    ligmadamage_pull= min(ligma["ligmadamage"] + 100, 1500)
+    ligmadate_pull = ligma["ligmadate"]
+    ligmalocation_pull = ligma["nextlocation"]
+
+    #find all of the locations with ligma
+    locs = list(locations)
+    ligmalocs = []
+    for location in locs:
+        if location != "Dead" and location != "Playing":
+            if ligma[location] > 0:
+                ligmalocs.append(location)
+    print (ligmalocs)
+
+    #find all of the reallocations and pick a random one
+    locs = list(locations)
+    reallocs = []
+    for location in locs:
+        if location != "Dead" and location != "Playing":
+            reallocs.append(location)
+    randomloc = random.choice(reallocs)
+
+    #update timer
+    ligmatimer_pull = ligma["ligmatimer"]
+    ligmatimer_pull = max(math.ceil(ligmatimer_pull*.9), basecd)
+
+    #update next ligma time
     nextligmatime= int(current_time + ligmatimer_pull)
+
+    # damage players in ligmalocations
     players = await getplayerdata ()
-    players = {key:{key2:value2-ligmadamage_pull if key2=="HP" else value2 for (key2,value2) in value.items()} for (key,value) in players.items()}
+    ligmaplayers = []
+    for k,v in players.items():
+        if v['Location'] in ligmalocs:
+            location = v['Location']
+            ligmadamage_pull = (ligma[location]*250)
+            v["HP"] = v["HP"] - ligmadamage_pull
+            ligmaplayers.append(k)
+            user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
+    print (ligmaplayers)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
+
+    # write new ligma stuff
     ligma["ligmadate"] = nextligmatime
+    ligma["nextlocation"] = randomloc
+    ligma[randomloc] = 1+ ligma[randomloc]
     ligma["ligmadamage"] = ligmadamage_pull
     ligma["ligmatimer"] = ligmatimer_pull
     with open("ligma.json","w") as h:
-       json.dump(ligma,h, indent=4)
+       json.dump(ligma, h, indent=4)
+
     # check for dead?
     print(f"\ndead?:{int(time.time())}")
     for k,v in players.items():
         if v['HP'] <= 0 and v['Location'] != "Dead":
             EquippedInventory_pull = v["EquippedInventory"]
             targetlichprot = EquippedInventory_pull.count("lichitem")
-            print(f"\n the target died!")
+            print(f"\nthe target died!")
             user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
             if targetlichprot > 0:
                 v["HP"] = 4200
@@ -174,13 +198,48 @@ async def ligmaiterate():
                 players[str(k)]["Nextaction"] = ""
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
-    await channel.send(f"Oh no a Ligma outbreak! ||LIGMA BALLS|| damage increased by 100 then dealt **{ligmadamage_pull} damage** to everyone! \nThe ligma outbreak timer decreases by 10%! \nThe next ligma outbreak occurs at <t:{nextligmatime}> (in {ligmatimer_pull} seconds) to deal {min(ligmadamage_pull +100, 1500)} damage." )
+    crossroadsdamage = 0
+    if ligma["Crossroads"] > 0:
+        crossroadsdamage = (ligma["Crossroads"]*250)
+    dungeondamage = 0
+    if ligma["Dungeon"] > 0:
+        dungeondamage = (ligma["Dungeon"]*250)
+    farmlanddamage = 0
+    if ligma["Farmland"] > 0:
+        farmlanddamage = (ligma["Farmland"]*250)
+    keepdamage = 0
+    if ligma["Keep"] > 0:
+        keepdamage = (ligma["Keep"]*250)
+    lichdamage = 0
+    if ligma["Lich's Castle"] > 0:
+        lichdamage = (ligma["Lich's Castle"]*250)
+    taverndamage = 0
+    if ligma["Tavern"] > 0:
+        taverndamage = (ligma["Tavern"]*250)
+    shopdamage = 0
+    if ligma["Shop"] >0:
+        shopdamage = (ligma["Shop"]*250)
+
+    ligmaurl="https://media.tenor.com/K9s5fCvjG4AAAAAM/average-ligma-member-ligma.gif"
+    ligmaimg = interactions.EmbedImageStruct(
+                        url=ligmaurl,
+                        height = 512,
+                        width = 512,
+                        )
+    ligmaemb = interactions.api.models.message.Embed(
+        title = f"Oh no a Ligma outbreak!",
+        color = 0x633914,
+        description = f"\n||LIGMA BALLS|| damage increased at the {ligmalocation_pull} then ||LIGMA BALLS|| dealt damage at all ligma outbreak locations! \n\n",
+        image = ligmaimg,
+        fields = [interactions.EmbedField(name="Next Ligma Time",value=f"<t:{nextligmatime}>",inline=False),interactions.EmbedField(name="Next Ligma Outbreak Location",value=randomloc,inline=False),interactions.EmbedField(name="Crossroads",value=crossroadsdamage,inline=False),interactions.EmbedField(name="Dungeon",value=dungeondamage,inline=False),interactions.EmbedField(name="Farmland",value=farmlanddamage,inline=False),interactions.EmbedField(name="Keep",value=keepdamage,inline=False),interactions.EmbedField(name="Lich's Castle",value=lichdamage,inline=False),interactions.EmbedField(name="Shop",value=shopdamage,inline=False),interactions.EmbedField(name="Tavern",value=taverndamage,inline=False)],
+    )
+    await channel.send(embeds=ligmaemb)
 
 
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
-        f"\nWe've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n \nend content\n"
+        f"\nWe've received a message from {message.author.username} in {message.channel_id}. \nThe message is: \n\n{message.content}\n\nend content\n"
     )
 
 async def deadcheck(targethp,targetid,authorid,players):
@@ -188,12 +247,12 @@ async def deadcheck(targethp,targetid,authorid,players):
     EquippedInventory_pull = players[targetid]["EquippedInventory"]
     targetlichprot = EquippedInventory_pull.count("lichitem")
     if targethp <= 0:
-        print(f"\n the target died!")
+        print(f"\nthe target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
         if targetlichprot > 0:
             players[targetid]["HP"] = 4200
             #replace first instance of item in user's readyinventory
-            players[str(targetid)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
+            players[str(targetid)]["EquippedInventory"]=EquippedInventory_pull.replace('\n       lichitem','',1)
             await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
         else:
             await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
@@ -215,7 +274,7 @@ async def deadcheck(targethp,targetid,authorid,players):
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else:
-        print(f"\n the target didn't die!")
+        print(f"\nthe target didn't die!")
 
 #rage heals 420 for each rage stack then decreases by 1
 async def rage(authorid):
@@ -354,13 +413,35 @@ async def pollformanagain():
                         json.dump(players,f, indent=4)
         await asyncio.sleep(60)
 
+async def pollforligma():
+    #run forever
+    while True:
+        print(f"\npolling for ligma:{int(time.time())}")
+        ligma = await getligmadata()
+        current_time = int(time.time())
+        if current_time > ligma["ligmadate"]:
+            await ligmaiterate()
+        else:
+            print ("no ligma iteration")
+        await asyncio.sleep(60)
+
+async def pollforbackup():
+    #run forever
+    while True:#wait 24h
+        await asyncio.sleep(basecd*4)
+        print(f"\nbacking up:{int(time.time())}")
+        players = await getplayerdata()
+        current_time = int(time.time())
+        with open("playersbackup.json","w") as z:
+            json.dump(players,z, indent=4)
+
 async def pollformana():
     #run forever
     while True:
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone (eastern)
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*10.5)) #10:30am
+        announcementtime = int((1*60*60*10.5)) #9:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -386,7 +467,7 @@ async def pollforqueue():
         current_time = int(time.time())
         currenttimeofday = (current_time % 86400) -14400 #seconds since midnight - timezone
         print(f"currenttimeofday={currenttimeofday}")
-        announcementtime = int((1*60*60*10.5)) #10:30am
+        announcementtime = int((1*60*60*10.5)) #9:30am
         print(f"announcementtime={announcementtime}")
         timeuntilannounce = announcementtime - currenttimeofday
         print(f"timeuntilannounce={timeuntilannounce}")
@@ -2402,7 +2483,7 @@ async def dolocalligmaoutbreak(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     samelocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
-    ligmadamage_pull = ligma["ligmadamage"]
+    ligmadamage_pull = ligma[location]
     #damage everyone in the area
     for key in players.keys():
       if key in samelocationUserIDs:
@@ -2413,7 +2494,7 @@ async def dolocalligmaoutbreak(authorid):
         if v['HP'] <= 0 and v['Location'] != "Dead":
             EquippedInventory_pull = v["EquippedInventory"]
             targetlichprot = EquippedInventory_pull.count("lichitem")
-            print(f"\n the target died!")
+            print(f"\nthe target died!")
             user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
             if targetlichprot > 0:
                 v["HP"] = 4200
@@ -3046,16 +3127,44 @@ Ligmahelpbutton = interactions.Button(
 @bot.component("Ligma")
 async def button_response(ctx):
     ligma = await getligmadata()
-    nextligma= ligma["ligmadate"]
-    nextligma = f"<t:{nextligma}>"
-    ligmadamage= ligma["ligmadamage"] + 100
-    buttonemb = interactions.api.models.message.Embed(
+    nextligmatime= ligma["ligmadate"]
+    randomloc = ligma["nextlocation"]
+    crossroadsdamage = 0
+    if ligma["Crossroads"] > 0:
+        crossroadsdamage = (ligma["Crossroads"]*250)
+    dungeondamage = 0
+    if ligma["Dungeon"] > 0:
+        dungeondamage = (ligma["Dungeon"]*250)
+    farmlanddamage = 0
+    if ligma["Farmland"] > 0:
+        farmlanddamage = (ligma["Farmland"]*250)
+    keepdamage = 0
+    if ligma["Keep"] > 0:
+        keepdamage = (ligma["Keep"]*250)
+    lichdamage = 0
+    if ligma["Lich's Castle"] > 0:
+        lichdamage = (ligma["Lich's Castle"]*250)
+    taverndamage = 0
+    if ligma["Tavern"] > 0:
+        taverndamage = (ligma["Tavern"]*250)
+    shopdamage = 0
+    if ligma["Shop"] >0:
+        shopdamage = (ligma["Shop"]*250)
+
+    ligmaurl="https://media.tenor.com/K9s5fCvjG4AAAAAM/average-ligma-member-ligma.gif"
+    ligmaimg = interactions.EmbedImageStruct(
+                        url=ligmaurl,
+                        height = 512,
+                        width = 512,
+                        )
+    ligmaemb = interactions.api.models.message.Embed(
         title = f"Ligma",
-        color = 0x000000,
-        description = f"When the game starts A 7 day ligma timer starts and the ligma damage is set to 650.\n\nWhenever the ligma timer ends, the ligma damage increases by 100 then every player is damaged by the ligma.\n\nThen the ligma timer restarts with 10% less time.",
-        fields = [interactions.EmbedField(name="Next Ligma Time",value=nextligma,inline=True),interactions.EmbedField(name="Next Ligma Damage",value=ligmadamage,inline=True)],
-        )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+        color = 0x633914,
+        description = f"When the game begins a 7-day timer starts and a random location is chosen. When the timer ends, a ligma outbreak occurs at the location. The ligma damage at the random location increases by 250. Then each location does damage to each player inside equal to its own ligma damage. \n\nFinally, a new location is chosen at random and the timer is restarted with 10% less time.",
+        image = ligmaimg,
+        fields = [interactions.EmbedField(name="Next Ligma Time:",value=f"<t:{nextligmatime}>",inline=False),interactions.EmbedField(name="Next Ligma Outbreak Location:",value=randomloc,inline=False),interactions.EmbedField(name="Crossroads:",value=crossroadsdamage,inline=False),interactions.EmbedField(name="Dungeon:",value=dungeondamage,inline=False),interactions.EmbedField(name="Farmland:",value=farmlanddamage,inline=False),interactions.EmbedField(name="Keep:",value=keepdamage,inline=False),interactions.EmbedField(name="Lich's Castle:",value=lichdamage,inline=False),interactions.EmbedField(name="Shop:",value=shopdamage,inline=False),interactions.EmbedField(name="Tavern:",value=taverndamage,inline=False)],
+    )
+    await ctx.send(embeds = ligmaemb, ephemeral=True)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -3642,7 +3751,7 @@ yesquitbutton = interactions.Button(
 @bot.component("yesquitbutton")
 async def button_response(ctx):
     players = await getplayerdata()
-    print(f"\n the target died!")
+    print(f"\nthe target died!")
     user = await interactions.get(bot, interactions.Member, object_id=(ctx.author.id), guild_id=guildid, force='http')
     await send_message(f"<@{ctx.author.id}> died because of quitting!", channel_id=[general])
     #give dead role
@@ -4094,55 +4203,6 @@ async def button_response(ctx):
         )
         await ctx.send(embeds=travelemb,ephemeral = True)
         await dotravel(ctx.author.id,destination)
-
-@bot.command(name="paginatortest", description="Paginator testing")
-async def paginator_test(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    LocationPull = players[str(ctx.author.id)]["Location"]
-    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
-    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
-    items = sameLocationUsernames
-    lenitems = len(items)
-    Content1 = "Player targets 1 to "+str(min(lenitems,25))
-    Content2 = "Player targets 25 to "+str(min(lenitems,50))
-    Content3 = "Player targets 50 to "+str(min(lenitems,75))
-    Content4 = "Player targets 75 to "+str(min(lenitems,100))
-    Content4 = "Player targets 100 to "+str(min(lenitems,125))
-    Content5 = "Player targets 125 to "+str(min(lenitems,150))
-    await Paginator(
-        client=bot,
-        ctx=ctx,
-        pages=[
-            Page(Content1, interactions.Embed(title="One")),
-            Page(Content2, interactions.Embed(title="Two")),
-            Page(Content3, interactions.Embed(title="One")),
-            Page(Content4, interactions.Embed(title="Two")),
-            Page(Content5, interactions.Embed(title="Two")),
-            Page(embeds=[interactions.Embed(title="Four"), interactions.Embed(title="Five")]),
-        ],
-    ).run()
-
-
-@bot.command(
-    name="mana",
-    description="give yourself mana, this is for testing purposes only.",
-    scope = guildid,
-    )
-async def mana(ctx: interactions.CommandContext):
-    players = await getplayerdata()
-    current_time = int(time.time())
-    channelid=ctx.channel_id
-    players[ctx.author.id]["Mana"] = min(players[ctx.author.id]["Mana"] + 1,3)
-    players[ctx.author.id]["ReadyDate"] = players[ctx.author.id]["ReadyDate"] - 86400
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    manamoji = await manamojiconv(players[ctx.author.id]["Mana"])
-    manaemb = interactions.api.models.message.Embed(
-        title = f"You gain a mana!",
-        color = 0x8541fa,
-        fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
-    )
-    await ctx.send(embeds=manaemb,ephemeral = True)
 
 #recruit
 

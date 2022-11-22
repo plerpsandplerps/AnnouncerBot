@@ -2,37 +2,37 @@
     "NPC3": {
         "Username": "Brodieeeee",
         "Media": "https://media.tenor.com/aBpDxrmmQ0wAAAAS/katakuri-one-piece.gif",
-        "Score": 0,
-        "Scoreexpiry": 1669071347
+        "Score": 1,
+        "Scoreexpiry": 1669145948
     },
     "NPC4": {
         "Username": "Kevin Jr",
         "Media": "https://media.tenor.com/6ETrTNVz1GQAAAAC/kevin-hikevin.gif",
         "Score": 1,
-        "Scoreexpiry": 1669071347
+        "Scoreexpiry": 1669145948
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/192697820875194368/avatars/c29ad95202994b1f7949129d3add67fa.png",
         "Score": 5,
-        "Scoreexpiry": 1667339623
+        "Scoreexpiry": 0
     },
     "351395988977614849": {
         "Username": "Mr.Wiggles",
         "Media": "",
         "Score": 3,
-        "Scoreexpiry": 1666601312
+        "Scoreexpiry": 0
     },
     "759054147222765590": {
         "Username": "Ryst",
         "Media": "",
         "Score": 2,
-        "Scoreexpiry": 1666305378
+        "Scoreexpiry": 0
     },
     "189920974261583872": {
         "Username": "The old razzmataz",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/189920974261583872/avatars/39737b3015bb086781170654b35b2ad5.png",
-        "Score": 3,
-        "Scoreexpiry": 1669071347
+        "Score": 2,
+        "Scoreexpiry": 0
     }
 }
