@@ -45,10 +45,23 @@ async def on_ready():
     membersdict = re.sub(re.escape("Snowflake("),"",membersdict)
     membersdict = re.sub(re.escape("Member(user=User("),"",membersdict)
     membersdict = re.sub(re.escape(")"),"",membersdict)
-    membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)'\s*,.*?,\s*bot=(\w+),"
+    membersdict = str(membersdict)
+    print(membersdict)
+    membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
-    membersdict = dict([(a, (b, c)) for a, b, c in membersdict])
-    membersdict = {k: {'Username': v[0], 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"",'Team':"No Team",'NewTeam':"No Team", } for k, v in membersdict.items() if v[1] != 'True'}
+    print(membersdict)
+    membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
+    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 3, } for k, v in membersdict.items() if v[1] != 'True'}
+    print(membersdict)
+    for key in membersdict.keys():
+        origstr = str(membersdict[key]['Username'])
+        if origstr[-7:] == " (None)" :
+            membersdict[key]["Username"] = origstr[:-7]
+            print("cut to:")
+            print(membersdict[key]["Username"])
+        else:
+            print("no cut")
+            membersdict[key]["Username"]
     players = await getplayerdata()
     bounty = await getbountydata()
     for key in bounty.keys():
@@ -108,7 +121,7 @@ async def on_ready():
         ligmadate_pull = ligma["ligmadate"]
         ligmalocation = str(randomloc)
         ligmatimer_pull = ligma["ligmatimer"]
-        await channel.send(f"The first ligma outbreak will deal 250 on <t:{nextligmatime}> at the **{randomloc}**")
+        await channel.send(f"The first ligma outbreak will deal 250 on <t:{nextligmatime}> at the **{randomloc}**!")
         loop.create_task(pollforligma())
 
 async def ligmaiterate():
@@ -271,6 +284,10 @@ async def deadcheck(targethp,targetid,authorid,players):
             players[str(targetid)]["Location"] = "Dead"
             players[str(targetid)]["Team"] = "No Team"
             players[str(targetid)]["Nextaction"] = ""
+            players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + players[str(targetid)]["BountyReward"]
+            print("BountyReward")
+            print(players[str(targetid)]["BountyReward"])
+            players[str(targetid)]["BountyReward"] = 0
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
     else:
@@ -428,7 +445,7 @@ async def pollforligma():
 async def pollforbackup():
     #run forever
     while True:#wait 24h
-        await asyncio.sleep(basecd*4)
+        await asyncio.sleep(basecd*2)
         print(f"\nbacking up:{int(time.time())}")
         players = await getplayerdata()
         current_time = int(time.time())
@@ -456,7 +473,7 @@ async def pollformana():
         for key in readyplayers:
           if key in reminders:
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
+            await user.send(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/pZD2XTm7ye")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*12)) #timer
 
@@ -483,8 +500,7 @@ async def pollforqueue():
           if key in reminders:
             print(key)
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/Ct3uAgujg9")
-        #don't turn this on until the bot is not relaunching often
+            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/pZD2XTm7ye")
         await asyncio.sleep(int(1*60*60*48)) #timer
 
 
@@ -615,7 +631,6 @@ async def dolightattack(authorid,targetid):
         damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
         players[str(authorid)]["Lastaction"] = "lightattack"
@@ -653,6 +668,7 @@ async def dolightattack(authorid,targetid):
     await user.send(embeds=lightattackprivemb)
     user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
     await user2.send(embeds=lightattackprivemb)
+    await deadcheck(targethp,targetid,authorid,players)
 
 @bot.command(
     name="lightattack",
@@ -662,7 +678,7 @@ async def dolightattack(authorid,targetid):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to attack",
+            description="start typing who you want to attack",
             required=True,
             autocomplete=True,
         )
@@ -754,7 +770,6 @@ async def doheavyattack(authorid,targetid):
         damage = 3500 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
         players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
         players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -788,6 +803,7 @@ async def doheavyattack(authorid,targetid):
         image = heavyattackimage,
         fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
     )
+    await deadcheck(targethp,targetid,authorid,players)
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     await user.send(embeds=heavyattackprivemb)
     user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
@@ -801,7 +817,7 @@ async def doheavyattack(authorid,targetid):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to attack",
+            description="start typing who you want to attack",
             required=True,
             autocomplete=True,
         )
@@ -871,19 +887,16 @@ async def dointerrupt(authorid,targetid):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     resting = False
     evading = False
-    if "EvadeTimer" in players[str(targetid)] :
-        if current_time < players[str(targetid)]["EvadeTimer"]:
-            evading = True
-            print("evading")
-    if "RestTimer" in players[str(targetid)] :
-        if current_time < players[str(targetid)]["RestTimer"]:
-            resting = True
-            print("resting")
+    if current_time < players[str(targetid)]["EvadeTimer"]:
+        evading = True
+        print("evading")
+    if current_time < players[str(targetid)]["RestTimer"]:
+        resting = True
+        print("resting")
     if resting or evading:
         damage = 4200
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
-        await deadcheck(targethp,targetid,authorid,players)
         players[str(authorid)]["Lastaction"] = "interrupt"
         hpmoji = await hpmojiconv(targethp)
         players[str(targetid)]["RestTimer"] = current_time
@@ -934,6 +947,7 @@ async def dointerrupt(authorid,targetid):
     await user.send(embeds=interruptembpriv)
     user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
     await user2.send(embeds=interruptembpriv)
+    await deadcheck(targethp,targetid,authorid,players)
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
 
@@ -945,7 +959,7 @@ async def dointerrupt(authorid,targetid):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to interrupt",
+            description="start typing who you want to interrupt",
             required=True,
             autocomplete=True,
         )
@@ -1115,10 +1129,9 @@ async def rest_command(ctx: interactions.CommandContext):
     channelid=ctx.channel_id
     resting = False
     current_time = int(time.time())
-    if "RestTimer" in players[str(ctx.author.id)] :
-        if current_time < players[str(ctx.author.id)]["RestTimer"]:
-            resting = True
-            print("resting")
+    if current_time < players[str(ctx.author.id)]["RestTimer"]:
+        resting = True
+        print("resting")
     if str(ctx.author.id) in players:
         current_time = int(time.time())
         Lastaction_pull=players[str(ctx.author.id)]["Lastaction"]
@@ -1202,14 +1215,14 @@ async def doexchange(authorid, targetid, readyitem):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to give something to",
+            description="start typing who you want to give something to",
             required=True,
             autocomplete=True,
         ),
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="readyitem",
-            description="the item you want to give",
+            description="type the item you want to give",
             required=True,
             autocomplete=True,
         )
@@ -1407,7 +1420,7 @@ async def doaid(authorid, targetid):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to aid",
+            description="start typing who you want to aid",
             required=True,
             autocomplete=True,
         )
@@ -1515,7 +1528,7 @@ async def dotrade(authorid, itemtarget):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="itemtarget",
-            description="what you want to buy",
+            description="type what you want to buy",
             required=True,
             autocomplete=True,
         )
@@ -2190,7 +2203,7 @@ async def battlelich(ctx: interactions.CommandContext):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="readyitem",
-            description="the item you want to use",
+            description="type the item you want to use",
             required=True,
             autocomplete=True,
         )
@@ -2658,7 +2671,7 @@ async def button_response(ctx):
         description = f"Actions are what you do! Most actions cost mana. You generate one mana every {int(basecd/60/60)} hours and can hold up to three mana at a time. Players can't take actions that would make their mana negative.\n\nWhen you attempt to perform an action but don't have enough mana, you instead queue the action. You perform that action when you have enough mana.\n\nFind out more:",
         )
     row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton, recruithelpbutton, useitemhelpbutton, gamblehelpbutton )
-    await ctx.send(embeds = buttonemb, components=row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components=row, ephemeral=False)
 
 
 lightattackhelpbutton = interactions.Button(
@@ -2675,7 +2688,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to gain a Rage and attack an opponent in your area for 800 to 1100 damage.",
         fields = [interactions.EmbedField(name="Command",value="/lightattack",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 heavyattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2691,7 +2704,7 @@ async def button_response(ctx):
         description = f"Spend 3 mana to gain 6 Rage and attack an opponent in your area for 3500 to 3800 damage.",
         fields =  [interactions.EmbedField(name="Command",value="/heavyattack",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 interrupthelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -2707,7 +2720,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. They stop resting/evading. The target loses all queued actions, regardless of whether they were resting/evading or not.",
         fields = [interactions.EmbedField(name="Command",value="/interrupt",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 
 gamblehelpbutton = interactions.Button(
@@ -2724,7 +2737,7 @@ async def button_response(ctx):
         description = f"Wager your health or SC on a 50/50 chance. If you lose the 50/50, you lose that much SC/HP. If you win the 50/50, you gain that much SC/HP!\n\n*This does not cost mana.*",
         fields = [interactions.EmbedField(name="Command",value="/gamble",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 evadehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2740,7 +2753,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to receive no damage from light or heavy attacks while you are evading. You are evading for the next 24 hours.\n\n*You can still take actions while evading, but you are susceptible to interrupt damage.*",
         fields = [interactions.EmbedField(name="Command",value="/evade",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 
 resthelpbutton = interactions.Button(
@@ -2757,7 +2770,7 @@ async def button_response(ctx):
         description = f"Gain a mana and heal half your missing health rounded up. You are resting for the next 24 hours and cannot rest while you are resting.\n\n*You can still take actions while resting, but you are susceptible to interrupt damage.*",
         fields = [interactions.EmbedField(name="Command",value="/rest",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 areactionhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2774,7 +2787,7 @@ async def button_response(ctx):
         description = f"You can travel from any location to the Crossroads using /travel and you can travel from the Crossroads to any location using /travel \n\nLocations each have their own unique location action! Location actions cost 1 mana, but have a variety of effects. \n\nUse the buttons below to learn more about the various location actions:",
         fields = [interactions.EmbedField(name="Command",value="/travel",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 useitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2791,7 +2804,7 @@ async def button_response(ctx):
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
         )
     row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
-    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 recruithelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2807,7 +2820,7 @@ async def button_response(ctx):
         description = f"Choose a player. If you choose yourself and belong to a team, you may leave your current team by spending a mana. If you choose yourself and don't belong to a team, you may join your own team by spending a mana. If you chose another player, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
         fields = [interactions.EmbedField(name="Command",value="/recruit",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 locationhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2824,7 +2837,7 @@ async def button_response(ctx):
         fields = [interactions.EmbedField(name="Command",value="/travel",inline=True)],
         )
     row = interactions.spread_to_rows(crossroadshelpbutton, dungeonhelpbutton, farmlandhelpbutton, keephelpbutton, lichcastlehelpbutton, shophelpbutton, tavernhelpbutton)
-    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 crossroadshelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2840,7 +2853,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to give a player in your area a ready item from your inventory.",
         fields = [interactions.EmbedField(name="Command",value="/exchange",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 dungeonhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2856,7 +2869,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to roll 1d4. If you roll the highest roll, gain a random item. If you roll the lowest roll, lose 1/4 of your current health.",
         fields = [interactions.EmbedField(name="Command",value="/loot",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 farmlandhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2872,7 +2885,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to roll 1d4. Gain the result of that roll in SCs.",
         fields = [interactions.EmbedField(name="Command",value="/farm",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 
 keephelpbutton = interactions.Button(
@@ -2889,7 +2902,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to heal the chosen player for 1/4 of their missing health.",
         fields = [interactions.EmbedField(name="Command",value="/aid",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 
 lichcastlehelpbutton = interactions.Button(
@@ -2906,7 +2919,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain the lich's item. If you roll the low roll, lose 1/4 of your current health.",
         fields = [interactions.EmbedField(name="Command",value="/battlelich",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 shophelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2922,7 +2935,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to exchange seed coins for a shop item.",
         fields = [interactions.EmbedField(name="Command",value="/trade",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 tavernhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2938,7 +2951,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in your equipped inventory. If you roll the low roll, lose 1/4 of your current health. If you don't roll the low roll, heal for 1/4 of your missing health.",
         fields = [interactions.EmbedField(name="Command",value="/drink",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 itemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
@@ -2955,7 +2968,7 @@ async def button_response(ctx):
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
         )
     row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
-    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 adventuringgearhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -2971,7 +2984,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to increase your /loot rolls by 1 for the rest of the game.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 
 localligmaoutbreakhelpbutton = interactions.Button(
@@ -2988,7 +3001,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to deal the current ligma damage to everyone in your area (including yourself).",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 AWPhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3004,7 +3017,7 @@ async def button_response(ctx):
         description = f"Spend 3 mana to reduce the heavy attack mana cost to two for the rest of the game. doesn't stack.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="3",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 crookedabacushelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3020,7 +3033,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to gain a seed coin whenever you /trade or /exchange for the rest of the game.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 goodiebaghelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3036,7 +3049,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to add a random ready item to your ready inventory.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 tractorhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3052,7 +3065,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to gain an additional seed coin whenever you farm for the rest of the gam",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 drinkingmedalhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3068,7 +3081,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to increase the damage of your light attack by 420 for the rest of the game.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 lichitemhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3084,7 +3097,7 @@ async def button_response(ctx):
         description = f"Spend 2 mana to prevent your next death. This prevention will set your HP to 4200.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="15",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 beerbandohelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3100,7 +3113,7 @@ async def button_response(ctx):
         description = f"Spend 1 mana to gain three rage.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="3",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 critterihardlyknowherhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3116,7 +3129,29 @@ async def button_response(ctx):
         description = f"Spend 2 mana to increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
+
+
+Bountyhelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Bounties",
+    custom_id="Bounties",
+)
+
+@bot.component("Bounties")
+async def button_response(ctx):
+    players = await getplayerdata()
+    most_wanted = players[(max(players, key=lambda d: players[d]["BountyReward"]))]["Username"]
+    most_wantedamt = players[(max(players, key=lambda d: players[d]["BountyReward"]))]["BountyReward"]
+    if most_wantedamt == 3:
+        most_wanted ="No players have an increased bounty"
+    bountyemb = interactions.api.models.message.Embed(
+        title = f"Bounties",
+        color = 0x5764EF,
+        description = f"When you kill a player with an attack or interrupt, you gain Seed Coins equal to their Bounty Reward!\n\n You may increase a player's Bounty Reward by spending a coin with the `/bounty` command.",
+        fields = [interactions.EmbedField(name="Highest Bounty Player:",value=most_wanted,inline=False),interactions.EmbedField(name="Highest Bounty Amount:",value=most_wantedamt,inline=False)],
+    )
+    await ctx.send(embeds = bountyemb, ephemeral=False)
 
 Ligmahelpbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3164,7 +3199,7 @@ async def button_response(ctx):
         image = ligmaimg,
         fields = [interactions.EmbedField(name="Next Ligma Time:",value=f"<t:{nextligmatime}>",inline=False),interactions.EmbedField(name="Next Ligma Outbreak Location:",value=randomloc,inline=False),interactions.EmbedField(name="Crossroads:",value=crossroadsdamage,inline=False),interactions.EmbedField(name="Dungeon:",value=dungeondamage,inline=False),interactions.EmbedField(name="Farmland:",value=farmlanddamage,inline=False),interactions.EmbedField(name="Keep:",value=keepdamage,inline=False),interactions.EmbedField(name="Lich's Castle:",value=lichdamage,inline=False),interactions.EmbedField(name="Shop:",value=shopdamage,inline=False),interactions.EmbedField(name="Tavern:",value=taverndamage,inline=False)],
     )
-    await ctx.send(embeds = ligmaemb, ephemeral=True)
+    await ctx.send(embeds = ligmaemb, ephemeral=False)
 
 Ragehelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -3183,7 +3218,7 @@ async def button_response(ctx):
         description = f"When you take an action that costs mana, you heal equal to your Rage times 420hp. Then you lose one Rage.",
         fields = [interactions.EmbedField(name=":fire:Rage",value=rage,inline=True),interactions.EmbedField(name="Next Rage Heal",value=rageheal,inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=True)
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 @bot.command(
     name="help",
@@ -3193,14 +3228,12 @@ async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    row = interactions.ActionRow(
-    components=[actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton]
-)
+    row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton)
     buttonemb = interactions.api.models.message.Embed(
         title = f"Help",
         color = 0x000000,
         description = f"What would you like help with?",)
-    await ctx.send(embeds = buttonemb, components = row, ephemeral=True)
+    await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 gamblehpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -3804,9 +3837,9 @@ yesremindme = interactions.Button(
 @bot.component("yesremindme")
 async def button_response(ctx):
     reminders = await getreminderdata()
-    user = await interactions.get(bot, interactions.Member, object_id=(ctx.author.id), guild_id=guildid, force='http')
-    await ctx.send(f"<@{ctx.author.id}> has enabled reminders!", ephemeral = False)
-    reminders[str(ctx.author.id)] = {}
+    user = await interactions.get(bot, interactions.Member, object_id=(ctx.user.id), guild_id=guildid, force='http')
+    await ctx.send(f"<@{ctx.user.id}> has enabled reminders!", ephemeral = False)
+    reminders[str(ctx.user.id)] = {}
     with open("reminders.json","w") as m:
         json.dump(reminders,m, indent=4)
 
@@ -3820,7 +3853,7 @@ noremindme = interactions.Button(
 async def button_response(ctx):
     await ctx.send(f"You chose to not receive reminders!", ephemeral = True)
     reminders = await getreminderdata()
-    reminders.pop(str(ctx.author.id), None)
+    reminders.pop(str(ctx.user.id), None)
     with open("reminders.json","w") as m:
         json.dump(reminders,m, indent=4)
 
@@ -3876,7 +3909,7 @@ async def status (ctx: interactions.CommandContext):
     status = interactions.api.models.message.Embed(
         title = "Status",
         color = 0xf00c5f,
-        fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction)],
+        fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction),interactions.EmbedField(name=":coin:Reward for Killing you:",value=players[str(ctx.author.id)]["BountyReward"])],
     )
     row = interactions.spread_to_rows(moreinfobutton)
     await ctx.send(embeds=status,ephemeral=True, components = row)
@@ -4363,7 +4396,7 @@ async def dorecruit(authorid, targetid):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="playertarget",
-            description="who you want to team up with",
+            description="start typing who you want to team up with",
             required=True,
             autocomplete=True,
         )
@@ -4391,6 +4424,84 @@ async def recruit(ctx: interactions.CommandContext, playertarget: str):
 
 @bot.autocomplete("recruit", "playertarget")
 async def recruit_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
+    print (Usernames)
+    items = Usernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
+@bot.command(
+    name="bounty",
+    description="increase the bounty reward for killing a player with an attack or interrupt by one.",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="start typing who you want to increase the bounty on",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def bounty(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    channelid=ctx.channel_id
+    bountychannel = 1046825086939840624
+    channel = await interactions.get(bot, interactions.Channel, object_id=bountychannel , force='http')
+    authorid = ctx.author.id
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    if str(ctx.author.id) in players:
+        if players[str(authorid)]['SC'] >= 1:
+            players[str(authorid)]['SC'] = players[str(authorid)]['SC'] -1
+            insult1 = ['artless', 'bawdy', 'beslubbering', 'bootless', 'churlish', 'cockered', 'clouted', 'craven', 'currish', 'dankish', 'dissembling', 'droning', 'errant', 'fawning', 'fobbing', 'forward', 'frothy', 'gleeking', 'goatinsh,', 'goating', 'gorbellied', 'impertinent', 'infections', 'jarring', 'loggerheaded', ' lumpish', 'mammering', 'mangled']
+            insult2 = ['base-court', 'bat-fowling', 'beef-witted', 'beetle-headed', 'boild-brained', 'clapper-clawed','clay-brained', 'common-kissing', 'crook-pated', 'dismal-dreaming', 'dizzy-eyed', 'doghearted', 'dread-bolted', 'earth-vexing', 'elf-skinned', 'fat-kidneyed', 'fen-sucked', 'flap-mouthed', 'fly-bitten', 'folly-fallen', 'fool-born', 'full-gorged', 'guts-griping', 'half-faced', 'hasty-witted', 'hedge-born', 'hell-hated']
+            insult3 = ['apple-john', 'baggage', 'barnacle', 'bladder', 'boar-pig', 'bugbear', 'bum-bailey', 'canker-blossom', 'clack-dish', 'clotpole', 'coxcomb', 'codpiece', 'death-token', 'dewberry', 'flap-dragon', 'flax-wench', 'flirt-gill', 'foot-licker', 'fustilarian', 'giglet', 'gudgeon', 'haggard', 'harpy', 'hedge-pig', 'horn-beast', 'hugger-mugger', 'jointhead']
+            my_insult = random.choice(insult1) + ' ' + random.choice(insult2) + ' ' + random.choice(insult3)
+            players[str(targetid)]['BountyReward'] = players[str(targetid)]['BountyReward'] + 1
+            bountyemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} increased the bounty on {players[str(targetid)]['Username']}!",
+                color = 0x2da66c,
+                description = f"<@{targetid}>, you {my_insult}!",
+                fields = [interactions.EmbedField(name="New Bounty",value=players[str(targetid)]['BountyReward'],inline=True),interactions.EmbedField(name="SC Remaining",value=players[str(authorid)]['SC'],inline=True)],
+            )
+            await ctx.send (embeds=bountyemb,ephemeral = True)
+            bountyemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} increased the bounty on {players[str(targetid)]['Username']}!",
+                color = 0x2da66c,
+                description = f"<@{targetid}>, you {my_insult}!",
+                fields = [interactions.EmbedField(name="New Bounty",value=players[str(targetid)]['BountyReward'],inline=True)],
+            )
+            await channel.send(embeds=bountyemb)
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+        else:
+            bountyemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} tried, but failed to increase the bounty on {players[str(targetid)]['Username']}!",
+                color = 0x2da66c,
+                description = "They are too poor to increase a bounty! ||HAHAHAHAHAAHAHAHA||",
+                fields = [interactions.EmbedField(name="New Bounty",value=players[str(targetid)]['BountyReward'],inline=True),interactions.EmbedField(name="SC Remaining",value=players[str(authorid)]['SC'],inline=True)],
+            )
+            await ctx.send (embeds=bountyemb,ephemeral = True)
+            bountyemb = interactions.api.models.message.Embed(
+                title = f"{players[str(authorid)]['Username']} tried, but failed to increase the bounty on {players[str(targetid)]['Username']}!",
+                color = 0x2da66c,
+                description = "They are too poor to increase a bounty! ||HAHAHAHAHAAHAHAHA||",
+                fields = [interactions.EmbedField(name="New Bounty",value=players[str(targetid)]['BountyReward'],inline=True)],
+            )
+            await channel.send(embeds=bountyemb)
+    else:
+        await ctx.send(f"You aren't in the competition!" , ephemeral = False)
+
+@bot.autocomplete("bounty", "playertarget")
+async def bounty_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     Usernames = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
     print (Usernames)
