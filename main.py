@@ -471,9 +471,9 @@ async def pollformana():
         readyplayers = [k for k, v in players.items() if v['Mana'] > 0 and v['Location'] != "Dead"]
         reminders = await getreminderdata()
         for key in readyplayers:
-          if key in reminders:
+          if key not in reminders:
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have mana to spend! \n\nSubmit a slash command here:\nhttps://discord.gg/pZD2XTm7ye")
+            await user.send(f"You have mana to spend! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*12)) #timer
 
@@ -497,10 +497,10 @@ async def pollforqueue():
         noqueueplayers = [k for k, v in players.items() if v['Nextaction'] == "" and v['Location'] != "Dead"]
         reminders = await getreminderdata()
         for key in noqueueplayers:
-          if key in reminders:
+          if key not in reminders:
             print(key)
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have no queued action! \n\nSubmit a slash command here:\nhttps://discord.gg/pZD2XTm7ye")
+            await user.send(f"You have no queued action! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
         await asyncio.sleep(int(1*60*60*48)) #timer
 
 
@@ -3838,10 +3838,10 @@ yesremindme = interactions.Button(
 async def button_response(ctx):
     reminders = await getreminderdata()
     user = await interactions.get(bot, interactions.Member, object_id=(ctx.user.id), guild_id=guildid, force='http')
-    await ctx.send(f"<@{ctx.user.id}> has enabled reminders!", ephemeral = False)
-    reminders[str(ctx.user.id)] = {}
+    reminders.pop(str(ctx.user.id), None)
     with open("reminders.json","w") as m:
         json.dump(reminders,m, indent=4)
+    await ctx.send(f"<@{ctx.user.id}> has enabled reminders!", ephemeral = False)
 
 noremindme = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -3851,12 +3851,11 @@ noremindme = interactions.Button(
 
 @bot.component("noremindme")
 async def button_response(ctx):
-    await ctx.send(f"You chose to not receive reminders!", ephemeral = True)
     reminders = await getreminderdata()
-    reminders.pop(str(ctx.user.id), None)
+    reminders[str(ctx.user.id)] = {}
     with open("reminders.json","w") as m:
         json.dump(reminders,m, indent=4)
-
+    await ctx.send(f"You chose to not receive reminders!", ephemeral = True)
 
 @bot.command(
     name="status",
