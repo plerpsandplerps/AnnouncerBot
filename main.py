@@ -46,21 +46,15 @@ async def on_ready():
     membersdict = re.sub(re.escape("Member(user=User("),"",membersdict)
     membersdict = re.sub(re.escape(")"),"",membersdict)
     membersdict = str(membersdict)
-    print(membersdict)
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
-    print(membersdict)
     membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
     membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 3, } for k, v in membersdict.items() if v[1] != 'True'}
-    print(membersdict)
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
         if origstr[-7:] == " (None)" :
             membersdict[key]["Username"] = origstr[:-7]
-            print("cut to:")
-            print(membersdict[key]["Username"])
         else:
-            print("no cut")
             membersdict[key]["Username"]
     players = await getplayerdata()
     bounty = await getbountydata()
@@ -2866,7 +2860,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Dungeon",
         color = 0x000000,
-        description = f"Spend 1 mana to roll 1d4. If you roll the highest roll, gain a random item. If you roll the lowest roll, lose 1/4 of your current health.",
+        description = f"Spend 1 mana to roll 1d4. If you roll the highest roll, gain a random item. If you roll the lowest roll, lose 1/4 of your current health. Scores expire after {int(basecd/60/60)} hours.",
         fields = [interactions.EmbedField(name="Command",value="/loot",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -2916,7 +2910,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Lich's Castle",
         color = 0x000000,
-        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain the lich's item. If you roll the low roll, lose 1/4 of your current health.",
+        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain the lich's item. If you roll the low roll, lose 1/4 of your current health. Scores expire after {int(basecd/60/60)} hours.",
         fields = [interactions.EmbedField(name="Command",value="/battlelich",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -2948,7 +2942,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Tavern",
         color = 0x000000,
-        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in your equipped inventory. If you roll the low roll, lose 1/4 of your current health. If you don't roll the low roll, heal for 1/4 of your missing health.",
+        description = f"Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in your equipped inventory. If you roll the low roll, lose 1/4 of your current health. If you don't roll the low roll, heal for 1/4 of your missing health. Scores expire after {int(basecd/60/60)} hours.",
         fields = [interactions.EmbedField(name="Command",value="/drink",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3784,25 +3778,16 @@ yesquitbutton = interactions.Button(
 @bot.component("yesquitbutton")
 async def button_response(ctx):
     players = await getplayerdata()
-    print(f"\nthe target died!")
-    user = await interactions.get(bot, interactions.Member, object_id=(ctx.author.id), guild_id=guildid, force='http')
-    await send_message(f"<@{ctx.author.id}> died because of quitting!", channel_id=[general])
-    #give dead role
-    await user.add_role(role=locations["Dead"]["Role_ID"], guild_id=guildid)
-    #remove all location roles and playing roles to hopefully block all commands?
-    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
-    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-    #change players.json location to dead
-    players[str(ctx.author.id)]["Location"] = "Dead"
     players[str(ctx.author.id)]["HP"] = 0
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
+    targethp = 0
+    targetid = str(ctx.author.id)
+    authorid = str(ctx.author.id)
+    await deadcheck(targethp,targetid,authorid,players)
+    reminders = await getreminderdata()
+    reminders[str(ctx.user.id)] = {}
+    with open("reminders.json","w") as m:
+        json.dump(reminders,m, indent=4)
+
 
 noquitbutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
