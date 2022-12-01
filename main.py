@@ -462,14 +462,14 @@ async def pollformana():
             await asyncio.sleep(int(timeuntilannounce))
         print(f"\npolling for mana:{int(time.time())}")
         players = await getplayerdata()
-        readyplayers = [k for k, v in players.items() if v['Mana'] > 0 and v['Location'] != "Dead"]
+        readyplayers = [k for k, v in players.items() if v['Mana'] > 0 and v['Location'] != "Dead" and v["Nextaction"] == ""]
         reminders = await getreminderdata()
         for key in readyplayers:
           if key not in reminders:
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
             await user.send(f"You have mana to spend! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
         #don't turn this on until the bot is not relaunching often
-        await asyncio.sleep(int(1*60*60*12)) #timer
+        await asyncio.sleep(int(1*60*60*10)) #timer
 
 
 async def pollforqueue():
@@ -2490,7 +2490,7 @@ async def dolocalligmaoutbreak(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     samelocationUserIDs = {k: v for k, v in players.items() if v['Location'] == location}
-    ligmadamage_pull = ligma[location]
+    ligmadamage_pull = ligma[location]*250
     #damage everyone in the area
     for key in players.keys():
       if key in samelocationUserIDs:
@@ -2797,7 +2797,7 @@ async def button_response(ctx):
         description = f"Items fall into two broad categories: \n\n**Ready Items**\nItems you can use for effects that can be instantaneous or passive in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about each item below",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
         )
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton, localligmaoutbreakhelpbutton)
     await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 recruithelpbutton = interactions.Button(
@@ -2961,7 +2961,7 @@ async def button_response(ctx):
         description = f"Items fall into two broad categories: \n\n**Ready Items**\nItems you can use for effects that can be instantaneous or passive in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about each item below",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
         )
-    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton)
+    row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton, localligmaoutbreakhelpbutton)
     await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 adventuringgearhelpbutton = interactions.Button(
@@ -2992,7 +2992,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Local Ligma Outbreak",
         color = 0x000000,
-        description = f"Spend 2 mana to deal the current ligma damage to everyone in your area (including yourself).",
+        description = f"Spend 2 mana to deal the current ligma damage at this location to everyone in your area (including yourself).",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -4745,9 +4745,9 @@ async def button_response(ctx: interactions.CommandContext):
     deadusernames = [v["Username"] for v in players.values() if v['Location'] == "Dead"]
     if len(deadusernames) == 0:
         deadusernames = "No players have died"
-    elif len(str(sameTeamUsernames)) > 1000:
-        sameTeamUsernames = '\n'.join(sameTeamUsernames)
-        sameTeamUsernames = sameTeamUsernames[:900]+ "\n...too many players to display!"
+    elif len(str(deadusernames)) > 1000:
+        deadusernames = '\n'.join(deadusernames)
+        deadusernames = deadusernames[:900]+ "\n...too many players to display!"
     else:
         deadusernames = '\n'.join(deadusernames)
     buttonemb = interactions.api.models.message.Embed(

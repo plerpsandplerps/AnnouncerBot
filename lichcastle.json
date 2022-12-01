@@ -2,14 +2,14 @@
     "NPC1": {
         "Username": "Bagel Boss Bitch",
         "Media": "https://media.tenor.com/CIgbwGMnnIoAAAAC/littleman-bagel-boss.gif",
-        "Score": 0,
-        "Scoreexpiry": 1669089662
+        "Score": 2,
+        "Scoreexpiry": 1669971928
     },
     "NPC2": {
         "Username": "Storm Coming Lady",
         "Media": "https://media.tenor.com/kDT2wKzEZy8AAAAC/big-storm-coming-ready.gif",
-        "Score": 1,
-        "Scoreexpiry": 1669089662
+        "Score": 3,
+        "Scoreexpiry": 1669971928
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
@@ -30,10 +30,10 @@
         "Scoreexpiry": 0
     },
     "121800126900469762": {
-        "Username": "FatalBagel",
+        "Username": "FatalBagel ('Dad')",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/121800126900469762/avatars/7ace8743544b5f19dc2354b51d39491e.png",
-        "Score": 4,
-        "Scoreexpiry": 0
+        "Score": 3,
+        "Scoreexpiry": 1669971935
     },
     "759054147222765590": {
         "Username": "Ryst",
