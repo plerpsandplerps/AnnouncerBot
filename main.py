@@ -158,8 +158,11 @@ async def ligmaiterate():
             location = v['Location']
             ligmadamage_pull = (ligma[location]*250)
             v["HP"] = v["HP"] - ligmadamage_pull
+            user = v["Username"]
             ligmaplayers.append(k)
             user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
+            channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
+            await channel.send(f"<@{k}> was hit by ||LIGMA BALLS|| for {ligmadamage_pull} damage!")
     print (ligmaplayers)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -495,7 +498,7 @@ async def pollforqueue():
             print(key)
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
             await user.send(f"You have no queued action! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
-        await asyncio.sleep(int(1*60*60*48)) #timer
+        await asyncio.sleep(int(1*60*60*10)) #timer
 
 
 async def send_message(message : str, **kwargs):
@@ -1498,7 +1501,7 @@ async def dotrade(authorid, itemtarget):
         title = f"{players[str(authorid)]['Username']} buys an item!",
         color = 0xfff700,
         image = tradeimg,
-        description = f"<@{authorid}> haggles for a {itemtarget}",
+        description = f"<@{authorid}> haggles for a(n) {itemtarget}",
         fields = [interactions.EmbedField(name="Item Bought",value=itemtarget,inline=True)],
         )
     buyerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
@@ -2664,7 +2667,7 @@ async def button_response(ctx):
         color = 0x000000,
         description = f"Actions are what you do! Most actions cost mana. You generate one mana every {int(basecd/60/60)} hours and can hold up to three mana at a time. Players can't take actions that would make their mana negative.\n\nWhen you attempt to perform an action but don't have enough mana, you instead queue the action. You perform that action when you have enough mana.\n\nFind out more:",
         )
-    row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton, recruithelpbutton, useitemhelpbutton, gamblehelpbutton )
+    row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton, recruithelpbutton, useitemhelpbutton, gamblehelpbutton, statushelpbutton)
     await ctx.send(embeds = buttonemb, components=row, ephemeral=False)
 
 
@@ -2681,6 +2684,23 @@ async def button_response(ctx):
         color = 0x000000,
         description = f"Spend 1 mana to gain a Rage and attack an opponent in your area for 800 to 1100 damage.",
         fields = [interactions.EmbedField(name="Command",value="/lightattack",inline=True)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=False)
+
+
+statushelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Status",
+    custom_id="Status",
+)
+
+@bot.component("Status")
+async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Status",
+        color = 0x000000,
+        description = f"Use `/status` to find out more information about your current status.\n\n*Checking your status does not cost mana!*",
+        fields = [interactions.EmbedField(name="Command",value="/status",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
 
@@ -2794,7 +2814,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Items",
         color = 0x000000,
-        description = f"Items fall into two broad categories: \n\n**Ready Items**\nItems you can use for effects that can be instantaneous or passive in nature.\nWhen you use a Ready Item for a passive effect, it moves to your Equipped Items.\n\n**Equipped items**\nItems you have used in the past that are giving you a passive effect.\n\nFind out more about each item below",
+        description = f"Items are either in your: \n\n**Ready Inventory**\nItems you can use with `/use` to equip or consume.\n\n**Equipped Inventory**\nItems you have equipped in the past that are giving you a passive effect.\n\nFind out more about each item below",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True)],
         )
     row = interactions.spread_to_rows(adventuringgearhelpbutton, AWPhelpbutton, crookedabacushelpbutton, goodiebaghelpbutton, tractorhelpbutton, drinkingmedalhelpbutton, lichitemhelpbutton, beerbandohelpbutton, critterihardlyknowherhelpbutton, localligmaoutbreakhelpbutton)
@@ -2811,7 +2831,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Recruit",
         color = 0x000000,
-        description = f"Choose a player. If you choose yourself and belong to a team, you may leave your current team by spending a mana. If you choose yourself and don't belong to a team, you may join your own team by spending a mana. If you chose another player, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
+        description = f"Choose a player. \n\nIf you choose yourself and you belong to a team, you may leave your current team by spending a mana. \n\nIf you choose yourself and you don't belong to a team, you may create and join your own team by spending a mana. \n\nIf you choose another player, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
         fields = [interactions.EmbedField(name="Command",value="/recruit",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -2975,7 +2995,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Adventuring Gear",
         color = 0x000000,
-        description = f"Spend 2 mana to increase your /loot rolls by 1 for the rest of the game.",
+        description = f"Spend 2 mana to equip this item. Increase your /loot rolls by 1 for each equipped Adventuring Gear.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -2992,7 +3012,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Local Ligma Outbreak",
         color = 0x000000,
-        description = f"Spend 2 mana to deal the current ligma damage at this location to everyone in your area (including yourself).",
+        description = f"Spend 2 mana to consume this item and deal the current ligma damage at this location to everyone in your area (including yourself).",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3008,7 +3028,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"AWP",
         color = 0x000000,
-        description = f"Spend 3 mana to reduce the heavy attack mana cost to two for the rest of the game. doesn't stack.",
+        description = f"Spend 3 mana to equip this item. While you have an AWP equipped reduce the heavy attack mana cost to two. Doesn't stack.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="3",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3022,9 +3042,9 @@ crookedabacushelpbutton = interactions.Button(
 @bot.component("crookedabacus")
 async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
-        title = f"AWP",
+        title = f"Crooked Abacus",
         color = 0x000000,
-        description = f"Spend 2 mana to gain a seed coin whenever you /trade or /exchange for the rest of the game.",
+        description = f"Spend 2 mana to equip this item. When you /trade or /exchange gain a SC for each Crooked Abacus you have equipped.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3040,7 +3060,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Goodie Bag",
         color = 0x000000,
-        description = f"Spend 1 mana to add a random ready item to your ready inventory.",
+        description = f"Spend 1 mana to consume this item and add a random item to your ready inventory.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3056,7 +3076,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Tractor",
         color = 0x000000,
-        description = f"Spend 2 mana to gain an additional seed coin whenever you farm for the rest of the gam",
+        description = f"Spend 2 mana to equip this item. When you farm gain a SC for each Tractor you have equipped.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="5",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3072,7 +3092,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Drinking Medal",
         color = 0x000000,
-        description = f"Spend 2 mana to increase the damage of your light attack by 420 for the rest of the game.",
+        description = f"Spend 2 mana to equip this item. When you light attack increase the attack damage by 420 for each Drinking Medal you have equipped.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3088,7 +3108,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Lich's Item",
         color = 0x000000,
-        description = f"Spend 2 mana to prevent your next death. This prevention will set your HP to 4200.",
+        description = f"Spend 2 mana to equip this item. The next time you would die, prevent that death and lose an equipped Lich Item instead. This prevention sets your HP to 4200.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="15",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3104,7 +3124,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Beer Bandolier",
         color = 0x000000,
-        description = f"Spend 1 mana to gain three rage.",
+        description = f"Spend 1 mana to consume this item and gain three rage.",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="3",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3120,7 +3140,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Critter? I hardly know her",
         color = 0x000000,
-        description = f"Spend 2 mana to increase your crit rolls by 1 for the rest of the game.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*",
+        description = f"Spend 2 mana to equip this item. When you roll for crit add one to your roll for each Critter? I hardly Know her you have equipped.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -3224,9 +3244,10 @@ async def help(ctx: interactions.CommandContext,):
     channelid=ctx.channel_id
     row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton)
     buttonemb = interactions.api.models.message.Embed(
-        title = f"Help",
+        title = f"README_Link",
         color = 0x000000,
-        description = f"What would you like help with?",)
+        description = f"Pick a topic below that you would like help with!",
+        url = "https://github.com/plerpsandplerps/AnnouncerBot/blob/main/README.md",)
     await ctx.send(embeds = buttonemb, components = row, ephemeral=False)
 
 gamblehpbutton = interactions.Button(
