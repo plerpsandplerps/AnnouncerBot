@@ -11,6 +11,11 @@ Finally, a new location is chosen at random and the timer is restarted with 10% 
 ## Rage
 Whenever you take an action, you heal equal to your rage*420. Then you lose one rage.
 
+## Bounties
+When you kill a player with an attack or interrupt, you gain Seed Coins equal to their Bounty Reward!
+
+You may increase a player's Bounty Reward by spending a coin with the /bounty command.
+
 ## Actions
 Actions are what you do! Most actions cost mana. You generate one mana every 16 hours and can hold up to three mana at a time. Players can't take actions that would make their mana negative.
 When you attempt to perform an action but don't have enough mana, you instead queue the action. You perform that action when you have enough mana.
