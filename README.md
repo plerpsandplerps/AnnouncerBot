@@ -1,126 +1,111 @@
-#OUT OF DATE USE THE /HELP COMMAND IF NEEDED!
-
 # AnnouncerBot
 Announcer Bot for a rpg minigame!
 
 Everybody starts with 10,000 hp and 10 Seed Coins (SC) (+ any previous bounties earned) in the Crossroads location!
 
-## Poison
-- A 7 day poison timer starts and the poison damage is set to 650 when the bot launches.
-- Whenever the poison timer ends, the poison damage increases by 100 and every player is damaged by the poison.
-- Then the poison timer restarts with 10% less time.
+## Ligma
+When the game begins a 7-day timer starts and a random location is chosen. When the timer ends, a ligma outbreak occurs at the location. The ligma damage at the random location increases by 250. Then each location does damage to each player inside equal to its own ligma damage.
+
+Finally, a new location is chosen at random and the timer is restarted with 10% less time.
 
 ## Rage
-- Whenever you take an action, you heal equal to your rage*420. Then you lose one rage.
+Whenever you take an action, you heal equal to your rage*420. Then you lose one rage.
 
 ## Actions
-- Actions are what players do!
-- To get started take the /join action!
-- Most actions place players on a cooldown (such as 24h). The player can't take any actions that would place them on cooldown until they are off cooldown.
-- When you attempt to perform an action and you are on cooldown, you will instead queue that action. The bot will make you perform that action after you are off cooldown.
-- The core actions are listed below:
-### Join
-  - /Join
-    - Join the game!
-### Light Attack
-  - /lightattack
-    - 24h.1rage. attack a player in your area for 950.
-### Normal Attack
-  - /normalattack
-    - 48h.3rage. attack a player in your area for 2300.
-### Heavy Attack
-  - /heavyattack
-    - 72h.6rage. attack a player in your area for 3650.
-### Interrupt
-  - /interrupt
-    - 24h. hit a player in your area for 4200 if they are resting or evading.
-### Evade
-  - /evade
-    - 24h. receive no damage from light normal or heavy attacks.
-### Rest
-  - /rest
-    - 24h. heal half your missing health rounded up unless you rested last action.
-### Area Action
-  - see below for commands
-    - 24h. see the area actions listed alongside the locations below.
-### Use Item
-  - see below for commands
-    - Varies-h. see the items listed below.  
+Actions are what you do! Most actions cost mana. You generate one mana every 16 hours and can hold up to three mana at a time. Players can't take actions that would make their mana negative.
+When you attempt to perform an action but don't have enough mana, you instead queue the action. You perform that action when you have enough mana.
 
-## Locations
-- Every location has a location specific action
-- You can travel from any location to the Crossroads (/traveltocrossroads)
-- You can only travel to locations other than the Crossroads, from the Crossroads (/travelto)
+### Light Attack `/lightattack` 
+Spend 1 mana to gain a Rage and attack an opponent in your area for 800 to 1100 damage.
+### Heavy Attack `/heavyattack` 
+Spend 3 mana to gain 6 Rage and attack an opponent in your area for 3500 to 3800 damage.
+### Interrupt `/interrupt` 
+Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. They stop resting/evading. The target loses all queued actions, regardless of whether they were resting/evading or not.
+### Evade `/evade` 
+Spend 1 mana to receive no damage from light or heavy attacks while you are evading. You are evading for the next 24 hours. 
+You can still take actions while evading, but you are susceptible to interrupt damage.
+### Rest `/rest`
+Gain a mana and heal half your missing health rounded up. You are resting for the next 24 hours and cannot rest while you are resting.
+You can still take actions while resting, but you are susceptible to interrupt damage.
+### Recruit `/recruit`
+Choose a player.
+If you choose yourself and you belong to a team, you may leave your current team by spending a mana.
+If you choose yourself and you don't belong to a team, you may create and join your own team by spending a mana.
+If you choose another player, they may join your team by spending a mana.
 
-### Crossroads
-- /exchange
-  - 24h. give a player in your area a ready item from your inventory.
+*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*
+### Gamble `/gamble`
+Wager your health or SC on a 50/50 chance. If you lose the 50/50, you lose that much SC/HP. If you win the 50/50, you gain that much SC/HP!
 
-### Dungeon
-  - /loot
-    - 24h. score 1d4. on 4+ gain two items at random. lowest score: lose 1/4 of your current health.
+*This does not cost mana.*
 
-### Farmland
-  - /farm
-    - 24h. score 1d4. gain your score seed coins.
+### Status `/status`
+Use /status to find out more information about your current status.
 
-### Keep
-  - /aid
-    - 24h. heal chosen player 1/4 of their missing health.
+*Checking your status does not cost mana!*
 
-### Lich's Castle
-  - /battlelich
-    - 24h. score 1d4. high score: gain Lich's Item. low score: lose 1/4 current health.
+## Locations `/travel`
+You can travel from any location to the Crossroads using /travel and you can travel from the Crossroads to any location using /travel
 
-### Shop
-  - /trade
-    - 24h. exchange seed coins for a shop item.
+Locations each have their own unique location action! Location actions cost 1 mana, but have a variety of effects.
 
-### Tavern
-  - /drinkingchallenge
-    - 24h. score 1d4. high score: equip a drinking challenge medal. low score: loses 1/4 current health otherwise: heal 1/4 missing health.
+### Crossroads `/exchange`
+Spend 1 mana to give a player in your area a ready item from your inventory.
 
-## Items
-- Items fall into two broad categories:
-  - Ready items
-    - Items you can use for benefits that can be instantaneous, duration, or permanent in nature.
-    - When you use a Ready Item it moves to your Equipped Items.
-  - Equipped items
-    - Items you have equipped in the past that may or may not be providing you a benefit.
-- The list of items is below.
+### Dungeon `/loot`
+Spend 1 mana to roll 1d4. If you roll the highest roll, gain a random item. If you roll the lowest roll, lose 1/4 of your current health. Scores expire after 16 hours.
 
-### Adventuring Gear
-  - /adventuringgear
-    - 48h. increase your loot score by 1 for the rest of the game.
+### Farmland `/farm`
+Spend 1 mana to roll 1d4. Gain the result of that roll in SCs.
 
-### Aim Training
-  - /aimtrain
-    - 72h. reduce heavy attacks to 24h cooldown. doesn't stack.
+### Keep `/aid`
+Spend 1 mana to heal the chosen player for 1/4 of their missing health.
 
-### Crooked Abacus
-  - /crookedabacus
-    - 48h. whenever you exchange or trade, gain a seed coin for the rest of the game.
+### Lich's Castle `/battlelich`
+Spend 1 mana to roll 1d4. If you get the high roll, gain the lich's item. If you roll the low roll, lose 1/4 of your current health. Scores expire after 16 hours.
 
-### Goodie Bag
-  - /goodiebag
-    - 24h. add a random ready item to your inventory.
+### Shop `/trade`
+Spend 1 mana to exchange seed coins for a shop item.
 
-### Tractor
-  - /tractor
-    - 48h. whenever you farm, gain an additional seed coin for the rest of the game.
+### Tavern `/drink`
+Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in your equipped inventory. If you roll the low roll, lose 1/4 of your current health. If you don't roll the low roll, heal for 1/4 of your missing health. Scores expire after 16 hours.
 
-### Drinking Medal
-  - /drinkingmedal
-    - 48h. increase the damage of your light attack by 420 for the rest of the game.
+## Items `/use`
+Items are either in your:
+**Ready Inventory**
+Items you can use with /use to equip or consume.
 
-### Lich's Item
-  - /lichitem
-    - 48h. The next time you would die, set your HP to 4200 instead.
+**Equipped Inventory**
+Items you have equipped in the past that are giving you a passive effect.
 
-### Critter? I Hardly Know Her
-  - /lichitem
-    - 48h. increase your crit rolls by 1 for the rest of the game.
+### Adventuring Gear (5 SC)
+Spend 2 mana to equip this item. Increase your /loot rolls by 1 for each equipped Adventuring Gear.
 
-### Beer-bandolier
-  - /beerbando
-    - 24h. you gain three rage.
+### AWP (8 SC)
+Spend 3 mana to equip this item. While you have an AWP equipped reduce the heavy attack mana cost to two. Doesn't stack.
+
+### Crooked Abacus (5 SC)
+Spend 2 mana to equip this item. When you /trade or /exchange gain a SC for each Crooked Abacus you have equipped.
+
+### Goodie Bag (8 SC)
+Spend 1 mana to consume this item and add a random item to your ready inventory.
+
+### Tractor (5 SC)
+Spend 2 mana to equip this item. When you farm gain a SC for each Tractor you have equipped.
+
+### Drinking Medal (6 SC)
+Spend 2 mana to equip this item. When you light attack increase the attack damage by 420 for each Drinking Medal you have equipped.
+
+### Lich's Item (15 SC)
+Spend 2 mana to equip this item. The next time you would die, prevent that death and lose an equipped Lich Item instead. This prevention sets your HP to 4200.
+
+### Critter? I Hardly Know Her (6 SC)
+Spend 2 mana to equip this item. When you roll for crit add one to your roll for each Critter? I hardly Know her you have equipped.
+
+*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*
+
+### Beer-bandolier (3 SC)
+Spend 1 mana to consume this item and gain three rage.
+
+### Local Ligma Outbreak (5 SC)
+Spend 2 mana to consume this item and deal the current ligma damage at this location to everyone in your area (including yourself).
