@@ -92,7 +92,7 @@ Spend 3 mana to equip this item. While you have an AWP equipped reduce the heavy
 ### Crooked Abacus (5 SC)
 Spend 2 mana to equip this item. When you /trade or /exchange gain a SC for each Crooked Abacus you have equipped.
 
-### Goodie Bag (8 SC)
+### Goodie Bag (6 SC)
 Spend 1 mana to consume this item and add a random item to your ready inventory.
 
 ### Tractor (5 SC)
