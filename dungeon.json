@@ -3,30 +3,42 @@
         "Username": "Dungeon Tire",
         "Media": "https://j.gifs.com/Brm9jW.gif",
         "Score": 1,
-        "Scoreexpiry": 1669084554
+        "Scoreexpiry": 1670656097
     },
     "NPC6": {
         "Username": "Lord of the Orb",
         "Media": "https://j.gifs.com/PjEWA2.gif",
-        "Score": 0,
-        "Scoreexpiry": 1669084554
+        "Score": 1,
+        "Scoreexpiry": 1670656097
     },
     "192697820875194368": {
-        "Username": "Sabrina the Teenage Lich",
-        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/192697820875194368/avatars/c29ad95202994b1f7949129d3add67fa.png",
+        "Username": "Sabrina the Teenage Lich ('Sabrina Teen Lich')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/192697820875194368/avatars/6ec64d6b4341a36ef8d62d7a00734a01.png",
         "Score": 4,
-        "Scoreexpiry": 0
+        "Scoreexpiry": 1670446031
     },
     "189920974261583872": {
-        "Username": "The old razzmataz",
+        "Username": "The old razzmataz ('Liquormancer')",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/189920974261583872/avatars/39737b3015bb086781170654b35b2ad5.png",
         "Score": 5,
-        "Scoreexpiry": 0
+        "Scoreexpiry": 1670564010
     },
     "121800126900469762": {
         "Username": "FatalBagel",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/121800126900469762/avatars/7ace8743544b5f19dc2354b51d39491e.png",
         "Score": 2,
         "Scoreexpiry": 0
+    },
+    "111327745430016000": {
+        "Username": "gondolio ('Recka Ning Baum')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/111327745430016000/avatars/0b19c99e2fc18a4dfbc5e0d02e665c7c.png",
+        "Score": 4,
+        "Scoreexpiry": 1670339826
+    },
+    "259506763374526466": {
+        "Username": "FantasticDeli ('Eric')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/259506763374526466/avatars/ac2709778d1637d0e964ccf0a36830f5.png",
+        "Score": 6,
+        "Scoreexpiry": 1670656097
     }
 }

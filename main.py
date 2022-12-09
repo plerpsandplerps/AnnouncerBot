@@ -624,7 +624,10 @@ async def dolightattack(authorid,targetid):
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(1, 10) + EquippedInventory_pull.count("critterihardlyknowher")
-        critdmg = max(critroll-9,0)*950
+        if critroll >= 10:
+            critdmg = math.ceil(950/2)
+        else:
+            critdmg = 0
         damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -763,7 +766,10 @@ async def doheavyattack(authorid,targetid):
         EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
         damageroll = random.randint(0, 300)
         critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
-        critdmg = max(critroll-9,0)*3650
+        if critroll >= 10:
+            critdmg = math.ceil(3650/2)
+        else:
+            critdmg = 0
         damage = 3500 + damageroll + critdmg
         targethp = players[str(targetid)]["HP"] - damage
         players[str(targetid)]["HP"] = targethp
@@ -1881,6 +1887,7 @@ async def doloot(authorid):
             damagedesc = "This roll is the lowest roll, they lose 1/4 of their current health!"
         else:
             damagedesc = "This roll is not the lowest roll!"
+        highscoremedia = "https://media.tenor.com/c1VeLRFcWJAAAAAd/adventuretime-dungeon.gif"
         usernameauthor = players[str(authorid)]["Username"]
         loottenorimage = interactions.EmbedImageStruct(
                             url=highscoremedia,
@@ -3232,7 +3239,7 @@ async def button_response(ctx):
         description = f"When you take an action that costs mana, you heal equal to your Rage times 420hp. Then you lose one Rage.",
         fields = [interactions.EmbedField(name=":fire:Rage",value=rage,inline=True),interactions.EmbedField(name="Next Rage Heal",value=rageheal,inline=True)],
         )
-    await ctx.send(embeds = buttonemb, ephemeral=False)
+    await ctx.send(embeds = buttonemb, ephemeral=True)
 
 @bot.command(
     name="help",
@@ -4688,7 +4695,7 @@ async def button_response(ctx: interactions.CommandContext):
 
 allplayerbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
-    label="Living Players",
+    label="Living Player Locations",
     custom_id="allplayerbutton",
 )
 
@@ -4699,22 +4706,35 @@ async def button_response(ctx: interactions.CommandContext):
     #teamhp = await hpmojiconv(teamhp)
     #teammana = #X
     #teammana = await manamojiconv(teammana)
-    sameTeamUsernames = [(str(v["Username"])+" - "+str(v["Location"])) for v in players.values() if v['Location'] != 'Dead']
-    print(len(str(sameTeamUsernames)))
-    if len(sameTeamUsernames) == 0:
-        sameTeamUsernames = "No players are alive"
-    elif len(str(sameTeamUsernames)) > 1000:
-        sameTeamUsernames = '\n'.join(sameTeamUsernames)
-        sameTeamUsernames = sameTeamUsernames[:950]+ "\n...too many players to display!"
-    else:
-        sameTeamUsernames = '\n'.join(sameTeamUsernames)
-    buttonemb = interactions.api.models.message.Embed(
-        title = f"Living Players",
-        color = 0x2da66c,
-        #fields = [interactions.EmbedField(name="Team HP",value=teamhp,inline=True),interactions.EmbedField(name="Team Mana",value=teammana,inline=True)],
-        fields = [interactions.EmbedField(name="Players - Locations",value=sameTeamUsernames,inline=True)],
-        )
-    await ctx.send(embeds=buttonemb, ephemeral=True)
+    crossUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == 'Crossroads']
+    dungeonUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == 'Dungeon']
+    keepUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == 'Keep']
+    farmUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == 'Farmland']
+    lichUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == "Lich's Castle"]
+    shopUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == "Shop"]
+    tavernUsernames = [(str(v["Username"])) for v in players.values() if v['Location'] == "Tavern"]
+
+    crossUsernames = '\n'.join(crossUsernames)
+    dungeonUsernames = '\n'.join(dungeonUsernames)
+    keepUsernames = '\n'.join(keepUsernames)
+    farmUsernames = '\n'.join(farmUsernames)
+    lichUsernames = '\n'.join(lichUsernames)
+    shopUsernames = '\n'.join(shopUsernames)
+    tavernUsernames = '\n'.join(tavernUsernames)
+
+    await Paginator(
+        client=bot,
+        ctx=ctx,
+        pages=[
+            Page("Crossroads",interactions.api.models.message.Embed(title="Living Players (Crossroads)", description=f"{crossUsernames}",ephemeral=True)),
+            Page("Dungeon",interactions.api.models.message.Embed(title="Living Players (Dungeon)", description=f"{dungeonUsernames}",ephemeral=True)),
+            Page("Farmland",interactions.api.models.message.Embed(title="Living Players (Farmland)", description=f"{farmUsernames}",ephemeral=True)),
+            Page("Keep",interactions.api.models.message.Embed(title="Living Players (Keep)", description=f"{keepUsernames}",ephemeral=True)),
+            Page("Lich's Castle",interactions.api.models.message.Embed(title="Living Players (Lich's Castle)", description=f"{lichUsernames}",ephemeral=True)),
+            Page("Shop",interactions.api.models.message.Embed(title="Living Players (Shop)", description=f"{shopUsernames}",ephemeral=True)),
+            Page("Tavern",interactions.api.models.message.Embed(title="Living Players (Tavern)", description=f"{tavernUsernames}",ephemeral=True)),
+        ],
+    ).run()
 
 
 futureteamrosterbutton = interactions.Button(
