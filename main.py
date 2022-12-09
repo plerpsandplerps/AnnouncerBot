@@ -3552,37 +3552,53 @@ async def button_response(ctx):
     flip =  int(random.randint(1, 2))
     players = await getplayerdata()
     scnumber = 1
-    if flip == 1:
-        scchange = 0-scnumber
-        title = "Lost"
-        color2 = 0xff0000
-        tag = "lost"
-        tag2 = "ribs"
+    if players[str(ctx.author.id)]["SC"] < scnumber:
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"You don't have {scnumber} to Gamble!",
+            color = 0xff0000,
+            description = f"<@{ctx.author.id}> doesn't have the SC to gamble!",
+            image = gambleimg,
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
     else:
-        scchange = scnumber
-        title = "Won"
-        color2 = 0x1aff00
-        tag = "won"
-        tag2 = "loins"
-    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    targetSC = players[str(ctx.author.id)]["SC"]
-    gambleimg = interactions.EmbedImageStruct(
-                url="https://i.imgur.com/cvbHkgt.png",
-                height = 64,
-                width = 64,
-                )
-    gamblehp = interactions.api.models.message.Embed(
-        title = f"{title}",
-        color = color2,
-        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
-        image = gambleimg,
-        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
-        )
-    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await ctx.send(embeds = gamblehp)
+        if flip == 1:
+            scchange = 0-scnumber
+            title = "Lost"
+            color2 = 0xff0000
+            tag = "lost"
+            tag2 = "ribs"
+        else:
+            scchange = scnumber
+            title = "Won"
+            color2 = 0x1aff00
+            tag = "won"
+            tag2 = "loins"
+        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        targetSC = players[str(ctx.author.id)]["SC"]
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"{title}",
+            color = color2,
+            description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+            image = gambleimg,
+            fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
 
 #delete below
 
@@ -3597,37 +3613,53 @@ async def button_response(ctx):
     flip =  int(random.randint(1, 2))
     players = await getplayerdata()
     scnumber = 2
-    if flip == 1:
-        scchange = 0-scnumber
-        title = "Lost"
-        color2 = 0xff0000
-        tag = "lost"
-        tag2 = "ribs"
+    if players[str(ctx.author.id)]["SC"] < scnumber:
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"You don't have {scnumber} to Gamble!",
+            color = 0xff0000,
+            description = f"<@{ctx.author.id}> doesn't have the SC to gamble!",
+            image = gambleimg,
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
     else:
-        scchange = scnumber
-        title = "Won"
-        color2 = 0x1aff00
-        tag = "won"
-        tag2 = "loins"
-    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    targetSC = players[str(ctx.author.id)]["SC"]
-    gambleimg = interactions.EmbedImageStruct(
-                url="https://i.imgur.com/cvbHkgt.png",
-                height = 64,
-                width = 64,
-                )
-    gamblehp = interactions.api.models.message.Embed(
-        title = f"{title}",
-        color = color2,
-        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
-        image = gambleimg,
-        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
-        )
-    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await ctx.send(embeds = gamblehp)
+        if flip == 1:
+            scchange = 0-scnumber
+            title = "Lost"
+            color2 = 0xff0000
+            tag = "lost"
+            tag2 = "ribs"
+        else:
+            scchange = scnumber
+            title = "Won"
+            color2 = 0x1aff00
+            tag = "won"
+            tag2 = "loins"
+        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        targetSC = players[str(ctx.author.id)]["SC"]
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"{title}",
+            color = color2,
+            description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+            image = gambleimg,
+            fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
 
 button3sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3640,37 +3672,53 @@ async def button_response(ctx):
     flip =  int(random.randint(1, 2))
     players = await getplayerdata()
     scnumber = 3
-    if flip == 1:
-        scchange = 0-scnumber
-        title = "Lost"
-        color2 = 0xff0000
-        tag = "lost"
-        tag2 = "ribs"
+    if players[str(ctx.author.id)]["SC"] < scnumber:
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"You don't have {scnumber} to Gamble!",
+            color = 0xff0000,
+            description = f"<@{ctx.author.id}> doesn't have the SC to gamble!",
+            image = gambleimg,
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
     else:
-        scchange = scnumber
-        title = "Won"
-        color2 = 0x1aff00
-        tag = "won"
-        tag2 = "loins"
-    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    targetSC = players[str(ctx.author.id)]["SC"]
-    gambleimg = interactions.EmbedImageStruct(
-                url="https://i.imgur.com/cvbHkgt.png",
-                height = 64,
-                width = 64,
-                )
-    gamblehp = interactions.api.models.message.Embed(
-        title = f"{title}",
-        color = color2,
-        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
-        image = gambleimg,
-        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
-        )
-    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await ctx.send(embeds = gamblehp)
+        if flip == 1:
+            scchange = 0-scnumber
+            title = "Lost"
+            color2 = 0xff0000
+            tag = "lost"
+            tag2 = "ribs"
+        else:
+            scchange = scnumber
+            title = "Won"
+            color2 = 0x1aff00
+            tag = "won"
+            tag2 = "loins"
+        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        targetSC = players[str(ctx.author.id)]["SC"]
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"{title}",
+            color = color2,
+            description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+            image = gambleimg,
+            fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
 
 button4sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3683,37 +3731,53 @@ async def button_response(ctx):
     flip =  int(random.randint(1, 2))
     players = await getplayerdata()
     scnumber = 4
-    if flip == 1:
-        scchange = 0-scnumber
-        title = "Lost"
-        color2 = 0xff0000
-        tag = "lost"
-        tag2 = "ribs"
+    if players[str(ctx.author.id)]["SC"] < scnumber:
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"You don't have {scnumber} to Gamble!",
+            color = 0xff0000,
+            description = f"<@{ctx.author.id}> doesn't have the SC to gamble!",
+            image = gambleimg,
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
     else:
-        scchange = scnumber
-        title = "Won"
-        color2 = 0x1aff00
-        tag = "won"
-        tag2 = "loins"
-    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    targetSC = players[str(ctx.author.id)]["SC"]
-    gambleimg = interactions.EmbedImageStruct(
-                url="https://i.imgur.com/cvbHkgt.png",
-                height = 64,
-                width = 64,
-                )
-    gamblehp = interactions.api.models.message.Embed(
-        title = f"{title}",
-        color = color2,
-        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
-        image = gambleimg,
-        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
-        )
-    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await ctx.send(embeds = gamblehp)
+        if flip == 1:
+            scchange = 0-scnumber
+            title = "Lost"
+            color2 = 0xff0000
+            tag = "lost"
+            tag2 = "ribs"
+        else:
+            scchange = scnumber
+            title = "Won"
+            color2 = 0x1aff00
+            tag = "won"
+            tag2 = "loins"
+        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        targetSC = players[str(ctx.author.id)]["SC"]
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"{title}",
+            color = color2,
+            description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+            image = gambleimg,
+            fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
 
 button5sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -3726,37 +3790,53 @@ async def button_response(ctx):
     flip =  int(random.randint(1, 2))
     players = await getplayerdata()
     scnumber = 5
-    if flip == 1:
-        scchange = 0-scnumber
-        title = "Lost"
-        color2 = 0xff0000
-        tag = "lost"
-        tag2 = "ribs"
+    if players[str(ctx.author.id)]["SC"] < scnumber:
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"You don't have {scnumber} to Gamble!",
+            color = 0xff0000,
+            description = f"<@{ctx.author.id}> doesn't have the SC to gamble!",
+            image = gambleimg,
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
     else:
-        scchange = scnumber
-        title = "Won"
-        color2 = 0x1aff00
-        tag = "won"
-        tag2 = "loins"
-    players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
-    with open("players.json","w") as f:
-        json.dump(players,f, indent=4)
-    targetSC = players[str(ctx.author.id)]["SC"]
-    gambleimg = interactions.EmbedImageStruct(
-                url="https://i.imgur.com/cvbHkgt.png",
-                height = 64,
-                width = 64,
-                )
-    gamblehp = interactions.api.models.message.Embed(
-        title = f"{title}",
-        color = color2,
-        description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
-        image = gambleimg,
-        fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
-        )
-    gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
-    await ctx.send(embeds = gamblehp)
+        if flip == 1:
+            scchange = 0-scnumber
+            title = "Lost"
+            color2 = 0xff0000
+            tag = "lost"
+            tag2 = "ribs"
+        else:
+            scchange = scnumber
+            title = "Won"
+            color2 = 0x1aff00
+            tag = "won"
+            tag2 = "loins"
+        players[str(ctx.author.id)]["SC"] = players[str(ctx.author.id)]["SC"] + scchange
+        with open("players.json","w") as f:
+            json.dump(players,f, indent=4)
+        targetSC = players[str(ctx.author.id)]["SC"]
+        gambleimg = interactions.EmbedImageStruct(
+                    url="https://i.imgur.com/cvbHkgt.png",
+                    height = 64,
+                    width = 64,
+                    )
+        gamblehp = interactions.api.models.message.Embed(
+            title = f"{title}",
+            color = color2,
+            description = f"<@{ctx.author.id}> rolled {tag2}! <@{ctx.author.id}> {tag} {scnumber} SC with /gamble! ",
+            image = gambleimg,
+            fields = [interactions.EmbedField(name="SC:coin:",value=targetSC,inline=False),interactions.EmbedField(name="SC Change",value=scchange,inline=True)],
+            )
+        gamblerchannel = str(locations[players[str(ctx.author.id)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
+        await ctx.send(embeds = gamblehp)
 
 @bot.command(
     name="gamble",
