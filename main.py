@@ -4722,7 +4722,7 @@ async def button_response(ctx: interactions.CommandContext):
         color = 0x2da66c,
         description = f"What would you like more info on?",
         )
-    row = interactions.spread_to_rows(currentteamrosterbutton,futureteamrosterbutton, allplayerbutton, deadplayersbutton)
+    row = interactions.spread_to_rows(currentteamrosterbutton, allteamsbutton, allplayerbutton, deadplayersbutton)
     await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
 
 currentteamrosterbutton = interactions.Button(
@@ -4816,6 +4816,39 @@ async def button_response(ctx: interactions.CommandContext):
         ],
     ).run()
 
+
+allteamsbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="All Team Rosters",
+    custom_id="allteamsbutton",
+)
+
+@bot.component("allteamsbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    TeamNames = []
+    for v in players.values():
+        if v['Team'] not in TeamNames and v['Team'] != 'No Team':
+            TeamNames.append((str(v["Team"])))
+        elif v['Team'] not in TeamNames:
+            TeamNames.append((str(v["Team"])))
+    pagesprep =[]
+    for item in TeamNames:
+        teamusers =[]
+        for value in players.values():
+            if item == value['Team'] and value['Location']!='Dead':
+                teamusers.append((str(value["Username"]+" - "+value["Location"])))
+        teamusersspace = '\n'.join(teamusers)
+        pagesprep.append(Page(f"{item}",interactions.api.models.message.Embed(title=f"{item}", description=f"{teamusersspace}",ephemeral=True)))
+    await Paginator(
+        client=bot,
+        ctx=ctx,
+        pages=pagesprep,
+    ).run()
 
 futureteamrosterbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
