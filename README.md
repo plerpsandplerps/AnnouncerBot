@@ -27,11 +27,12 @@ Spend 3 mana to gain 6 Rage and attack an opponent in your area for 3500 to 3800
 ### Interrupt `/interrupt`
 Spend 1 mana to attack an opponent in your area for 4200 damage if they are resting or evading. They stop resting/evading. The target loses all queued actions, regardless of whether they were resting/evading or not.
 ### Evade `/evade`
-Spend 1 mana to receive no damage from light or heavy attacks while you are evading. You are evading for the next 24 hours.
-You can still take actions while evading, but you are susceptible to interrupt damage.
+Spend 1 mana to receive no damage from light or heavy attacks while you are evading. You gain the evading status for the next 24 hours.
+You can still take actions while you have the evading status, but you are susceptible to interrupt damage.
 ### Rest `/rest`
-Gain a mana and heal half your missing health rounded up. You are resting for the next 24 hours and cannot rest while you are resting.
-You can still take actions while resting, but you are susceptible to interrupt damage.
+Gain a mana and heal half your missing health rounded up. You gain the resting status for the next 24 hours. You cannot rest while you have the resting status.
+You can still take actions while you have the resting status, but you are susceptible to interrupt damage.
+
 ### Recruit `/recruit`
 Choose a player.
 If you choose yourself and you belong to a team, you may leave your current team by spending a mana.
@@ -77,7 +78,6 @@ Spend 1 mana to roll 1d4. If you get the high roll, gain a drinking medal in you
 
 ## Items `/use`
 Items are either in your:
-
 **Ready Inventory**
 Items you can use with /use to equip or consume.
 
@@ -93,7 +93,7 @@ Spend 3 mana to equip this item. While you have an AWP equipped reduce the heavy
 ### Crooked Abacus (5 SC)
 Spend 2 mana to equip this item. When you /trade or /exchange gain a SC for each Crooked Abacus you have equipped.
 
-### Goodie Bag (8 SC)
+### Goodie Bag (6 SC)
 Spend 1 mana to consume this item and add a random item to your ready inventory.
 
 ### Tractor (5 SC)
