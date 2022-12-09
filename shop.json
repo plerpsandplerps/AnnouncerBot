@@ -19,7 +19,7 @@
       },
     "goodiebag": {
         "Description": "1 mana. add a random ready item to your inventory.",
-        "Cost": 8,
+        "Cost": 6,
         "ManaCost": 1,
         "Role_ID":1018888489120575588
       },

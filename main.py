@@ -3068,7 +3068,7 @@ async def button_response(ctx):
         title = f"Goodie Bag",
         color = 0x000000,
         description = f"Spend 1 mana to consume this item and add a random item to your ready inventory.",
-        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="8",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
+        fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="1",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
 
