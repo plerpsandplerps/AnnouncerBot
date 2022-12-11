@@ -49,7 +49,7 @@ async def on_ready():
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
     membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
-    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 3, } for k, v in membersdict.items() if v[1] != 'True'}
+    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 3, 'Orders':"",'OrderDate': 0, } for k, v in membersdict.items() if v[1] != 'True'}
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
         if origstr[-7:] == " (None)" :
@@ -72,6 +72,7 @@ async def on_ready():
             await user.add_role(locations["Playing"]["Role_ID"], guildid)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
+    loop.create_task(pollfororders())
     loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
@@ -412,6 +413,61 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(60)
 
+async def pollfororders():
+    #run forever
+    while True:
+        print(f"\npolling for orders:{int(time.time())}")
+        players = await getplayerdata()
+        shop = await getshopdata()
+        for k,v in players.items():
+            if v['Orders'] != "":
+                words = players[k]['Orders'].split()
+                if v['Mana'] == 3:
+                    if v['OrderDate'] == 0:
+                        v['OrderDate'] = v['NextMana'] - 300
+                        if v['OrderDate'] < int(time.time()):
+                            v['OrderDate'] = 0
+                            #do the action
+                            loop = asyncio.get_running_loop()
+                            if len(words) == 1:
+                                await loop.create_task(functiondict[words[0]](**{'authorid': k}))
+                                print(f"{v['Username']} is doing {words[0]}")
+                            elif words[0] == "use":
+                                await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
+                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                            elif words[1] in players:
+                                if len(words) == 3:
+                                    await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
+                                    print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
+                                else:
+                                    print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
+                                    await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
+                            elif words[1] in locations:
+                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                            elif words[1] in shop:
+                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
+                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                            players = await getplayerdata()
+                            players[k]['Orders'] = ""
+                            with open("players.json", "w") as f:
+                                json.dump(players, f, indent=4)
+                    else:
+                        if len(words) == 1:
+                            print(f"{v['Username']} is not ready to {words[0]}")
+                        elif words[0] == "use":
+                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                        elif words[1] in players:
+                            if len(words) == 3:
+                                print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']} {words[2]}")
+                            else:
+                                print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
+                        elif words[1] in locations:
+                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                        elif words[1] in shop:
+                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+        await asyncio.sleep(60)
+
 async def pollformanagain():
     #run forever
     while True:
@@ -499,7 +555,6 @@ async def pollforqueue():
             user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
             await user.send(f"You have no queued action! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
         await asyncio.sleep(int(1*60*60*10)) #timer
-
 
 async def send_message(message : str, **kwargs):
     if('user_id' in kwargs.keys()):
@@ -2838,7 +2893,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Recruit",
         color = 0x000000,
-        description = f"Choose a player. \n\nIf you choose yourself and you belong to a team, you may leave your current team by spending a mana. \n\nIf you choose yourself and you don't belong to a team, you may create and join your own team by spending a mana. \n\nIf you choose another player, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
+        description = f"Choose a player. \n\nIf you choose yourself and you belong to a team, you may leave your current team by spending a mana. \n\nIf you choose yourself and you don't belong to a team, you may create and join your own team. \n\nIf you choose another player and they have no team, they may join your team.\n\nIf you choose another player and they have a team, they may join your team by spending a mana.\n\n*Players with the same team as you are not opponents and therefore cannot be targeted by attacks or interrupts.*",
         fields = [interactions.EmbedField(name="Command",value="/recruit",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -4618,35 +4673,27 @@ async def button_response(ctx):
                         height = 512,
                         width = 512,
                         )
-    if players[str(ctx.user.id)]["Mana"] <1:
-        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
-        recruitemb = interactions.api.models.message.Embed(
-            title = f"{players[str(ctx.user.id)]['Username']} not enough mana to join {newteam}!",
-            color = 0x2da66c,
-            description = f"You need a mana to join **{newteam}**!",
-            image = recruitimg,
-            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True),interactions.EmbedField(name="Mana",value=manamoji,inline=True)],
-            )
-        await ctx.send(embeds = recruitemb)
-    else :
-        players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"] - 1,0)
-        manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
-        recruitemb = interactions.api.models.message.Embed(
-            title = f"{players[str(ctx.user.id)]['Username']} joined {newteam}!",
-            color = 0x2da66c,
-            description = f"{players[str(ctx.user.id)]['Username']} spent a mana to join **{newteam}**!",
-            image = recruitimg,
-            fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True)],
-            )
-        players[str(ctx.user.id)]["Team"] = newteam
-        players[str(ctx.user.id)]["NewTeam"] = "No Team"
-        players[str(ctx.user.id)]["Lastaction"] = "recruit"
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-        locchannel=str(locations[players[str(ctx.user.id)]["Location"]]["Channel_ID"])
-        channel = await interactions.get(bot, interactions.Channel, object_id=locchannel , force='http')
-        await channel.send(embeds = recruitemb)
-        await ctx.send(embeds = recruitemb)
+    if players[str(ctx.user.id)]["Team"] == "No Team":
+        players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"],0)
+    else:
+        players[str(ctx.user.id)]["Mana"] = max(players[str(ctx.user.id)]["Mana"]-1,0)
+    manamoji = await manamojiconv(players[str(ctx.user.id)]['Mana'])
+    recruitemb = interactions.api.models.message.Embed(
+        title = f"{players[str(ctx.user.id)]['Username']} joined {newteam}!",
+        color = 0x2da66c,
+        description = f"{players[str(ctx.user.id)]['Username']} joined **{newteam}**!",
+        image = recruitimg,
+        fields = [interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+        )
+    players[str(ctx.user.id)]["Team"] = newteam
+    players[str(ctx.user.id)]["NewTeam"] = "No Team"
+    players[str(ctx.user.id)]["Lastaction"] = "recruit"
+    with open("players.json", "w") as f:
+        json.dump(players, f, indent=4)
+    locchannel=str(locations[players[str(ctx.user.id)]["Location"]]["Channel_ID"])
+    channel = await interactions.get(bot, interactions.Channel, object_id=locchannel , force='http')
+    await channel.send(embeds = recruitemb)
+    await ctx.send(embeds = recruitemb)
 
 leaveteambutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
