@@ -72,7 +72,7 @@ async def on_ready():
             await user.add_role(locations["Playing"]["Role_ID"], guildid)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
-    loop.create_task(pollfororders())
+    #loop.create_task(pollfororders())
     loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
@@ -84,8 +84,8 @@ async def on_ready():
         print(f"ligma date already exists!")
         loop.create_task(pollforligma())
     else:
-        smalltime=int(86400) #set to 86400 (seconds in a day) when golive and blank ligma.json
-        smalltimeunit="days" #set to days on golive
+        smalltime=int(86400)
+        smalltimeunit="days"
         firstcountdown=int(7*smalltime)
         nextligmatime=current_time+firstcountdown
         ligma = {}
@@ -646,6 +646,135 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
         json.dump(players, f, indent=4)
     return
 
+
+@bot.command(
+    name="order",
+    description="give a teammate an order to execute before they fail to generate mana (due to the max mana).",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="orderee",
+            description="start typing who you want to order",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def order(ctx: interactions.CommandContext, orderee: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    print(f"{orderee} is the orderee")
+    for k,v in players.items():
+        if v['Username']==str(orderee):
+            ordereeid=k
+    print(f"{ordereeid} is the orderee id")
+    LocationPull = players[str(ordereeid)]['Location']
+    TeamPull = players[str(ordereeid)]["Team"]
+    orderimg = interactions.EmbedImageStruct(
+                        url="https://media0.giphy.com/media/rBv0nPAA2GoAo/giphy.gif?cid=ecf05e475e7jta0xuc042sp5b7nuznsa7wnwat8n1wuqkd1q&rid=giphy.gif",
+                        height = 512,
+                        width = 512,
+                        )
+    if players[str(ordereeid)]["Team"] != players[str(ctx.author.id)]["Team"]:
+        await ctx.send(f"They aren't on your team!" , ephemeral = True)
+    else:
+        if players[str(ordereeid)]["Orders"] != "":
+            priororders = players[str(ordereeid)]["Orders"]
+            await ctx.send(f"<@{ordereeid}> had existing orders that have been cleared:\n*{priororders}*" , ephemeral = True)
+        else:
+            await ctx.send(f"<@{ordereeid}> had no existing orders" , ephemeral = True)
+        #attacktargets
+        attacktargets = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
+
+        #lightattack
+        lightattackoptions =[]
+        for item in attacktargets:
+            lightattackoptions.append("lightattack " + item)
+
+        #heavyattack
+        heavyattackoptions =[]
+        for item in attacktargets:
+            heavyattackoptions.append("heavyattack " + item)
+
+        #interrupt
+        interruptoptions =[]
+        for item in attacktargets:
+            interruptoptions.append("heavyattack " + item)
+
+        #rest
+        restoptions =["rest"]
+
+        #evade
+        evadeoptions =["evade"]
+
+        #travel
+        traveloptions =["Crossroads","Dungeon", "Farmland", "Keep", "Lich's Castle", "Shop", "Tavern"]
+
+        #use
+        useoptions =[]
+        ReadyInventory_pull = players[str(ordereeid)]["ReadyInventory"]
+        readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
+        for item in readyitems:
+            useoptions.append("use " + item)
+
+        #location
+        locationoptions =[]
+        locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
+        for k,v in locationdict.items():
+            if k==players[str(ordereeid)]['Location']:
+                locationoptions=v
+        #location - excchange
+        if locationoptions == "exchange":
+            locationoptions = []
+            for item in attacktargets:
+                for i in readyitems:
+                    locationoptions.append("exchange " + item+" "+ i)
+
+        #location - keep
+        if locationoptions == "aid":
+            locationoptions = []
+            playertargets = []
+            for v in players.items():
+                if v['Location']!='Dead':
+                    playertargets.append(v['Username'])
+            for item in playertargets:
+                locationoptions.append("aid " + item)
+
+        alloptions=[]
+        alloptions= locationoptions + evadeoptions + restoptions + traveloptions + useoptions + lightattackoptions + heavyattackoptions + interruptoptions
+        print(alloptions)
+        pagesprep = []
+        for item in alloptions[:25]:
+            pagesprep.append(Page(f"{item}",interactions.api.models.message.Embed(title=f"{item}", description=f"{teamusersspace}",ephemeral=True)))
+        await Paginator(
+            client=bot,
+            ctx=ctx,
+            timeout = 300,
+            remove_after_timeout = True,
+            pages=pagesprep,
+        ).run()
+
+
+
+
+@bot.autocomplete("order", "orderee")
+async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        TeamPull = "No Team"#fix golive
+    else:
+        TeamPull = players[str(ctx.author.id)]["Team"]
+    sameTeamUserIDs = {k: v for k, v in players.items() if v['Team'] == TeamPull}
+    sameTeamUsernames = [v["Username"] for v in players.values() if v['Team'] == TeamPull and v['Location'] != 'Dead']
+    print (TeamPull)
+    print (sameTeamUsernames)
+    items = sameTeamUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
 #light attack is below
 async def dolightattack(authorid,targetid):
     lightattackurl = "https://media.tenor.com/nmEa-Paa3XgAAAAd/the-slap2-slap.gif"
@@ -656,74 +785,81 @@ async def dolightattack(authorid,targetid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     evading = False
-    if "EvadeTimer" in players[str(targetid)] :
-        if current_time < players[str(targetid)]["EvadeTimer"]:
-            evading = True
-            print("evading")
-    if evading:
-        await rage(authorid)
-        players = await getplayerdata()
-        damage = 0
-        targethp = players[str(targetid)]["HP"] - damage
-        critroll = 0
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-        players[str(authorid)]["Lastaction"] = "lightattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
+    TeamPull = players[str(authorid)]["Team"]
+    if TeamPull == "No Team":
+        TeamPull = "Null"
+    if (players[str(targetid)]["Location"] == players[str(authorid)]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
+        if "EvadeTimer" in players[str(targetid)] :
+            if current_time < players[str(targetid)]["EvadeTimer"]:
+                evading = True
+                print("evading")
+        if evading:
+            await rage(authorid)
+            players = await getplayerdata()
+            damage = 0
+            targethp = players[str(targetid)]["HP"] - damage
+            critroll = 0
+            players[str(targetid)]["HP"] = targethp
+            players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
+            players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+            players[str(authorid)]["Lastaction"] = "lightattack"
+            hpmoji = await hpmojiconv(targethp)
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+        else:
+            await rage(authorid)
+            players = await getplayerdata()
+            EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
+            damageroll = random.randint(0, 300)
+            critroll = random.randint(1, 10) + EquippedInventory_pull.count("critterihardlyknowher")
+            if critroll >= 10:
+                critdmg = math.ceil(950/2)
+            else:
+                critdmg = 0
+            damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
+            targethp = players[str(targetid)]["HP"] - damage
+            players[str(targetid)]["HP"] = targethp
+            players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
+            players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+            players[str(authorid)]["Lastaction"] = "lightattack"
+            hpmoji = await hpmojiconv(targethp)
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            if critroll >= 10:
+                crit = "**CRITICAL HIT!\n\n**"
+            else:
+                print("nocrit")
+                crit = ""
+        lightattackimage = interactions.EmbedImageStruct(
+                            url=lightattackurl,
+                            height = 512,
+                            width = 512,
+                            )
+        lightattackemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} light attacks {players[str(targetid)]['Username']}!",
+            color = 0x34b7eb,
+            description = f"{crit}<@{authorid}> threw a quick jab at <@{targetid}>!",
+            image = lightattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+        )
+        attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+        await channel.send(embeds=lightattackemb)
+        lightattackprivemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} light attacked {players[str(targetid)]['Username']}!",
+            color = 0x34b7eb,
+            description = f"{crit}<@{authorid}> throws a quick jab at <@{targetid}>!",
+            image = lightattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=lightattackprivemb)
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=lightattackprivemb)
+        await deadcheck(targethp,targetid,authorid,players)
     else:
-        await rage(authorid)
-        players = await getplayerdata()
-        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
-        damageroll = random.randint(0, 300)
-        critroll = random.randint(1, 10) + EquippedInventory_pull.count("critterihardlyknowher")
-        if critroll >= 10:
-            critdmg = math.ceil(950/2)
-        else:
-            critdmg = 0
-        damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-        players[str(authorid)]["Lastaction"] = "lightattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-        if critroll >= 10:
-            crit = "**CRITICAL HIT!\n\n**"
-        else:
-            print("nocrit")
-            crit = ""
-    lightattackimage = interactions.EmbedImageStruct(
-                        url=lightattackurl,
-                        height = 512,
-                        width = 512,
-                        )
-    lightattackemb = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} light attacks {players[str(targetid)]['Username']}!",
-        color = 0x34b7eb,
-        description = f"{crit}<@{authorid}> threw a quick jab at <@{targetid}>!",
-        image = lightattackimage,
-        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
-    )
-    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
-    await channel.send(embeds=lightattackemb)
-    lightattackprivemb = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} light attacked {players[str(targetid)]['Username']}!",
-        color = 0x34b7eb,
-        description = f"{crit}<@{authorid}> throws a quick jab at <@{targetid}>!",
-        image = lightattackimage,
-        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
-    )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=lightattackprivemb)
-    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user2.send(embeds=lightattackprivemb)
-    await deadcheck(targethp,targetid,authorid,players)
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(f"You did not lightattack <@{targetid}> they are no longer a valid target!")
 
 @bot.command(
     name="lightattack",
@@ -799,73 +935,81 @@ async def doheavyattack(authorid,targetid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     evading = False
-    if "EvadeTimer" in players[str(targetid)] :
-        if current_time < players[str(targetid)]["EvadeTimer"]:
-            evading = True
-            print("evading")
-    if evading:
-        await rage(authorid)
-        players = await getplayerdata()
-        damage = 0
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
-        players[str(authorid)]["Lastaction"] = "heavyattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
+    TeamPull = players[str(authorid)]["Team"]
+    if TeamPull == "No Team":
+        TeamPull = "Null"
+    if (players[str(targetid)]["Location"] == players[str(authorid)]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
+
+        if "EvadeTimer" in players[str(targetid)] :
+            if current_time < players[str(targetid)]["EvadeTimer"]:
+                evading = True
+                print("evading")
+        if evading:
+            await rage(authorid)
+            players = await getplayerdata()
+            damage = 0
+            targethp = players[str(targetid)]["HP"] - damage
+            players[str(targetid)]["HP"] = targethp
+            players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
+            players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
+            players[str(authorid)]["Lastaction"] = "heavyattack"
+            hpmoji = await hpmojiconv(targethp)
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+        else:
+            await rage(authorid)
+            players = await getplayerdata()
+            EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
+            damageroll = random.randint(0, 300)
+            critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
+            if critroll >= 10:
+                critdmg = math.ceil(3650/2)
+            else:
+                critdmg = 0
+            damage = 3500 + damageroll + critdmg
+            targethp = players[str(targetid)]["HP"] - damage
+            players[str(targetid)]["HP"] = targethp
+            players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
+            players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
+            players[str(authorid)]["Lastaction"] = "heavyattack"
+            hpmoji = await hpmojiconv(targethp)
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            if critroll >= 10:
+                crit = "**CRITICAL HIT!\n\n**"
+            else:
+                print("nocrit")
+                crit = ""
+        heavyattackimage = interactions.EmbedImageStruct(
+                            url=heavyattackurl,
+                            height = 512,
+                            width = 512,
+                            )
+        heavyattackemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
+            color = 0xed8a34,
+            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+            image = heavyattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+        )
+        attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+        await channel.send(embeds=heavyattackemb)
+        heavyattackprivemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
+            color = 0xed8a34,
+            description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
+            image = heavyattackimage,
+            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+        )
+        await deadcheck(targethp,targetid,authorid,players)
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=heavyattackprivemb)
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=heavyattackprivemb)
     else:
-        await rage(authorid)
-        players = await getplayerdata()
-        EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
-        damageroll = random.randint(0, 300)
-        critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
-        if critroll >= 10:
-            critdmg = math.ceil(3650/2)
-        else:
-            critdmg = 0
-        damage = 3500 + damageroll + critdmg
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
-        players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
-        players[str(authorid)]["Lastaction"] = "heavyattack"
-        hpmoji = await hpmojiconv(targethp)
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-        if critroll >= 10:
-            crit = "**CRITICAL HIT!\n\n**"
-        else:
-            print("nocrit")
-            crit = ""
-    heavyattackimage = interactions.EmbedImageStruct(
-                        url=heavyattackurl,
-                        height = 512,
-                        width = 512,
-                        )
-    heavyattackemb = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
-        color = 0xed8a34,
-        description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
-        image = heavyattackimage,
-        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
-    )
-    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
-    await channel.send(embeds=heavyattackemb)
-    heavyattackprivemb = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} heavy attacked {players[str(targetid)]['Username']}!",
-        color = 0xed8a34,
-        description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
-        image = heavyattackimage,
-        fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
-    )
-    await deadcheck(targethp,targetid,authorid,players)
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=heavyattackprivemb)
-    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user2.send(embeds=heavyattackprivemb)
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(f"You did not heavyattack <@{targetid}> they are no longer a valid target!")
 
 @bot.command(
     name="heavyattack",
@@ -945,69 +1089,76 @@ async def dointerrupt(authorid,targetid):
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     resting = False
     evading = False
-    if current_time < players[str(targetid)]["EvadeTimer"]:
-        evading = True
-        print("evading")
-    if current_time < players[str(targetid)]["RestTimer"]:
-        resting = True
-        print("resting")
-    if resting or evading:
-        damage = 4200
-        targethp = players[str(targetid)]["HP"] - damage
-        players[str(targetid)]["HP"] = targethp
-        players[str(authorid)]["Lastaction"] = "interrupt"
-        hpmoji = await hpmojiconv(targethp)
-        players[str(targetid)]["RestTimer"] = current_time
-        players[str(targetid)]["EvadeTimer"] = current_time
+    TeamPull = players[str(authorid)]["Team"]
+    if TeamPull == "No Team":
+        TeamPull = "Null"
+    if (players[str(targetid)]["Location"] == players[str(authorid)]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
+        if current_time < players[str(targetid)]["EvadeTimer"]:
+            evading = True
+            print("evading")
+        if current_time < players[str(targetid)]["RestTimer"]:
+            resting = True
+            print("resting")
+        if resting or evading:
+            damage = 4200
+            targethp = players[str(targetid)]["HP"] - damage
+            players[str(targetid)]["HP"] = targethp
+            players[str(authorid)]["Lastaction"] = "interrupt"
+            hpmoji = await hpmojiconv(targethp)
+            players[str(targetid)]["RestTimer"] = current_time
+            players[str(targetid)]["EvadeTimer"] = current_time
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+        else:
+            damage = 0
+            targethp = players[str(targetid)]["HP"] - damage
+            hpmoji = await hpmojiconv(targethp)
+            players[str(authorid)]["Lastaction"] = "interrupt"
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+        interruptimage = interactions.EmbedImageStruct(
+                            url=interrupturl,
+                            height = 512,
+                            width = 512,
+                            )
+        oldnextaction = players[str(targetid)]["Nextaction"]
+        newnextaction = ""
+        players[str(targetid)]["Nextaction"] = ""
+        desc = ""
+        desc2 = ""
+        removequeue = "No"
+        if oldnextaction != newnextaction:
+            desc = f"Removed the queued action: **{oldnextaction}**"
+            removequeue = "Yes"
+        if damage == 4200:
+            desc2 = f"Target took 4200 damage and is no longer resting or evading."
+        interruptemb = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
+            color = 0x8541fa,
+            description = f"<@{authorid}> makes distracting noises at <@{targetid}>!",
+            image = interruptimage,
+            fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True),interactions.EmbedField(name="Interrupted Damage:",value=damage,inline=True)],
+            )
+        attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
+        channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+        await channel.send(embeds=interruptemb)
+        interruptembpriv = interactions.api.models.message.Embed(
+            title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
+            color = 0x8541fa,
+            description = f"<@{authorid}> makes distracting noises at <@{targetid}>!\n\n{desc}",
+            image = interruptimage,
+            fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
+        )
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=interruptembpriv)
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=interruptembpriv)
+        await deadcheck(targethp,targetid,authorid,players)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
     else:
-        damage = 0
-        targethp = players[str(targetid)]["HP"] - damage
-        hpmoji = await hpmojiconv(targethp)
-        players[str(authorid)]["Lastaction"] = "interrupt"
-        with open("players.json", "w") as f:
-            json.dump(players, f, indent=4)
-    interruptimage = interactions.EmbedImageStruct(
-                        url=interrupturl,
-                        height = 512,
-                        width = 512,
-                        )
-    oldnextaction = players[str(targetid)]["Nextaction"]
-    newnextaction = ""
-    players[str(targetid)]["Nextaction"] = ""
-    desc = ""
-    desc2 = ""
-    removequeue = "No"
-    if oldnextaction != newnextaction:
-        desc = f"Removed the queued action: **{oldnextaction}**"
-        removequeue = "Yes"
-    if damage == 4200:
-        desc2 = f"Target took 4200 damage and is no longer resting or evading."
-    interruptemb = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
-        color = 0x8541fa,
-        description = f"<@{authorid}> makes distracting noises at <@{targetid}>!",
-        image = interruptimage,
-        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True),interactions.EmbedField(name="Interrupted Damage:",value=damage,inline=True)],
-        )
-    attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
-    channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
-    await channel.send(embeds=interruptemb)
-    interruptembpriv = interactions.api.models.message.Embed(
-        title = f"{players[str(authorid)]['Username']} tries to interrupt {players[str(targetid)]['Username']}!",
-        color = 0x8541fa,
-        description = f"<@{authorid}> makes distracting noises at <@{targetid}>!\n\n{desc}",
-        image = interruptimage,
-        fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
-    )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=interruptembpriv)
-    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user2.send(embeds=interruptembpriv)
-    await deadcheck(targethp,targetid,authorid,players)
-    with open("players.json", "w") as f:
-        json.dump(players, f, indent=4)
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(f"You did not heavyattack <@{targetid}> they are no longer a valid target!")
 
 @bot.command(
     name="interrupt",
@@ -1301,7 +1452,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
     if str(authorid) in players:
         ReadyInventory_pull = str(players[str(ctx.author.id)]["ReadyInventory"])
         if locations["Crossroads"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot exchange when you are not in the crossroads!", ephemeral=True)
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
         elif cost-Mana_pull > 0:
@@ -1401,7 +1552,7 @@ async def farm(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Farmland"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -1497,7 +1648,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Keep"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -1604,7 +1755,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         manacost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Shop"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot trade when you are not in the Shop!", ephemeral=True)
         elif SC_pull < cost:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ", ephemeral = True)
         elif manacost-Mana_pull > 0:
@@ -1825,7 +1976,7 @@ async def drink(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot drink when you are not in the tavern!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot drink when you are not in the tavern!", ephemeral=True)
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -2028,7 +2179,7 @@ async def loot(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Dungeon"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -2234,7 +2385,7 @@ async def battlelich(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
-            await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)  # golive
+            await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)
         elif cost-Mana_pull > 0:
             enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
             players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
@@ -3655,8 +3806,6 @@ async def button_response(ctx):
         channel = await interactions.get(bot, interactions.Channel, object_id=gamblerchannel , force='http')
         await ctx.send(embeds = gamblehp)
 
-#delete below
-
 button2sc = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
     label="2 SC",
@@ -4466,18 +4615,18 @@ async def dorecruit(authorid, targetid):
                 #offer to recruit target to author's existing team
                 if "Team" in players[str(targetid)]:
                     print("case2.1.1.1")
-                    newteam = str(players[str(authorid)]["Username"])+"'s team"
+                    newteam = players[str(authorid)]["Team"]
                     oldteam = players[str(targetid)]["Team"]
                 else:
                     print("case2.1.1.2")
                     oldteam = "No Team"
-                    newteam = str(players[str(authorid)]["Username"])+"'s team"
+                    newteam = players[str(authorid)]["Team"]
                 recruitemb = interactions.api.models.message.Embed(
                     title = f"{players[str(authorid)]['Username']} wants to recruit you to {newteam}!",
                     color = 0x2da66c,
                     description = f"Do you want to spend a mana to accept their offer and join {newteam}?",
                     image = recruitimg,
-                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    fields = [interactions.EmbedField(name="Target Old Team",value=oldteam,inline=True),interactions.EmbedField(name="Target New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
@@ -4769,7 +4918,7 @@ async def button_response(ctx: interactions.CommandContext):
         color = 0x2da66c,
         description = f"What would you like more info on?",
         )
-    row = interactions.spread_to_rows(currentteamrosterbutton, allteamsbutton, allplayerbutton, deadplayersbutton)
+    row = interactions.spread_to_rows(currentteamrosterbutton, allteamsbutton, allplayerbutton, deadplayersbutton, afkplayerbutton, activeplayerbutton)
     await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
 
 currentteamrosterbutton = interactions.Button(
@@ -4852,6 +5001,9 @@ async def button_response(ctx: interactions.CommandContext):
     await Paginator(
         client=bot,
         ctx=ctx,
+        timeout = 300,
+        remove_after_timeout = True,
+        hidden = True,
         pages=[
             Page("Crossroads",interactions.api.models.message.Embed(title="Living Players (Crossroads)", description=f"{crossUsernames}",ephemeral=True)),
             Page("Dungeon",interactions.api.models.message.Embed(title="Living Players (Dungeon)", description=f"{dungeonUsernames}",ephemeral=True)),
@@ -4863,6 +5015,64 @@ async def button_response(ctx: interactions.CommandContext):
         ],
     ).run()
 
+afkplayerbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="AFK Player Names",
+    custom_id="afkplayerbutton",
+)
+
+@bot.component("afkplayerbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    afkUsernames = [(str(v["Username"])) for v in players.values() if v['Lastaction'] == 'start' and v['Location'] != 'Dead']
+    afkUsernames = '\n'.join(afkUsernames)
+    afkUsernamesDead = [(str(v["Username"])) for v in players.values() if v['Lastaction'] == 'start' and v['Location'] == 'Dead']
+    afkUsernamesDead = '\n'.join(afkUsernamesDead)
+
+    await Paginator(
+        client=bot,
+        ctx=ctx,
+        timeout = 300,
+        remove_after_timeout = True,
+        pages=[
+            Page("AFK Living",interactions.api.models.message.Embed(title="Living Players (AFK)", description=f"{afkUsernames}",ephemeral=True)),
+            Page("AFK Dead",interactions.api.models.message.Embed(title="Dead Players (AFK)", description=f"{afkUsernamesDead}",ephemeral=True)),
+        ],
+    ).run()
+
+
+activeplayerbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Active Player Names",
+    custom_id="activeplayerbutton",
+)
+
+@bot.component("activeplayerbutton")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    #teamhp = #X
+    #teamhp = await hpmojiconv(teamhp)
+    #teammana = #X
+    #teammana = await manamojiconv(teammana)
+    activeUsernames = [(str(v["Username"]))+" - "+(str(v["Location"])) for v in players.values() if v['Lastaction'] != 'start' and v['Location'] != 'Dead']
+    activeUsernames = '\n'.join(activeUsernames)
+    activeUsernamesDead = [(str(v["Username"])) for v in players.values() if v['Lastaction'] != 'start' and v['Location'] == 'Dead']
+    activeUsernamesDead = '\n'.join(activeUsernamesDead)
+
+    await Paginator(
+        client=bot,
+        ctx=ctx,
+        timeout = 300,
+        remove_after_timeout = True,
+        pages=[
+            Page("Active Living",interactions.api.models.message.Embed(title="Living Players who have taken an action (Active)", description=f"{activeUsernames}",ephemeral=True)),
+            Page("Active Dead",interactions.api.models.message.Embed(title="Dead Players who have taken an action (Active)", description=f"{activeUsernamesDead}",ephemeral=True)),
+        ],
+    ).run()
 
 allteamsbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
@@ -4894,6 +5104,8 @@ async def button_response(ctx: interactions.CommandContext):
     await Paginator(
         client=bot,
         ctx=ctx,
+        timeout = 300,
+        remove_after_timeout = True,
         pages=pagesprep,
     ).run()
 
