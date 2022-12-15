@@ -72,7 +72,7 @@ async def on_ready():
             await user.add_role(locations["Playing"]["Role_ID"], guildid)
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
-    #loop.create_task(pollfororders())
+    loop.create_task(pollfororders())
     loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
@@ -161,9 +161,6 @@ async def ligmaiterate():
             v["HP"] = v["HP"] - ligmadamage_pull
             user = v["Username"]
             ligmaplayers.append(k)
-            user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
-            channel = await interactions.get(bot, interactions.Channel, object_id=ligmachannel)
-            await channel.send(f"<@{k}> was hit by ||LIGMA BALLS|| for {ligmadamage_pull} damage!")
     print (ligmaplayers)
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
@@ -424,34 +421,36 @@ async def pollfororders():
                 words = players[k]['Orders'].split()
                 if v['Mana'] == 3:
                     if v['OrderDate'] == 0:
+                        print(f"setting Order Date for {v['Username']}")
                         v['OrderDate'] = v['NextMana'] - 300
-                        if v['OrderDate'] < int(time.time()):
-                            v['OrderDate'] = 0
-                            #do the action
-                            loop = asyncio.get_running_loop()
-                            if len(words) == 1:
-                                await loop.create_task(functiondict[words[0]](**{'authorid': k}))
-                                print(f"{v['Username']} is doing {words[0]}")
-                            elif words[0] == "use":
-                                await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
-                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                            elif words[1] in players:
-                                if len(words) == 3:
-                                    await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
-                                    print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
-                                else:
-                                    print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
-                                    await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
-                            elif words[1] in locations:
-                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
-                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                            elif words[1] in shop:
-                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
-                                print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                            players = await getplayerdata()
-                            players[k]['Orders'] = ""
-                            with open("players.json", "w") as f:
-                                json.dump(players, f, indent=4)
+                        with open("players.json", "w") as f:
+                            json.dump(players, f, indent=4)
+                    elif v['OrderDate'] < int(time.time()):
+                        v['OrderDate'] = 0
+                        #do the action
+                        loop = asyncio.get_running_loop()
+                        if len(words) == 1:
+                            await loop.create_task(functiondict[words[0]](**{'authorid': k}))
+                            print(f"{v['Username']} is doing {words[0]}")
+                        elif words[0] == "use":
+                            await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
+                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                        elif words[1] in players:
+                            if len(words) == 3:
+                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
+                                print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
+                            else:
+                                print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
+                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
+                        elif words[1] in locations:
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                        elif words[1] in shop:
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
+                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                        v['Orders'] =""
+                        with open("players.json", "w") as f:
+                            json.dump(players, f, indent=4)
                     else:
                         if len(words) == 1:
                             print(f"{v['Username']} is not ready to {words[0]}")
@@ -466,6 +465,11 @@ async def pollfororders():
                             print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
                         elif words[1] in shop:
                             print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                else:
+                    v['Orders'] =""
+                    v['OrderDate'] = 0
+                    with open("players.json", "w") as f:
+                        json.dump(players, f, indent=4)
         await asyncio.sleep(60)
 
 async def pollformanagain():
@@ -655,107 +659,162 @@ async def queuenexttarget(commandname,ctx, actiontargetid, *argv):
         interactions.Option(
             type=interactions.OptionType.STRING,
             name="orderee",
-            description="start typing who you want to order",
+            description="start typing an `orderee` to order",
             required=True,
+            autocomplete=True,
+        ),
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="action",
+            description="start typing an `action` after you've input an orderee",
+            required=True,
+            autocomplete=True,
+        ),
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="target",
+            description="start typing a `target` after you've input an orderee and an action",
+            required=False,
+            autocomplete=True,
+        ),
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="readyitem",
+            description="start typing a `readyitem` after you've input an orderee, an exchange,and a target",
+            required=False,
             autocomplete=True,
         )
     ]
 )
-async def order(ctx: interactions.CommandContext, orderee: str):
+async def order(ctx: interactions.CommandContext, orderee: str, action: str, target: str ="", readyitem: str =""):
     players = await getplayerdata()
     current_time = int(time.time())
-    print(f"{orderee} is the orderee")
+    locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
+    orders = action
+    for k,v in players.items():
+        if v['Username']==str(target):
+            targetid = k
     for k,v in players.items():
         if v['Username']==str(orderee):
-            ordereeid=k
-    print(f"{ordereeid} is the orderee id")
-    LocationPull = players[str(ordereeid)]['Location']
-    TeamPull = players[str(ordereeid)]["Team"]
-    orderimg = interactions.EmbedImageStruct(
-                        url="https://media0.giphy.com/media/rBv0nPAA2GoAo/giphy.gif?cid=ecf05e475e7jta0xuc042sp5b7nuznsa7wnwat8n1wuqkd1q&rid=giphy.gif",
-                        height = 512,
-                        width = 512,
-                        )
-    if players[str(ordereeid)]["Team"] != players[str(ctx.author.id)]["Team"]:
-        await ctx.send(f"They aren't on your team!" , ephemeral = True)
+            ordereeid = k
+    if players[str(ctx.author.id)]["Team"] == "No Team":
+        TeamPull = "No Team"
     else:
-        if players[str(ordereeid)]["Orders"] != "":
-            priororders = players[str(ordereeid)]["Orders"]
-            await ctx.send(f"<@{ordereeid}> had existing orders that have been cleared:\n*{priororders}*" , ephemeral = True)
+        TeamPull = players[str(ctx.author.id)]["Team"]
+
+    #verify orderee
+    if players[ordereeid]["Team"] != TeamPull:
+        await ctx.send(f"Your orderee isn't on your team!", ephemeral = True)
+
+    #verify locationaction
+    elif (str(orders) in locationdict.values()) and (str(orders) not in locationdict[players[str(ordereeid)]["Location"]]) :
+            print("orders fall outside of location action")
+            print(locationdict[players[str(ordereeid)]["Location"]])
+            await ctx.send(f"Your ordered a location action for a location where the orderee isn't!", ephemeral = True)
+
+    #write loot
+    elif action == "loot":
+        players[str(ordereeid)]["Orders"] = "loot"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write farm
+    elif action == "farm":
+        players[str(ordereeid)]["Orders"] = "farm"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write battlelich
+    elif action == "battlelich":
+        players[str(ordereeid)]["Orders"] = "battlelich"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write drink
+    elif action == "drink":
+        players[str(ordereeid)]["Orders"] = "drink"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write rest
+    elif action == "rest":
+        players[str(ordereeid)]["Orders"] = "rest"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write evade
+    elif action == "evade":
+        players[str(ordereeid)]["Orders"] = "evade"
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders}!", ephemeral = True)
+
+    #write trade
+    elif action == "trade":
+        SC_pull = players[str(ordereeid)]["SC"]
+        cost = shop[str(target)]["Cost"]
+        #verify item is affordable
+        if cost > SC_Pull:
+            await ctx.send(f"Your ordered <@{ordereeid}> to purchase {target}, but they can't afford it!\n It costs {cost} and they have {SC_Pull}!", ephemeral = True)
         else:
-            await ctx.send(f"<@{ordereeid}> had no existing orders" , ephemeral = True)
-        #attacktargets
-        attacktargets = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
+            players[str(ordereeid)]["Orders"] = "trade "+target
+            with open("players.json", "w") as f:
+                json.dump(players, f, indent=4)
+            await ctx.send(f"Your ordered <@{ordereeid}> to {orders} <@{targetid}>!", ephemeral = True)
 
-        #lightattack
-        lightattackoptions =[]
-        for item in attacktargets:
-            lightattackoptions.append("lightattack " + item)
+    #write lightattack
+    elif action == "lightattack":
+        players[str(ordereeid)]["Orders"] = "lightattack "+targetid
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} <@{targetid}>!", ephemeral = True)
 
-        #heavyattack
-        heavyattackoptions =[]
-        for item in attacktargets:
-            heavyattackoptions.append("heavyattack " + item)
+    #write heavyattack
+    elif action == "heavyattack":
+        players[str(ordereeid)]["Orders"] = "heavyattack "+targetid
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} <@{targetid}>!", ephemeral = True)
 
-        #interrupt
-        interruptoptions =[]
-        for item in attacktargets:
-            interruptoptions.append("heavyattack " + item)
+    #write interrupt
+    elif action == "interrupt":
+        players[str(ordereeid)]["Orders"] = "interrupt "+targetid
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} <@{targetid}>!", ephemeral = True)
 
-        #rest
-        restoptions =["rest"]
+    #write travel
+    elif action == "travel":
+        players[str(ordereeid)]["Orders"] = "travel "+target
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} to {target}!", ephemeral = True)
 
-        #evade
-        evadeoptions =["evade"]
+    #write use
+    elif action == "use":
+        players[str(ordereeid)]["Orders"] = "use "+target
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} use their {target}!", ephemeral = True)
 
-        #travel
-        traveloptions =["Crossroads","Dungeon", "Farmland", "Keep", "Lich's Castle", "Shop", "Tavern"]
+    #write aid
+    elif action == "aid":
+        players[str(ordereeid)]["Orders"] = "aid "+targetid
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} <@{targetid}>!", ephemeral = True)
 
-        #use
-        useoptions =[]
-        ReadyInventory_pull = players[str(ordereeid)]["ReadyInventory"]
-        readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
-        for item in readyitems:
-            useoptions.append("use " + item)
-
-        #location
-        locationoptions =[]
-        locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
-        for k,v in locationdict.items():
-            if k==players[str(ordereeid)]['Location']:
-                locationoptions=v
-        #location - excchange
-        if locationoptions == "exchange":
-            locationoptions = []
-            for item in attacktargets:
-                for i in readyitems:
-                    locationoptions.append("exchange " + item+" "+ i)
-
-        #location - keep
-        if locationoptions == "aid":
-            locationoptions = []
-            playertargets = []
-            for v in players.items():
-                if v['Location']!='Dead':
-                    playertargets.append(v['Username'])
-            for item in playertargets:
-                locationoptions.append("aid " + item)
-
-        alloptions=[]
-        alloptions= locationoptions + evadeoptions + restoptions + traveloptions + useoptions + lightattackoptions + heavyattackoptions + interruptoptions
-        print(alloptions)
-        pagesprep = []
-        for item in alloptions[:25]:
-            pagesprep.append(Page(f"{item}",interactions.api.models.message.Embed(title=f"{item}", description=f"{teamusersspace}",ephemeral=True)))
-        await Paginator(
-            client=bot,
-            ctx=ctx,
-            timeout = 300,
-            remove_after_timeout = True,
-            pages=pagesprep,
-        ).run()
-
-
+    #write exchange
+    elif action == "exchange":
+        players[str(ordereeid)]["Orders"] = "exchange "+targetid
+        with open("players.json", "w") as f:
+            json.dump(players, f, indent=4)
+        await ctx.send(f"Your ordered <@{ordereeid}> to {orders} with <@{targetid}> and give them a {readyitem} !", ephemeral = True)
 
 
 @bot.autocomplete("order", "orderee")
@@ -765,15 +824,184 @@ async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
         TeamPull = "No Team"#fix golive
     else:
         TeamPull = players[str(ctx.author.id)]["Team"]
-    sameTeamUserIDs = {k: v for k, v in players.items() if v['Team'] == TeamPull}
-    sameTeamUsernames = [v["Username"] for v in players.values() if v['Team'] == TeamPull and v['Location'] != 'Dead']
-    print (TeamPull)
-    print (sameTeamUsernames)
-    items = sameTeamUsernames
+    potentialorderees = [v["Username"] for v in players.values() if v['Team'] == TeamPull and v['Location'] != 'Dead']
+    print("ordereeoptions")
+    print(potentialorderees)
+    ordereeoptions = potentialorderees
+    alloptions = ordereeoptions
+    items = alloptions
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
     await ctx.populate(choices)
+
+@bot.autocomplete("order", "action")
+async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    orderee = ctx.data.options[0].value
+    orders = (o for o in ctx.data.options if o.name == "orders")
+    ordereeid=""
+    print(orderee)
+    for k,v in players.items():
+        if v['Username']==str(orderee):
+            ordereeid=k
+    if str(ordereeid) not in players:
+        print("failed orderee")
+        alloptions = [str(ctx.data.options[0])+ " --- ERROR --- Write the Orderee first!"]
+    else:
+        players = await getplayerdata()
+        print(ordereeid)
+        LocationPull = players[str(ordereeid)]['Location']
+        if players[str(ordereeid)]["Team"] == "No Team":
+            TeamPull = "Null"
+        else:
+            TeamPull = players[str(ordereeid)]["Team"]
+
+        #attacktargets
+        attacktargets = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
+
+        #localtargets
+        localtargets = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+
+        #lightattack
+        lightattackoptions =["lightattack"]
+        print(lightattackoptions)
+
+        #heavyattack
+        heavyattackoptions =["heavyattack"]
+        print(heavyattackoptions)
+
+        #interrupt
+        interruptoptions =["interrupt"]
+        print(interruptoptions)
+
+        #rest
+        restoptions =["rest"]
+        print(restoptions)
+
+        #evade
+        evadeoptions =["evade"]
+        print(evadeoptions)
+
+        #travel
+        traveloptions =["travel"]
+        print(traveloptions)
+
+        #use
+        useoptions =["use"]
+        print(useoptions)
+
+        #location
+        locationoptions =[]
+        locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
+        for k,v in locationdict.items():
+            if k==players[str(ordereeid)]['Location']:
+                locationoptions=[v]
+        print(locationoptions)
+
+        alloptions =[]
+        alloptions = locationoptions + evadeoptions + restoptions + traveloptions + useoptions + lightattackoptions + heavyattackoptions + interruptoptions
+    print(alloptions)
+    items = alloptions
+    print(items)
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
+@bot.autocomplete("order", "target")
+async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    orderee = ctx.data.options[0].value
+    orders = ctx.data.options[1].value
+    ordereeid=""
+    print(orderee)
+    locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
+    print(locationdict.values())
+    for k,v in players.items():
+        if v['Username']==str(orderee):
+            ordereeid=k
+    if str(ordereeid) not in players:
+        print("failed orderee")
+        alloptions = [str(ctx.data.options[0].value)+ " --- ERROR --- Write the Orderee first!"]
+    elif (str(orders) in locationdict.values()) and (str(orders) not in locationdict[players[str(ordereeid)]["Location"]]) :
+            print("orders fall outside of location action")
+            print(locationdict[players[str(ordereeid)]["Location"]])
+            alloptions = [" --- ERROR --- orders location based and orderee is in the wrong location!"]
+    else:
+        players = await getplayerdata()
+        print(ordereeid)
+        LocationPull = players[str(ordereeid)]['Location']
+        if players[str(ordereeid)]["Team"] == "No Team":
+            TeamPull = "Null"
+        else:
+            TeamPull = players[str(ordereeid)]["Team"]
+        if orders == "lightattack" or orders == "heavyattack" or orders == "interrupt":
+            alloptions = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
+        elif orders == "exchange":
+            alloptions = [v["Username"] for v in players.values() if v['Location'] == LocationPull]
+        elif orders == "aid":
+            alloptions = [v["Username"] for v in players.values() if v['Location'] != "Dead"]
+        elif orders == "travel":
+            if players[str(ordereeid)]["Location"] != "Crossroads":
+                alloptions = ["Crossroads"]
+            else:
+                alloptions = ["Dungeon", "Farmland", "Keep", "Lich's Castle", "Shop", "Tavern"]
+        elif orders == "evade":
+            alloptions = [" --- ERROR --- delete this option!"]
+        elif orders == "rest":
+            alloptions = [" --- ERROR --- delete this option!"]
+        elif orders == "use":
+            ReadyInventory_pull = players[str(ordereeid)]["ReadyInventory"]
+            readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
+            alloptions =[]
+            for item in readyitems:
+                alloptions.append(item)
+        elif orders == "trade":
+            shop = await getshopdata()
+            itemnames = [v for v in shop.keys()]
+            print (itemnames)
+            alloptions = itemnames
+        else:
+            alloptions = [" --- ERROR --- orders are invalid! Rewrite the whole command!"]
+    items = alloptions
+    print(items)
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
+@bot.autocomplete("order", "readyitem")
+async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    orderee = ctx.data.options[0].value
+    orders = ctx.data.options[1].value
+    ordereeid=""
+    print(orderee)
+    locationdict = {"Crossroads": "exchange","Dungeon":"loot", "Farmland":"farm", "Keep":"aid", "Lich's Castle":"battlelich", "Shop":"trade", "Tavern":"drink"}
+    print(locationdict.values())
+    for k,v in players.items():
+        if v['Username']==str(orderee):
+            ordereeid=k
+    if str(ordereeid) not in players:
+        print("failed orderee")
+        alloptions = [str(ctx.data.options[0].value)+ " --- ERROR --- Write the Orderee first!"]
+    elif str(orders) != "exchange":
+            print("orders fall outside of exchange")
+            alloptions = [" --- ERROR --- You are not exchanging, do not provide this option."]
+    else:
+        ReadyInventory_pull = players[str(ordereeid)]["ReadyInventory"]
+        readyitems = list(filter(None, list(ReadyInventory_pull.split("\n        "))))
+        alloptions=[]
+        for i in readyitems:
+            alloptions.append(i)
+    items = alloptions
+    print(items)
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
 
 #light attack is below
 async def dolightattack(authorid,targetid):
@@ -4207,7 +4435,7 @@ async def status (ctx: interactions.CommandContext):
         color = 0xf00c5f,
         fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction),interactions.EmbedField(name=":coin:Reward for Killing you:",value=players[str(ctx.author.id)]["BountyReward"])],
     )
-    row = interactions.spread_to_rows(moreinfobutton)
+    row = interactions.spread_to_rows(moreinfobutton, queuecancel)
     await ctx.send(embeds=status,ephemeral=True, components = row)
 
 #travelto
@@ -4920,6 +5148,25 @@ async def button_response(ctx: interactions.CommandContext):
         )
     row = interactions.spread_to_rows(currentteamrosterbutton, allteamsbutton, allplayerbutton, deadplayersbutton, afkplayerbutton, activeplayerbutton)
     await ctx.send(embeds=buttonemb, components = row, ephemeral=True)
+
+queuecancel = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Clear Queue",
+    custom_id="queuecancel",
+)
+
+@bot.component("queuecancel")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Queue Cancelled",
+        color = 0x2da66c,
+        description = f"Your queue has been cleared",
+        )
+    players[str(ctx.author.id)]["Nextaction"] = ""
+    with open("players.json", "w") as f:
+        json.dump(players, f, indent=4)
+    await ctx.send(embeds=buttonemb, ephemeral=True)
 
 currentteamrosterbutton = interactions.Button(
     style=interactions.ButtonStyle.PRIMARY,
