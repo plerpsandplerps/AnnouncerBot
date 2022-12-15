@@ -417,59 +417,59 @@ async def pollfororders():
         players = await getplayerdata()
         shop = await getshopdata()
         for k,v in players.items():
-            if v['Orders'] != "":
+            if v['Orders'] != "" and v['Mana'] < 3:
+                #clear orders if they have don't have 3 mana
+                v['Orders'] = ""
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+            elif v['Orders'] != "" and v['OrderDate'] == 0:
+                #set an OrderDate if they don't have one
+                v['OrderDate'] = v['NextMana'] - 600
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+            elif v['Orders'] != "":
                 words = players[k]['Orders'].split()
-                if v['Mana'] == 3:
-                    if v['OrderDate'] == 0:
-                        print(f"setting Order Date for {v['Username']}")
-                        v['OrderDate'] = v['NextMana'] - 300
-                        with open("players.json", "w") as f:
-                            json.dump(players, f, indent=4)
-                    elif v['OrderDate'] < int(time.time()):
-                        v['OrderDate'] = 0
-                        #do the action
-                        loop = asyncio.get_running_loop()
-                        if len(words) == 1:
-                            await loop.create_task(functiondict[words[0]](**{'authorid': k}))
-                            print(f"{v['Username']} is doing {words[0]}")
-                        elif words[0] == "use":
-                            await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
-                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                        elif words[1] in players:
-                            if len(words) == 3:
-                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
-                                print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
-                            else:
-                                print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
-                                await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
-                        elif words[1] in locations:
-                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
-                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                        elif words[1] in shop:
-                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
-                            print(f"{v['Username']} is doing {words[0]} {words[1]}")
-                        v['Orders'] =""
-                        with open("players.json", "w") as f:
-                            json.dump(players, f, indent=4)
-                    else:
-                        if len(words) == 1:
-                            print(f"{v['Username']} is not ready to {words[0]}")
-                        elif words[0] == "use":
-                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-                        elif words[1] in players:
-                            if len(words) == 3:
-                                print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']} {words[2]}")
-                            else:
-                                print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
-                        elif words[1] in locations:
-                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-                        elif words[1] in shop:
-                            print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
-                else:
-                    v['Orders'] =""
-                    v['OrderDate'] = 0
+                if v['OrderDate'] < int(time.time()):
+                    #do the action
+                    loop = asyncio.get_running_loop()
+                    if len(words) == 1:
+                        await loop.create_task(functiondict[words[0]](**{'authorid': k}))
+                        print(f"{v['Username']} is doing {words[0]}")
+                    elif words[0] == "use":
+                        await loop.create_task(functiondict[words[0]](**{'authorid': k,'readyitem':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                    elif words[1] in players:
+                        if len(words) == 3:
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1],'readyitem':words[2]}))
+                            print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']} {words[2]}")
+                        else:
+                            print(f"{v['Username']} is doing {words[0]} {players[words[1]]['Username']}")
+                            await loop.create_task(functiondict[words[0]]( **{'authorid':k,'targetid':words[1]}))
+                    elif words[1] in locations:
+                        await loop.create_task(functiondict[words[0]]( **{'authorid':k,'destination':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                    elif words[1] in shop:
+                        await loop.create_task(functiondict[words[0]]( **{'authorid':k,'itemtarget':words[1]}))
+                        print(f"{v['Username']} is doing {words[0]} {words[1]}")
+                    players = await getplayerdata()
+                    players[k]['Orders'] = ""
+                    players[k]['OrderDate']= 0
                     with open("players.json", "w") as f:
                         json.dump(players, f, indent=4)
+                else:
+                    if len(words) == 1:
+                        print(f"{v['Username']} is not ready to {words[0]}")
+                    elif words[0] == "use":
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                    elif words[1] in players:
+                        if len(words) == 3:
+                            print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']} {words[2]}")
+                        else:
+                            print(f"{v['Username']} is not ready to {words[0]} {players[words[1]]['Username']}")
+                    elif words[1] in locations:
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
+                    elif words[1] in shop:
+                        print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(60)
 
 async def pollformanagain():
@@ -698,7 +698,7 @@ async def order(ctx: interactions.CommandContext, orderee: str, action: str, tar
         if v['Username']==str(orderee):
             ordereeid = k
     if players[str(ctx.author.id)]["Team"] == "No Team":
-        TeamPull = "No Team"
+        TeamPull = "Null"
     else:
         TeamPull = players[str(ctx.author.id)]["Team"]
 
@@ -821,7 +821,7 @@ async def order(ctx: interactions.CommandContext, orderee: str, action: str, tar
 async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     players = await getplayerdata()
     if players[str(ctx.author.id)]["Team"] == "No Team":
-        TeamPull = "No Team"#fix golive
+        TeamPull = "Null"
     else:
         TeamPull = players[str(ctx.author.id)]["Team"]
     potentialorderees = [v["Username"] for v in players.values() if v['Team'] == TeamPull and v['Location'] != 'Dead']
