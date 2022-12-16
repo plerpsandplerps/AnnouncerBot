@@ -73,6 +73,7 @@ async def on_ready():
     loop = asyncio.get_running_loop()
     loop.create_task(pollfornext())
     loop.create_task(pollfororders())
+    loop.create_task(pollclock())
     loop.create_task(pollformanagain())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
@@ -410,6 +411,14 @@ async def pollfornext():
                         print(f"{v['Username']} is not ready to {words[0]} {words[1]}")
         await asyncio.sleep(60)
 
+async def pollclock():
+    #run forever
+    while True:
+        date_time = datetime.fromtimestamp(int(time.time()))
+        print(f"\n\ncleantime: {date_time}")
+        print(int(time.time()))
+        await asyncio.sleep(15)
+
 async def pollfororders():
     #run forever
     while True:
@@ -419,6 +428,12 @@ async def pollfororders():
         for k,v in players.items():
             if v['Orders'] != "" and v['Mana'] < 3:
                 #clear orders if they have don't have 3 mana
+                print(f"{v['Username']} has less than 3 mana and had their orders cleared")
+                v['Orders'] = ""
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+            elif v['OptOutOrder'] == "Yes" or v['Location'] == "Dead":
+                print(f"{v['Username']} is dead and or opted out of orders")
                 v['Orders'] = ""
                 with open("players.json", "w") as f:
                     json.dump(players, f, indent=4)
@@ -4435,7 +4450,7 @@ async def status (ctx: interactions.CommandContext):
         color = 0xf00c5f,
         fields = [interactions.EmbedField(name="HP",value=hpmoji),interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="Next Mana",value=mana_date,inline=True),interactions.EmbedField(name="Location",value=location_pull,inline = False),interactions.EmbedField(name=":fire:Rage",value=Rage_pull,inline=True),interactions.EmbedField(name=":coin:SC",value=SC_pull,inline=True),interactions.EmbedField(name="Current Team",value=Team_pull,inline = False),interactions.EmbedField(name="Joinable Team",value=TeamOffer_pull,inline = True),interactions.EmbedField(name=":school_satchel:Ready Inventory",value=ReadyInventory_pull),interactions.EmbedField(name=":shield:Equipped Inventory",value=EquippedInventory_pull,inline=True),interactions.EmbedField(name=":alarm_clock:Next Action:",value=displayaction),interactions.EmbedField(name=":coin:Reward for Killing you:",value=players[str(ctx.author.id)]["BountyReward"])],
     )
-    row = interactions.spread_to_rows(moreinfobutton, queuecancel)
+    row = interactions.spread_to_rows(moreinfobutton, queuecancel, orderoptout)
     await ctx.send(embeds=status,ephemeral=True, components = row)
 
 #travelto
@@ -5164,6 +5179,30 @@ async def button_response(ctx: interactions.CommandContext):
         description = f"Your queue has been cleared",
         )
     players[str(ctx.author.id)]["Nextaction"] = ""
+    with open("players.json", "w") as f:
+        json.dump(players, f, indent=4)
+    await ctx.send(embeds=buttonemb, ephemeral=True)
+
+orderoptout = interactions.Button(
+    style=interactions.ButtonStyle.DANGER,
+    label="Opt in/out of being Ordered",
+    custom_id="orderoptout",
+)
+@bot.component("orderoptout")
+async def button_response(ctx: interactions.CommandContext):
+    players = await getplayerdata()
+    if players[str(ctx.author.id)]["OptOutOrder"] == "Yes":
+        players[str(ctx.author.id)]["OptOutOrder"] = "No"
+        description = "opted in to"
+    elif players[str(ctx.author.id)]["OptOutOrder"] == "No" or players[str(ctx.author.id)]["OptOutOrder"] == "":
+        players[str(ctx.author.id)]["OptOutOrder"] = "Yes"
+        players[str(ctx.author.id)]["Orders"] = ""
+        description = "opted out of"
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"You {description} being ordered",
+        color = 0x2da66c,
+        description = f"You have {description} being ordered!",
+        )
     with open("players.json", "w") as f:
         json.dump(players, f, indent=4)
     await ctx.send(embeds=buttonemb, ephemeral=True)
