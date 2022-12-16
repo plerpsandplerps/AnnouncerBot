@@ -1401,7 +1401,7 @@ async def dointerrupt(authorid,targetid):
             json.dump(players, f, indent=4)
     else:
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(f"You did not heavyattack <@{targetid}> they are no longer a valid target!")
+        await user.send(f"You did not interrupt <@{targetid}> they are no longer a valid target!")
 
 @bot.command(
     name="interrupt",
