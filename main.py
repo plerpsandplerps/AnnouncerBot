@@ -481,14 +481,6 @@ async def wighttravel(ctx: interactions.CommandContext, traveltarget: str):
                 players[wightid]["Mana"] = players[wightid]["Mana"] -1
                 players[wightid]["Lastaction"] = "travelto"
                 players[wightid]["Location"] = destination
-                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-                await user.add_role(role=locations[str(destination)]["Role_ID"], guild_id=guildid)
                 with open("players.json", "w") as f:
                     json.dump(players, f, indent=4)
                 newtravelerchannel=str(locations[players[wightid]["Location"]]["Channel_ID"])
@@ -1322,6 +1314,8 @@ async def dolightattack(authorid,targetid):
     channelid = locations[str(location)]["Channel_ID"]
     evading = False
     TeamPull = players[str(authorid)]["Team"]
+    prettytargetid = "<@"+str(targetid)+">"
+    realtargetid = targetid
     if TeamPull == "No Team":
         TeamPull = "Null"
     if (players[str(targetid)]["Location"] == players[str(authorid)]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
@@ -1357,12 +1351,15 @@ async def dolightattack(authorid,targetid):
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
-            if "Wight - "in players[str(targetid)]:
+            if str("Wight - ") in str(players[str(targetid)]):
+                print("Target is a wight")
                 players[str(authorid)]["Mana"] = 3
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
+                prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
+                realtargetid = targetid[8:]
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "lightattack"
@@ -1398,7 +1395,7 @@ async def dolightattack(authorid,targetid):
         )
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
         await user.send(embeds=lightattackprivemb)
-        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
         await user2.send(embeds=lightattackprivemb)
         await deadcheck(targethp,targetid,authorid,players)
     else:
@@ -1480,6 +1477,8 @@ async def doheavyattack(authorid,targetid):
     channelid = locations[str(location)]["Channel_ID"]
     evading = False
     TeamPull = players[str(authorid)]["Team"]
+    prettytargetid = "<@"+str(targetid)+">"
+    realtargetid = targetid
     if TeamPull == "No Team":
         TeamPull = "Null"
     if (players[str(targetid)]["Location"] == players[str(authorid)]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
@@ -1515,12 +1514,15 @@ async def doheavyattack(authorid,targetid):
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
-            if "Wight - "in players[str(targetid)]:
+            if str("Wight - ") in str(players[str(targetid)]):
+                print("Target is a wight")
                 players[str(authorid)]["Mana"] = 3
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
+                prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
+                realtargetid = targetid[8:]
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -1557,7 +1559,7 @@ async def doheavyattack(authorid,targetid):
         await deadcheck(targethp,targetid,authorid,players)
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
         await user.send(embeds=heavyattackprivemb)
-        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
         await user2.send(embeds=heavyattackprivemb)
     else:
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
@@ -3446,7 +3448,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Wights",
         color = 0x000000,
-        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players can choose to attack a Wight with a heavy or light attack to set their own mana to three, but this will also increase the ligma damage ligma outbreaks deal at the living player's current location by 250!",
+        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players who attack a Wight with a heavy or light attack gain three mana, but also increase the ligma damage at their location by 250! (This does not change the timing of ligma outbreaks)",
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
 
