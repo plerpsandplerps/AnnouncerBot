@@ -49,7 +49,7 @@ async def on_ready():
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
     membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
-    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 3, 'Orders':"",'OrderDate': 0, } for k, v in membersdict.items() if v[1] != 'True'}
+    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, } for k, v in membersdict.items() if v[1] != 'True'}
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
         if origstr[-7:] == " (None)" :
@@ -203,7 +203,7 @@ async def ligmaiterate():
                 await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
                 #change players.json location to dead
                 players[str(k)]["Location"] = "Dead"
-                players[str(k)]["Team"] = "No Team"
+                players[str(k)]["Team"] = "Dead"
                 players[str(k)]["Nextaction"] = ""
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -245,6 +245,299 @@ async def ligmaiterate():
     await channel.send(embeds=ligmaemb)
 
 
+@bot.command(
+    name="wightspawn",
+    description="create a 1hp Wight you can order around.",
+    scope = guildid
+)
+async def wightspawn(ctx: interactions.CommandContext):
+    players = await getplayerdata ()
+    current_time = int(time.time())
+    if players[str(ctx.author.id)]['Location'] == "Dead":
+        if players[str(ctx.author.id)]['Mana'] == 3:
+            players["Wight - "+str(ctx.author.id)] ={}
+            players["Wight - "+str(ctx.author.id)]["Username"] = "Wight - "+str(players[str(ctx.author.id)]['Username'])
+            players["Wight - "+str(ctx.author.id)]["Mana"] = 3
+            players["Wight - "+str(ctx.author.id)]["HP"] = 1
+            players["Wight - "+str(ctx.author.id)]["Location"] = "Crossroads"
+            players["Wight - "+str(ctx.author.id)]["SC"] = 0
+            players["Wight - "+str(ctx.author.id)]["Rage"] = 0
+            players["Wight - "+str(ctx.author.id)]["InitManaDate"] = current_time + basecd
+            players["Wight - "+str(ctx.author.id)]["NextMana"] = current_time + basecd
+            players["Wight - "+str(ctx.author.id)]["ReadyInventory"] = " "
+            players["Wight - "+str(ctx.author.id)]["EquippedInventory"] = " "
+            players["Wight - "+str(ctx.author.id)]["ReadyDate"] = current_time
+            players["Wight - "+str(ctx.author.id)]["Lastactiontime"] = current_time
+            players["Wight - "+str(ctx.author.id)]["Lastaction"] = "start"
+            players["Wight - "+str(ctx.author.id)]["Nextaction"] = ""
+            players["Wight - "+str(ctx.author.id)]["RestTimer"] = current_time
+            players["Wight - "+str(ctx.author.id)]["EvadeTimer"] = current_time
+            players["Wight - "+str(ctx.author.id)]["Team"] = players["Wight - "+str(ctx.author.id)]["Username"]+"'s team"
+            players["Wight - "+str(ctx.author.id)]["NewTeam"] = "No Team"
+            players["Wight - "+str(ctx.author.id)]["BountyReward"] = 1
+            players["Wight - "+str(ctx.author.id)]["Orders"] = ""
+            players["Wight - "+str(ctx.author.id)]["OrderDate"] = 0
+            players["Wight - "+str(ctx.author.id)]["OptOutOrder"] = "No"
+            username = players["Wight - "+str(ctx.author.id)]["Username"]
+            players[str(ctx.author.id)]['Mana'] = 0
+            with open("players.json","w") as f:
+                json.dump(players,f, indent=4)
+            wightspawnimage = interactions.EmbedImageStruct(
+                                url="https://thumbs.gfycat.com/IdioticAbleLeafbird-max-1mb.gif",
+                                height = 512,
+                                width = 512,
+                                )
+            wightspawnemb = interactions.api.models.message.Embed(
+                title = f"{players[str(ctx.author.id)]['Username']} has spawned a wight in the Crossroads!",
+                color = 0x34b7eb,
+                description = f"<@{ctx.author.id}> spent three undead mana to spawn a wight!!",
+                image = wightspawnimage,
+            )
+            crosschannel = await interactions.get(bot, interactions.Channel, object_id=1044668622829797406 , force='http')
+            await crosschannel.send(embeds = wightspawnemb)
+            await ctx.send(f"You have spent three of your undead mana to create **{username}**! \n\nOrder it with `/wightattack` or `/wighttravel`", ephemeral=True)
+        else:
+            mana = players[str(ctx.author.id)]['Mana']
+            username = players["Wight - "+str(ctx.author.id)]["Username"]
+            await ctx.send(f"You only have {mana} undead mana. You need three to create **{username}**!", ephemeral=True)
+    else:
+        await ctx.send("You must be dead to use this command!", ephemeral=True)
+
+@bot.command(
+    name="wightattack",
+    description="1 mana. attack a player in the wight's area for 69 damage.",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="playertarget",
+            description="start typing who you want to attack",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def wightattack(ctx: interactions.CommandContext, playertarget: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    print(f"{playertarget} is the player target")
+    for k,v in players.items():
+        if v['Username']==str(playertarget):
+            targetid=k
+    print(f"{targetid} is the player target id")
+    channelid=ctx.channel_id
+    authorid = ctx.author.id
+    wightid = "Wight - "+str(authorid)
+    if wightid in players:
+        cost = 1
+        Mana_pull = players[wightid]["Mana"]
+        nextmana = players[wightid]["NextMana"]
+        if cost-Mana_pull > 0:
+            await ctx.send(f"Your wight doesn't have the mana for that!\n\n The wight will have mana at <t:{nextmana}>", ephemeral = True)
+        elif players[wightid]["HP"] <= 0:
+            await ctx.send(f"Your wight is dead resurrect it with `/wightspawn`!", ephemeral = True)
+        else:
+            manamoji = await manamojiconv(Mana_pull- cost)
+            wightattackemb = interactions.api.models.message.Embed(
+                title = f"Your wight attacks {players[str(targetid)]['Username']}!",
+                color = 0x34b7eb,
+                fields = [interactions.EmbedField(name="Mana Remaining",value=manamoji,inline=True)],
+            )
+            await ctx.send(embeds=wightattackemb,ephemeral = True)
+            #dowightattack
+            wightattackurl = "https://icallbushwa.files.wordpress.com/2016/05/giphy-4.gif?w=316"
+            players = await getplayerdata()
+            players[wightid]["Nextaction"] = ""
+            current_time = int(time.time())
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            location = players[wightid]["Location"]
+            channelid = locations[str(location)]["Channel_ID"]
+            evading = False
+            TeamPull = players[wightid]["Team"]
+            if TeamPull == "No Team":
+                TeamPull = "Null"
+            if (players[str(targetid)]["Location"] == players[wightid]["Location"]) and (players[str(targetid)]["Team"] != TeamPull):
+                if "EvadeTimer" in players[str(targetid)] :
+                    if current_time < players[str(targetid)]["EvadeTimer"]:
+                        evading = True
+                        print("evading")
+                if evading:
+                    players = await getplayerdata()
+                    damage = 0
+                    targethp = players[str(targetid)]["HP"] - damage
+                    critroll = 0
+                    players[str(targetid)]["HP"] = targethp
+                    players[wightid]["Mana"] = players[wightid]["Mana"] -1
+                    players[wightid]["Lastaction"] = "wightattack"
+                    hpmoji = await hpmojiconv(targethp)
+                    with open("players.json", "w") as f:
+                        json.dump(players, f, indent=4)
+                else:
+                    players = await getplayerdata()
+                    damage = 69
+                    targethp = players[str(targetid)]["HP"] - damage
+                    players[str(targetid)]["HP"] = targethp
+                    players[str(wightid)]["Mana"] = players[str(wightid)]["Mana"] -1
+                    players[str(wightid)]["Lastaction"] = "wightattack"
+                    hpmoji = await hpmojiconv(targethp)
+                    with open("players.json", "w") as f:
+                        json.dump(players, f, indent=4)
+                wightattackimage = interactions.EmbedImageStruct(
+                                    url=wightattackurl,
+                                    height = 512,
+                                    width = 512,
+                                    )
+                wightattackemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} wight attacks {players[str(targetid)]['Username']}!",
+                    color = 0x34b7eb,
+                    description = f"<@{authorid}> threw a quick wight attack at <@{targetid}>!",
+                    image = wightattackimage,
+                )
+                attackerchannel=str(locations[players[wightid]["Location"]]["Channel_ID"])
+                channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
+                await channel.send(embeds=wightattackemb)
+                wightattackprivemb = interactions.api.models.message.Embed(
+                    title = f"{players[str(authorid)]['Username']} wight attacked {players[str(targetid)]['Username']}!",
+                    color = 0x34b7eb,
+                    description = f"<@{authorid}> throws a quick wight attack at <@{targetid}>!",
+                    image = wightattackimage,
+                )
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds=wightattackprivemb)
+                user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                await user2.send(embeds=wightattackprivemb)
+                await deadcheck(targethp,targetid,authorid,players)
+            else:
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(f"Your Wight did not attack <@{targetid}> they are no longer a valid target!", ephemeral = True)
+    else:
+        await ctx.send(f"You don't have a wight to command!" , ephemeral = True)
+
+
+@bot.autocomplete("wightattack", "playertarget")
+async def wight_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    authorid = ctx.author.id
+    wightid = "Wight - "+str(authorid)
+    LocationPull = players[str(wightid)]["Location"]
+    sameLocationUserIDs = {k: v for k, v in players.items() if v['Location'] == LocationPull}
+    if players[wightid]["Team"] == "No Team":
+        TeamPull = "Null"
+    else:
+        TeamPull = players[wightid]["Team"]
+    sameLocationUsernames = [v["Username"] for v in players.values() if v['Location'] == LocationPull and v['Team'] != TeamPull]
+    print (LocationPull)
+    print (sameLocationUsernames)
+    items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
+@bot.command(
+    name="wighttravel",
+    description="1 mana. your wight travels.",
+    scope = guildid,
+    options=[
+        interactions.Option(
+            type=interactions.OptionType.STRING,
+            name="traveltarget",
+            description="start typing where you want your wight to travel to",
+            required=True,
+            autocomplete=True,
+        )
+    ]
+)
+async def wighttravel(ctx: interactions.CommandContext, traveltarget: str):
+    players = await getplayerdata()
+    current_time = int(time.time())
+    print(f"{traveltarget} is the player target id")
+    channelid=ctx.channel_id
+    authorid = ctx.author.id
+    wightid = "Wight - "+str(authorid)
+    destination = traveltarget
+    if wightid in players:
+        cost = 1
+        Mana_pull = players[wightid]["Mana"]
+        if cost-Mana_pull > 0:
+            nextmana =players[wightid]["NextMana"]
+            await ctx.send(f"Your wight doesn't have the mana for that! \n\nThe wight will have mana at <t:{nextmana}>", ephemeral = True)
+        elif players[wightid]["HP"] <= 0:
+            await ctx.send(f"Your wight is dead resurrect it with `/wightspawn`!", ephemeral = True)
+        else:
+            travelurl = "https://media.tenor.com/Wm6TRmkD-_IAAAAC/juggernaut-xmen.gif"
+            players[wightid]["Nextaction"] = ""
+            current_time = int(time.time())
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            travelimg = interactions.EmbedImageStruct(
+                                url=travelurl,
+                                height = 512,
+                                width = 512,
+                                )
+            if players[wightid]["Location"] == "Crossroads" or destination == "Crossroads":
+                oldtravelerchannel=str(locations[players[wightid]["Location"]]["Channel_ID"])
+                oldlocation = players[wightid]["Location"]
+                newlocation = destination
+                players[wightid]["Mana"] = players[wightid]["Mana"] -1
+                players[wightid]["Lastaction"] = "travelto"
+                players[wightid]["Location"] = destination
+                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+                await user.add_role(role=locations[str(destination)]["Role_ID"], guild_id=guildid)
+                with open("players.json", "w") as f:
+                    json.dump(players, f, indent=4)
+                newtravelerchannel=str(locations[players[wightid]["Location"]]["Channel_ID"])
+                travelemb = interactions.api.models.message.Embed(
+                    title = f"{players[wightid]['Username']} arrives at the {newlocation}!",
+                    color = 0xad7205,
+                    description = f"{players[wightid]['Username']} saunters over from the {oldlocation}!",
+                    image = travelimg,
+                    fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
+                )
+                newchannel = await interactions.get(bot, interactions.Channel, object_id=newtravelerchannel , force='http')
+                oldchannel = await interactions.get(bot, interactions.Channel, object_id=oldtravelerchannel , force='http')
+                await newchannel.send(embeds=travelemb)
+                travelurl = "https://media.tenor.com/IvLly3CfFLIAAAAC/juggernaut-xmen.gif"
+                travelimg = interactions.EmbedImageStruct(
+                                    url=travelurl,
+                                    height = 512,
+                                    width = 512,
+                                    )
+                travelemb = interactions.api.models.message.Embed(
+                    title = f"{players[wightid]['Username']} leaves the {oldlocation}!",
+                    color = 0xad7205,
+                    description = f"{players[wightid]['Username']} saunters over to the {newlocation}!",
+                    image = travelimg,
+                    fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
+                )
+                await oldchannel.send(embeds=travelemb)
+            else:
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, force='http')
+                await send_message(f"You must travel to the Crossroads before you can travel there!", user_id=[user])
+    else:
+        await ctx.send(f"You don't have a wight to command!" , ephemeral = True)
+
+
+@bot.autocomplete("wighttravel", "traveltarget")
+async def wight_autocomplete(ctx: interactions.CommandContext, value: str = ""):
+    players = await getplayerdata()
+    authorid = ctx.author.id
+    wightid = "Wight - "+str(authorid)
+    if players[str(wightid)]["Location"] != "Crossroads":
+        alloptions = ["Crossroads"]
+    else:
+        alloptions = ["Dungeon", "Farmland", "Keep", "Lich's Castle", "Shop", "Tavern"]
+    items = alloptions
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
+    await ctx.populate(choices)
+
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
     print(
@@ -278,7 +571,7 @@ async def deadcheck(targethp,targetid,authorid,players):
             await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
             #change players.json location to dead
             players[str(targetid)]["Location"] = "Dead"
-            players[str(targetid)]["Team"] = "No Team"
+            players[str(targetid)]["Team"] = "Dead"
             players[str(targetid)]["Nextaction"] = ""
             players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + players[str(targetid)]["BountyReward"]
             print("BountyReward")
@@ -493,7 +786,7 @@ async def pollformanagain():
         print(f"\npolling for managain:{int(time.time())}")
         players = await getplayerdata()
         for k,v in players.items():
-                if v['NextMana'] < int(time.time()) and v['Location'] != "Dead":
+                if v['NextMana'] < int(time.time()):
                     #give mana
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['NextMana'] = v['NextMana'] + basecd
@@ -1064,6 +1357,14 @@ async def dolightattack(authorid,targetid):
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+            if "Wight - "in players[str(targetid)]:
+                players[str(authorid)]["Mana"] = 3
+                ligma = await getligmadata()
+                ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
+                with open("ligma.json","w") as h:
+                   json.dump(ligma, h, indent=4)
+            else:
+                players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "lightattack"
             hpmoji = await hpmojiconv(targethp)
             with open("players.json", "w") as f:
@@ -1214,6 +1515,14 @@ async def doheavyattack(authorid,targetid):
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
+            if "Wight - "in players[str(targetid)]:
+                players[str(authorid)]["Mana"] = 3
+                ligma = await getligmadata()
+                ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
+                with open("ligma.json","w") as h:
+                   json.dump(ligma, h, indent=4)
+            else:
+                players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "heavyattack"
             hpmoji = await hpmojiconv(targethp)
             with open("players.json", "w") as f:
@@ -2982,7 +3291,7 @@ async def dolocalligmaoutbreak(authorid):
                 await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
                 #change players.json location to dead
                 players[str(k)]["Location"] = "Dead"
-                players[str(k)]["Team"] = "No Team"
+                players[str(k)]["Team"] = "Dead"
                 players[str(k)]["Nextaction"] = ""
             with open("players.json","w") as f:
                 json.dump(players,f, indent=4)
@@ -3126,6 +3435,20 @@ async def button_response(ctx):
     row = interactions.spread_to_rows(lightattackhelpbutton, heavyattackhelpbutton, interrupthelpbutton, evadehelpbutton, resthelpbutton, areactionhelpbutton, recruithelpbutton, useitemhelpbutton, gamblehelpbutton, statushelpbutton)
     await ctx.send(embeds = buttonemb, components=row, ephemeral=False)
 
+wighthelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Wights",
+    custom_id="wights",
+)
+
+@bot.component("wights")
+async def button_response(ctx):
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Wights",
+        color = 0x000000,
+        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players can choose to attack a Wight with a heavy or light attack to set their own mana to three, but this will also increase the ligma damage ligma outbreaks deal at the living player's current location by 250!",
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=False)
 
 lightattackhelpbutton = interactions.Button(
     style=interactions.ButtonStyle.DANGER,
@@ -3698,7 +4021,7 @@ async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton)
+    row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton, wighthelpbutton)
     buttonemb = interactions.api.models.message.Embed(
         title = f"README_Link",
         color = 0x000000,
@@ -4822,9 +5145,8 @@ async def dorecruit(authorid, targetid):
                     color = 0x2da66c,
                     description = f"Press join team below to spend a mana to create the team **{newteam}**",
                     image = recruitimg,
-                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
+                    fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True), interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
-
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
                 await user.send(embeds=recruitemb, components=row)
@@ -5455,7 +5777,6 @@ async def button_response(ctx: interactions.CommandContext):
         fields = [interactions.EmbedField(name="Dead Players",value=deadusernames,inline=True)],
         )
     await ctx.send(embeds=buttonemb, ephemeral=True)
-
 
 functiondict = {'lightattack' : dolightattack,
                 'heavyattack' : doheavyattack,
