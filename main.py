@@ -182,31 +182,37 @@ async def ligmaiterate():
             EquippedInventory_pull = v["EquippedInventory"]
             targetlichprot = EquippedInventory_pull.count("lichitem")
             print(f"\nthe target died!")
-            user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
-            if targetlichprot > 0:
-                v["HP"] = 4200
-                #replace first instance of item in user's readyinventory
-                players[str(k)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
-                await send_message(f"<@{k}> would have died because of ||LIGMA BALLS||, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
-            else:
-                await send_message(f"<@{k}> died because of ||LIGMA BALLS||!", channel_id=[general])
-                #give dead role
-                await user.add_role(role=locations ["Dead"]["Role_ID"], guild_id=guildid)
-                #remove all location roles and playing roles to hopefully block all commands?
-                await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
-                await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
-                #change players.json location to dead
+            if str("Wight - ") in str(k):
+                await send_message(f"{k} died because of ||LIGMA BALLS||!", channel_id=[general])
                 players[str(k)]["Location"] = "Dead"
-                players[str(k)]["Team"] = "Dead"
-                players[str(k)]["Nextaction"] = ""
-            with open("players.json","w") as f:
-                json.dump(players,f, indent=4)
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
+            else:
+                user = await interactions.get(bot, interactions.Member, object_id=k, guild_id=guildid, force='http')
+                if targetlichprot > 0:
+                    v["HP"] = 4200
+                    #replace first instance of item in user's readyinventory
+                    players[str(k)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem',' ',1)
+                    await send_message(f"<@{k}> would have died because of ||LIGMA BALLS||, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
+                else:
+                    await send_message(f"<@{k}> died because of ||LIGMA BALLS||!", channel_id=[general])
+                    #give dead role
+                    await user.add_role(role=locations ["Dead"]["Role_ID"], guild_id=guildid)
+                    #remove all location roles and playing roles to hopefully block all commands?
+                    await user.remove_role(role=locations["Dungeon"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Farmland"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Keep"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Lich's Castle"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Shop"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Tavern"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Playing"]["Role_ID"], guild_id=guildid)
+                    await user.remove_role(role=locations["Crossroads"]["Role_ID"], guild_id=guildid)
+                    #change players.json location to dead
+                    players[str(k)]["Location"] = "Dead"
+                    players[str(k)]["Team"] = "Dead"
+                    players[str(k)]["Nextaction"] = ""
+                with open("players.json","w") as f:
+                    json.dump(players,f, indent=4)
     crossroadsdamage = 0
     if ligma["Crossroads"] > 0:
         crossroadsdamage = (ligma["Crossroads"]*250)
@@ -274,7 +280,7 @@ async def wightspawn(ctx: interactions.CommandContext):
             players["Wight - "+str(ctx.author.id)]["EvadeTimer"] = current_time
             players["Wight - "+str(ctx.author.id)]["Team"] = players["Wight - "+str(ctx.author.id)]["Username"]+"'s team"
             players["Wight - "+str(ctx.author.id)]["NewTeam"] = "No Team"
-            players["Wight - "+str(ctx.author.id)]["BountyReward"] = 1
+            players["Wight - "+str(ctx.author.id)]["BountyReward"] = 3
             players["Wight - "+str(ctx.author.id)]["Orders"] = ""
             players["Wight - "+str(ctx.author.id)]["OrderDate"] = 0
             players["Wight - "+str(ctx.author.id)]["OptOutOrder"] = "No"
@@ -298,7 +304,7 @@ async def wightspawn(ctx: interactions.CommandContext):
             await ctx.send(f"You have spent three of your undead mana to create **{username}**! \n\nOrder it with `/wightattack` or `/wighttravel`", ephemeral=True)
         else:
             mana = players[str(ctx.author.id)]['Mana']
-            username = players["Wight - "+str(ctx.author.id)]["Username"]
+            username = "Wight - "+players[str(ctx.author.id)]['Username']
             await ctx.send(f"You only have {mana} undead mana. You need three to create **{username}**!", ephemeral=True)
     else:
         await ctx.send("You must be dead to use this command!", ephemeral=True)
@@ -540,13 +546,14 @@ async def deadcheck(targethp,targetid,authorid,players):
     print(f"\ndead?:{int(time.time())}")
     EquippedInventory_pull = players[targetid]["EquippedInventory"]
     targetlichprot = EquippedInventory_pull.count("lichitem")
+    targetid = targetid
     if targethp <= 0:
         print(f"\nthe target died!")
         user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
         if targetlichprot > 0:
             players[targetid]["HP"] = 4200
             #replace first instance of item in user's readyinventory
-            players[str(targetid)]["EquippedInventory"]=EquippedInventory_pull.replace('\n       lichitem','',1)
+            players[str(targetid)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem',' ',1)
             await send_message(f"<@{targetid}> would have died because of <@{authorid}>, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
         else:
             await send_message(f"<@{targetid}> died because of <@{authorid}>!", channel_id=[general])
@@ -1353,13 +1360,17 @@ async def dolightattack(authorid,targetid):
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
             if str("Wight - ") in str(players[str(targetid)]):
                 print("Target is a wight")
+                prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
+                realtargetid = targetid[8:]
+                await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
                 players[str(authorid)]["Mana"] = 3
+                players[str(targetid)]["Location"] = "Dead"
+                bounty = players[str(targetid)]["BountyReward"]
+                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
-                prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
-                realtargetid = targetid[8:]
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "lightattack"
@@ -1516,13 +1527,20 @@ async def doheavyattack(authorid,targetid):
             players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -3 + min((EquippedInventory_pull.count("AWP")),1)
             if str("Wight - ") in str(players[str(targetid)]):
                 print("Target is a wight")
+                prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
+                realtargetid = targetid[8:]
+                await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
                 players[str(authorid)]["Mana"] = 3
+                players[str(targetid)]["Location"] = "Dead"
+                bounty = players[str(targetid)]["BountyReward"]
+                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
                 prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
                 realtargetid = targetid[8:]
+                await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "heavyattack"
@@ -3276,7 +3294,7 @@ async def dolocalligmaoutbreak(authorid):
             if targetlichprot > 0:
                 v["HP"] = 4200
                 #replace first instance of item in user's readyinventory
-                players[str(k)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem','',1)
+                players[str(k)]["EquippedInventory"]=EquippedInventory_pull.replace('\n        lichitem',' ',1)
                 await send_message(f"<@{k}> would have died because of <@{authorid}> ||LIGMA BALLS||, but they were protected by their equipped lich item! \n\nThat lichitem has since broken.", channel_id=[general])
             else:
                 await send_message(f"<@{k}> died because of <@{authorid}> ||LIGMA BALLS||!", channel_id=[general])
