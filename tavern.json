@@ -2,14 +2,14 @@
     "NPC3": {
         "Username": "Brodieeeee",
         "Media": "https://media.tenor.com/aBpDxrmmQ0wAAAAS/katakuri-one-piece.gif",
-        "Score": 1,
-        "Scoreexpiry": 1669792049
+        "Score": 2,
+        "Scoreexpiry": 1671736073
     },
     "NPC4": {
         "Username": "Kevin Jr",
         "Media": "https://media.tenor.com/6ETrTNVz1GQAAAAC/kevin-hikevin.gif",
-        "Score": 3,
-        "Scoreexpiry": 1669792049
+        "Score": 0,
+        "Scoreexpiry": 1671736073
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich ('Sabrina Teen Lich')",
@@ -34,5 +34,17 @@
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/189920974261583872/avatars/39737b3015bb086781170654b35b2ad5.png",
         "Score": 2,
         "Scoreexpiry": 0
+    },
+    "197872999796441089": {
+        "Username": "CDE",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/197872999796441089/avatars/f5c2ddbdf8174648bb4f82bfbf9c0ead.png",
+        "Score": 4,
+        "Scoreexpiry": 1671736085
+    },
+    "111327745430016000": {
+        "Username": "gondolio ('Recka Ning Baum')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/111327745430016000/avatars/0b19c99e2fc18a4dfbc5e0d02e665c7c.png",
+        "Score": 5,
+        "Scoreexpiry": 1671630141
     }
 }

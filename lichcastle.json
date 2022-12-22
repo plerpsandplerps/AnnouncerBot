@@ -2,14 +2,14 @@
     "NPC1": {
         "Username": "Bagel Boss Bitch",
         "Media": "https://media.tenor.com/CIgbwGMnnIoAAAAC/littleman-bagel-boss.gif",
-        "Score": 2,
-        "Scoreexpiry": 1670314165
+        "Score": 0,
+        "Scoreexpiry": 1671721054
     },
     "NPC2": {
         "Username": "Storm Coming Lady",
         "Media": "https://media.tenor.com/kDT2wKzEZy8AAAAC/big-storm-coming-ready.gif",
-        "Score": 3,
-        "Scoreexpiry": 1670314165
+        "Score": 0,
+        "Scoreexpiry": 1671721054
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich",
@@ -24,10 +24,10 @@
         "Scoreexpiry": 0
     },
     "189920974261583872": {
-        "Username": "The old razzmataz",
-        "Media": "",
-        "Score": 4,
-        "Scoreexpiry": 0
+        "Username": "The old razzmataz ('Liquormancer')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/189920974261583872/avatars/39737b3015bb086781170654b35b2ad5.png",
+        "Score": 5,
+        "Scoreexpiry": 1670935457
     },
     "121800126900469762": {
         "Username": "FatalBagel ('Dad')",
@@ -40,5 +40,11 @@
         "Media": "",
         "Score": 3,
         "Scoreexpiry": 0
+    },
+    "259506763374526466": {
+        "Username": "FantasticDeli ('Eric')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/259506763374526466/avatars/ac2709778d1637d0e964ccf0a36830f5.png",
+        "Score": 2,
+        "Scoreexpiry": 1671721054
     }
 }

@@ -3,13 +3,13 @@
         "Username": "Dungeon Tire",
         "Media": "https://j.gifs.com/Brm9jW.gif",
         "Score": 1,
-        "Scoreexpiry": 1670656097
+        "Scoreexpiry": 1671527533
     },
     "NPC6": {
         "Username": "Lord of the Orb",
         "Media": "https://j.gifs.com/PjEWA2.gif",
-        "Score": 1,
-        "Scoreexpiry": 1670656097
+        "Score": 2,
+        "Scoreexpiry": 1671527533
     },
     "192697820875194368": {
         "Username": "Sabrina the Teenage Lich ('Sabrina Teen Lich')",
@@ -32,13 +32,25 @@
     "111327745430016000": {
         "Username": "gondolio ('Recka Ning Baum')",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/111327745430016000/avatars/0b19c99e2fc18a4dfbc5e0d02e665c7c.png",
-        "Score": 4,
-        "Scoreexpiry": 1670339826
+        "Score": 3,
+        "Scoreexpiry": 1671181058
     },
     "259506763374526466": {
         "Username": "FantasticDeli ('Eric')",
         "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/259506763374526466/avatars/ac2709778d1637d0e964ccf0a36830f5.png",
-        "Score": 6,
-        "Scoreexpiry": 1670656097
+        "Score": 3,
+        "Scoreexpiry": 1670774235
+    },
+    "351395988977614849": {
+        "Username": "Mr.Wiggles",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/351395988977614849/avatars/30800a2c93719f0d19e066c4c99ff3a6.png",
+        "Score": 4,
+        "Scoreexpiry": 1670914482
+    },
+    "165291670982623234": {
+        "Username": "Llama Mama ('ST4NKY Pu$$y Bomber 69420')",
+        "Media": "https://cdn.discordapp.com/guilds/218070024894676993/users/165291670982623234/avatars/e98d9a01bc0f41188d269f009aa90aa4.png",
+        "Score": 2,
+        "Scoreexpiry": 1671584255
     }
 }
