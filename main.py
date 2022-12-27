@@ -836,8 +836,11 @@ async def pollformana():
         reminders = await getreminderdata()
         for key in readyplayers:
           if key not in reminders:
-            user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have mana to spend! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
+            try:
+                user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
+                await user.send(f"You have mana to spend! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
+            except:
+                print(f"{key} not valid user to DM for mana")
         #don't turn this on until the bot is not relaunching often
         await asyncio.sleep(int(1*60*60*10)) #timer
 
@@ -863,8 +866,11 @@ async def pollforqueue():
         for key in noqueueplayers:
           if key not in reminders:
             print(key)
-            user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
-            await user.send(f"You have no queued action! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
+            try:
+                user = await interactions.get(bot, interactions.Member, object_id=key, guild_id=guildid, force='http')
+                await user.send(f"You have no queued action! \n\nStop receiving reminders with /reminders \n\nPlay the game and view prizes here:\nhttps://discord.gg/pZD2XTm7ye")
+            except:
+                print(f"{key} not valid user to DM for queue")
         await asyncio.sleep(int(1*60*60*10)) #timer
 
 async def send_message(message : str, **kwargs):
@@ -1364,13 +1370,13 @@ async def dolightattack(authorid,targetid):
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
                 players[str(authorid)]["Mana"] = 3
-                players[str(targetid)]["Location"] = "Dead"
-                bounty = players[str(targetid)]["BountyReward"]
-                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
+                players[str(targetid)]["Location"] = "Dead"
+                bounty = players[str(targetid)]["BountyReward"]
+                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "lightattack"
@@ -1387,12 +1393,13 @@ async def dolightattack(authorid,targetid):
                             height = 512,
                             width = 512,
                             )
+        critrollstr = str((critroll-EquippedInventory_pull.count("critterihardlyknowher")))+" + "+str(EquippedInventory_pull.count("critterihardlyknowher"))
         lightattackemb = interactions.api.models.message.Embed(
             title = f"{players[str(authorid)]['Username']} light attacks {players[str(targetid)]['Username']}!",
             color = 0x34b7eb,
             description = f"{crit}<@{authorid}> threw a quick jab at <@{targetid}>!",
             image = lightattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+            fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True)],
         )
         attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
@@ -1402,7 +1409,7 @@ async def dolightattack(authorid,targetid):
             color = 0x34b7eb,
             description = f"{crit}<@{authorid}> throws a quick jab at <@{targetid}>!",
             image = lightattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+            fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
         )
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
         await user.send(embeds=lightattackprivemb)
@@ -1531,13 +1538,13 @@ async def doheavyattack(authorid,targetid):
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
                 players[str(authorid)]["Mana"] = 3
-                players[str(targetid)]["Location"] = "Dead"
-                bounty = players[str(targetid)]["BountyReward"]
-                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
                    json.dump(ligma, h, indent=4)
+                players[str(targetid)]["Location"] = "Dead"
+                bounty = players[str(targetid)]["BountyReward"]
+                players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
                 prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
@@ -1557,12 +1564,13 @@ async def doheavyattack(authorid,targetid):
                             height = 512,
                             width = 512,
                             )
+        critrollstr = str((critroll-EquippedInventory_pull.count("critterihardlyknowher")))+" + "+str(EquippedInventory_pull.count("critterihardlyknowher"))
         heavyattackemb = interactions.api.models.message.Embed(
             title = f"{players[str(authorid)]['Username']} heavy attacks {players[str(targetid)]['Username']}!",
             color = 0xed8a34,
             description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
             image = heavyattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True)],
+            fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True)],
         )
         attackerchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
         channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
@@ -1572,7 +1580,7 @@ async def doheavyattack(authorid,targetid):
             color = 0xed8a34,
             description = f"{crit}<@{authorid}> takes a massive swing at <@{targetid}>!",
             image = heavyattackimage,
-            fields = [interactions.EmbedField(name="Crit Roll",value=critroll,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
+            fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
         )
         await deadcheck(targethp,targetid,authorid,players)
         user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
