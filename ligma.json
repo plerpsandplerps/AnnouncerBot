@@ -1,14 +1,14 @@
 {
-    "ligmadate": 1672391523,
+    "ligmadate": 1672748674,
     "firstligmadate": 1670518622,
-    "nextlocation": "Keep",
-    "ligmatimer": 396810,
-    "Crossroads": 3,
+    "nextlocation": "Tavern",
+    "ligmatimer": 357129,
+    "Crossroads": 4,
     "Dungeon": 0,
     "Farmland": 1,
     "Keep": 1,
-    "Lich's Castle": 2,
+    "Lich's Castle": 3,
     "Shop": 0,
-    "Tavern": 1,
-    "ligmadamage": 500
+    "Tavern": 2,
+    "ligmadamage": 1000
 }

@@ -1522,7 +1522,7 @@ async def doheavyattack(authorid,targetid):
             players = await getplayerdata()
             EquippedInventory_pull = players[str(authorid)]["EquippedInventory"]
             damageroll = random.randint(0, 300)
-            critroll = random.randint(0, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
+            critroll = random.randint(1, 10) + (EquippedInventory_pull.count("critterihardlyknowher") * 1)
             if critroll >= 10:
                 critdmg = math.ceil(3650/2)
             else:
