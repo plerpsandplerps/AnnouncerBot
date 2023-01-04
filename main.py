@@ -594,12 +594,13 @@ async def deadcheck(targethp,targetid,authorid,players):
 
 #rage heals 420 for each rage stack then decreases by 1
 async def rage(authorid):
+    current_time = int(time.time())
     rageplayers = await getplayerdata()
     heal = ((rageplayers[str(authorid)]["Rage"])*420)
-    if players[str(targetid)]["ResetHealCap"] == 0:
-        players[str(targetid)]["ResetHealCap"] = current_time + basecd
-    heal = min(players[str(targetid)]["ResetHealCap"], heal)
-    players[str(targetid)]["ResetHealCap"] = max(0,players[str(targetid)]["ResetHealCap"] - heal)
+    if players[str(authorid)]["ResetHealCap"] == 0:
+        players[str(authorid)]["ResetHealCap"] = current_time + basecd
+    heal = min(players[str(authorid)]["ResetHealCap"], heal)
+    players[str(authorid)]["ResetHealCap"] = max(0,players[str(authorid)]["ResetHealCap"] - heal)
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + heal,10000)
     #await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
@@ -1918,20 +1919,20 @@ async def evade_command(ctx: interactions.CommandContext):
 async def dorest(authorid):
     resturl = "https://media.tenor.com/WB1nsdk07-IAAAAC/yaziprint-0020cm.gif"
     players = await getplayerdata()
+    current_time = int(time.time())
     players[str(authorid)]["Nextaction"] = ""
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
-    if players[str(targetid)]["ResetHealCap"] == 0:
-        players[str(targetid)]["ResetHealCap"] = current_time + basecd
-    heal = min(players[str(targetid)]["ResetHealCap"],heal)
-    players[str(targetid)]["ResetHealCap"] = max(0,players[str(targetid)]["ResetHealCap"]-heal)
+    if players[str(authorid)]["ResetHealCap"] == 0:
+        players[str(authorid)]["ResetHealCap"] = current_time + basecd
+    heal = min(players[str(authorid)]["ResetHealCap"],heal)
+    players[str(authorid)]["ResetHealCap"] = max(0,players[str(authorid)]["ResetHealCap"]-heal)
     players[str(authorid)]["Mana"] = min(players[str(authorid)]["Mana"] + 1,3)
     mana_pull = players[str(authorid)]["Mana"]
     manamoji = await manamojiconv(mana_pull)
-    current_time = int(time.time())
     players[str(authorid)]["Lastaction"] = "rest"
     players[str(authorid)]["Lastactiontime"] = current_time
     players[str(authorid)]["RestTimer"] = current_time + 86400
@@ -3292,7 +3293,7 @@ async def docritterihardlyknowher(authorid):
     itememb = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} equips a Critter I hardly Know her!",
         color = 0x633914,
-        description = f"<@{authorid}> equips Critter I hardly Know Her and is v ugly. Their critical rolls are increased by 1 for the rest of the game.\n*(Crit is a 1d10 roll, a 10 or higher is a crit that increases damage by 50%)*",
+        description = f"<@{authorid}> equips Critter I hardly Know Her and is v ugly. Their critical rolls are increased by 1 for the rest of the game.\n*(Crit is a 1d10 roll, a 10 or higher is a crit that increases the base damage by 50%)*",
         image = itemimg,
     )
     userchannel=str(locations[players[str(authorid)]["Location"]]["Channel_ID"])
@@ -4008,7 +4009,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Critter? I hardly know her",
         color = 0x000000,
-        description = f"Spend 2 mana to equip this item. When you roll for crit add one to your roll for each Critter? I hardly Know her you have equipped.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra damage)*",
+        description = f"Spend 2 mana to equip this item. When you roll for crit add one to your roll for each Critter? I hardly Know her you have equipped.\n*(Crit rolls are made on a 1d10, rolls >=10 deal 50% extra base damage)*",
         fields = [interactions.EmbedField(name="Command",value="/use",inline=True),interactions.EmbedField(name=":coin:SC Cost",value="6",inline=True),interactions.EmbedField(name=":blue_square:Mana Cost",value="2",inline=True)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
@@ -4118,11 +4119,11 @@ async def button_response(ctx):
     if ResetDamageCap == 0:
         ResetDamageCap = f"{int(basecd/60/60)} hours after your next damage received."
     else:
-        ResetDamageCap = f"<@{ResetDamageCap}>"
+        ResetDamageCap = f"<t:{ResetDamageCap}>"
     if ResetHealCap == 0:
         ResetHealCap = f"{int(basecd/60/60)} hours after your next healing received."
     else:
-        ResetHealCap = f"<@{ResetHealCap}>"
+        ResetHealCap = f"<t:{ResetHealCap}>"
     buttonemb = interactions.api.models.message.Embed(
         title = f"Caps",
         color = 0x000000,
