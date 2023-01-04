@@ -55,7 +55,7 @@ async def on_ready():
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
     membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
-    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, } for k, v in membersdict.items() if v[1] != 'True'}
+    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, "OptOutOrder": "", "ResetHealCap": 0, "ResetDamageCap": 0, "DamageCap": 6900, "HealCap": 4200,} for k, v in membersdict.items() if v[1] != 'True'}
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
         if origstr[-7:] == " (None)" :
@@ -81,6 +81,7 @@ async def on_ready():
     loop.create_task(pollfororders())
     loop.create_task(pollclock())
     loop.create_task(pollformanagain())
+    loop.create_task(pollforcaps())
     loop.create_task(pollformana())
     loop.create_task(pollforqueue())
     loop.create_task(pollforbackup())
@@ -290,6 +291,10 @@ async def wightspawn(ctx: interactions.CommandContext):
             players["Wight - "+str(ctx.author.id)]["Orders"] = ""
             players["Wight - "+str(ctx.author.id)]["OrderDate"] = 0
             players["Wight - "+str(ctx.author.id)]["OptOutOrder"] = "No"
+            players["Wight - "+str(ctx.author.id)]["ResetHealCap"] = 0
+            players["Wight - "+str(ctx.author.id)]["ResetDamageCap"] = 0
+            players["Wight - "+str(ctx.author.id)]["HealCap"] = 4200
+            players["Wight - "+str(ctx.author.id)]["DamageCap"] = 6900
             username = players["Wight - "+str(ctx.author.id)]["Username"]
             players[str(ctx.author.id)]['Mana'] = 0
             with open("players.json","w") as f:
@@ -590,8 +595,12 @@ async def deadcheck(targethp,targetid,authorid,players):
 #rage heals 420 for each rage stack then decreases by 1
 async def rage(authorid):
     rageplayers = await getplayerdata()
-    rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + ((rageplayers[str(authorid)]["Rage"])*420),10000)
-    ragehealing = ((rageplayers[str(authorid)]["Rage"])*420)
+    heal = ((rageplayers[str(authorid)]["Rage"])*420)
+    if players[str(targetid)]["ResetHealCap"] == 0:
+        players[str(targetid)]["ResetHealCap"] = current_time + basecd
+    heal = min(players[str(targetid)]["ResetHealCap"], heal)
+    players[str(targetid)]["ResetHealCap"] = max(0,players[str(targetid)]["ResetHealCap"] - heal)
+    rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + heal,10000)
     #await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
     with open("players.json","w") as f:
@@ -796,8 +805,32 @@ async def pollformanagain():
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['NextMana'] = v['NextMana'] + basecd
                     v['Mana'] = min(v['Mana']+1,3)
-                    v['DamageCap'] = 6900
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+        await asyncio.sleep(60)
+
+async def pollforcaps():
+    #run forever
+    while True:
+        print(f"\npolling for caps:{int(time.time())}")
+        players = await getplayerdata()
+        for k,v in players.items():
+            if v['ResetHealCap'] == 0 :
+                v['ResetHealCap'] = 0
+            else:
+                if v['ResetHealCap'] < int(time.time()):
+                    print(f"{v['Username']} heal cap has been set to 4200")
                     v['HealCap'] = 4200
+                    v['ResetHealCap'] = 0
+                    with open("players.json","w") as f:
+                        json.dump(players,f, indent=4)
+            if v['ResetDamageCap'] == 0:
+                v['ResetDamageCap'] = 0
+            else:
+                if v['ResetDamageCap'] < int(time.time()):
+                    print(f"{v['Username']} damage cap has been set to 6900")
+                    v['DamageCap'] = 6900
+                    v['ResetDamageCap'] = 0
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
         await asyncio.sleep(60)
@@ -1368,6 +1401,10 @@ async def dolightattack(authorid,targetid):
             else:
                 critdmg = 0
             damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
+            if players[str(targetid)]["ResetDamageCap"] == 0:
+                players[str(targetid)]["ResetDamageCap"] = current_time + basecd
+            damage = min(players[str(targetid)]["DamageCap"],damage)
+            players[str(targetid)]["DamageCap"] = max(0,players[str(targetid)]["DamageCap"]-damage)
             targethp = players[str(targetid)]["HP"] - damage
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +1
@@ -1535,6 +1572,10 @@ async def doheavyattack(authorid,targetid):
             else:
                 critdmg = 0
             damage = 3500 + damageroll + critdmg
+            if players[str(targetid)]["ResetDamageCap"] == 0:
+                players[str(targetid)]["ResetDamageCap"] = current_time + basecd
+            damage = min(players[str(targetid)]["DamageCap"],damage)
+            players[str(targetid)]["DamageCap"] = max(0,players[str(targetid)]["DamageCap"]-damage)
             targethp = players[str(targetid)]["HP"] - damage
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Rage"] = players[str(authorid)]["Rage"] +6
@@ -1687,6 +1728,10 @@ async def dointerrupt(authorid,targetid):
             print("resting")
         if resting or evading:
             damage = 4200
+            if players[str(targetid)]["ResetDamageCap"] == 0:
+                players[str(targetid)]["ResetDamageCap"] = current_time + basecd
+            damage = min(players[str(targetid)]["DamageCap"],damage)
+            players[str(targetid)]["DamageCap"] = max(0,players[str(targetid)]["DamageCap"]-damage)
             targethp = players[str(targetid)]["HP"] - damage
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Lastaction"] = "interrupt"
@@ -1879,6 +1924,10 @@ async def dorest(authorid):
     channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
     heal = math.ceil(int((10000 - hp_pull) / 2))
+    if players[str(targetid)]["ResetHealCap"] == 0:
+        players[str(targetid)]["ResetHealCap"] = current_time + basecd
+    heal = min(players[str(targetid)]["ResetHealCap"],heal)
+    players[str(targetid)]["ResetHealCap"] = max(0,players[str(targetid)]["ResetHealCap"]-heal)
     players[str(authorid)]["Mana"] = min(players[str(authorid)]["Mana"] + 1,3)
     mana_pull = players[str(authorid)]["Mana"]
     manamoji = await manamojiconv(mana_pull)
@@ -2392,6 +2441,8 @@ async def dodrink(authorid):
     scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
     scores[str(authorid)]["Score"] = playerroll
     scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    username = players[str(authorid)]["Username"]
+    print(f"{username} is drinking")
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -2599,6 +2650,8 @@ async def doloot(authorid):
     scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
     scores[str(authorid)]["Score"] = playerroll
     scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    username = players[str(authorid)]["Username"]
+    print(f"{username} is looting")
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -2803,6 +2856,8 @@ async def dobattlelich(authorid):
     scores[str(authorid)]["Media"] = interactions.Member.get_avatar_url(user, guild_id=guildid)
     scores[str(authorid)]["Score"] = playerroll
     scores[str(authorid)]["Scoreexpiry"] = current_time+cooldown
+    username = players[str(authorid)]["Username"]
+    print(f"{username} is battling the lich")
     print(f"playerroll = {playerroll}")
     print(f"scores = \n{scores}\n")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
@@ -4047,6 +4102,35 @@ async def button_response(ctx):
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
 
+Capshelpbutton = interactions.Button(
+    style=interactions.ButtonStyle.PRIMARY,
+    label="Caps",
+    custom_id="Caps",
+)
+
+@bot.component("Caps")
+async def button_response(ctx):
+    players = await getplayerdata()
+    HealCap = players[str(ctx.user.id)]["HealCap"]
+    DamageCap = players[str(ctx.user.id)]["DamageCap"]
+    ResetHealCap = players[str(ctx.user.id)]["ResetHealCap"]
+    ResetDamageCap = players[str(ctx.user.id)]["ResetDamageCap"]
+    if ResetDamageCap == 0:
+        ResetDamageCap = f"{int(basecd/60/60)} hours after your next damage received."
+    else:
+        ResetDamageCap = f"<@{ResetDamageCap}>"
+    if ResetHealCap == 0:
+        ResetHealCap = f"{int(basecd/60/60)} hours after your next healing received."
+    else:
+        ResetHealCap = f"<@{ResetHealCap}>"
+    buttonemb = interactions.api.models.message.Embed(
+        title = f"Caps",
+        color = 0x000000,
+        description = f"You can only receive up to 4200 healing from your rest and rage in a given {int(basecd/60/60)} hours.\n\n You can only receive 6900 damage from other players' attacks and interrupts in a given {int(basecd/60/60)} hours.",
+        fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
+        )
+    await ctx.send(embeds = buttonemb, ephemeral=True)
+
 @bot.command(
     name="help",
     description="get info on a topic",
@@ -4055,7 +4139,7 @@ async def help(ctx: interactions.CommandContext,):
     players = await getplayerdata()
     current_time = int(time.time())
     channelid=ctx.channel_id
-    row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton, wighthelpbutton)
+    row = interactions.spread_to_rows(actionhelpbutton, locationhelpbutton, itemhelpbutton, Ligmahelpbutton, Ragehelpbutton, Bountyhelpbutton, wighthelpbutton, Capshelpbutton)
     buttonemb = interactions.api.models.message.Embed(
         title = f"README_Link",
         color = 0x000000,
