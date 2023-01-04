@@ -796,6 +796,8 @@ async def pollformanagain():
                     print(f"{v['Username']} is ready to gain a mana! {v['Mana']}/3")
                     v['NextMana'] = v['NextMana'] + basecd
                     v['Mana'] = min(v['Mana']+1,3)
+                    v['DamageCap'] = 6900
+                    v['HealCap'] = 4200
                     with open("players.json","w") as f:
                         json.dump(players,f, indent=4)
         await asyncio.sleep(60)
@@ -3478,7 +3480,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Wights",
         color = 0x000000,
-        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players who attack a Wight with a heavy or light attack gain three mana, but also increase the ligma damage at their location by 250! (This does not change the timing of ligma outbreaks)",
+        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players who attack a Wight with a heavy or light attack gain the wight's bounty reward and increase the next ligma outbreak damage at the wight's location by 250! (This does not change the timing of ligma outbreaks)",
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
 
