@@ -64,10 +64,6 @@ async def on_ready():
         else:
             membersdict[key]["Username"]
     players = await getplayerdata()
-    bounty = await getbountydata()
-    for key in bounty.keys():
-      if key in membersdict.keys():
-        membersdict[key]['SC']+=bounty[key]['SC']
     newplayers = membersdict | players
     with open("players.json","w") as f:
         json.dump(newplayers,f, indent=4)
@@ -650,12 +646,6 @@ async def getplayerdata():
     with open("players.json","r") as f:
         players = json.load(f)
     return players
-
-#this pulls the bounty data into dict
-async def getbountydata():
-    with open("bounties.json","r") as g:
-        bounties = json.load(g)
-    return bounties
 
 #pulls ligma.json into dict
 async def getligmadata():
