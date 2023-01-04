@@ -605,7 +605,7 @@ async def deadcheck(targethp,targetid,authorid,players):
 async def rage(authorid):
     current_time = int(time.time())
     rageplayers = await getplayerdata()
-    heal = ((rageplayers[str(authorid)]["Rage"])*420)
+    heal = ((rageplayers[str(authorid)]["Rage"])*420) - max(0, ((rageplayers[str(authorid)]["Rage"])*420) + rageplayers[str(authorid)]["HP"] -10000)
     if rageplayers[str(authorid)]["ResetHealCap"] == 0:
         rageplayers[str(authorid)]["ResetHealCap"] = current_time + basecd
     heal = min(rageplayers[str(authorid)]["ResetHealCap"], heal)
@@ -1545,9 +1545,15 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (LocationPull)
     print (sameLocationUsernames)
     items = sameLocationUsernames
-    choices = [
-        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-    ]
+    try:
+        choices = [
+            interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+            ]
+    except:
+        items = items[:25]
+        choices = [
+            interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+            ]
     await ctx.populate(choices)
 
 #heavy attack is below
@@ -1967,7 +1973,7 @@ async def dorest(authorid):
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
     hp_pull = players[str(authorid)]["HP"]
-    heal = math.ceil(int((10000 - hp_pull) / 2))
+    heal = math.ceil(int((10000 - hp_pull) / 2)) - max(0, (math.ceil(int((10000 - hp_pull) / 2)) + players[str(authorid)]["HP"]) -10000)
     if players[str(authorid)]["ResetHealCap"] == 0:
         players[str(authorid)]["ResetHealCap"] = current_time + basecd
     heal = min(players[str(authorid)]["ResetHealCap"],heal)
@@ -4205,8 +4211,8 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Caps",
         color = 0x000000,
-        description = f"You can only receive up to 4200 healing from your rest and rage in a given {int(basecd/60/60)} hours.\n\n You can only receive 6900 damage from other players' attacks and interrupts in a given {int(basecd/60/60)} hours.",
-        fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
+        description = f"When you receive damage from an attack or interrupt and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. While that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. While that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
+        fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=DamageCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
 
