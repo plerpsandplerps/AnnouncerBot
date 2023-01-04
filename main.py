@@ -419,14 +419,23 @@ async def wightattack(ctx: interactions.CommandContext, playertarget: str):
                     description = f"<@{authorid}> throws a quick wight attack at <@{targetid}>!",
                     image = wightattackimage,
                 )
-                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user.send(embeds=wightattackprivemb)
-                user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-                await user2.send(embeds=wightattackprivemb)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user.send(embeds=wightattackprivemb)
+                except:
+                    print(f"{authorid} not valid user to DM")
+                try:
+                    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                    await user2.send(embeds=wightattackprivemb)
+                except:
+                    print(f"{targetid} not valid user to DM")
                 await deadcheck(targethp,targetid,authorid,players)
             else:
-                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user.send(f"Your Wight did not attack <@{targetid}> they are no longer a valid target!", ephemeral = True)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user.send(f"Your Wight did not attack <@{targetid}> they are no longer a valid target!", ephemeral = True)
+                except:
+                    print(f"{authorid} not valid user to DM")
     else:
         await ctx.send(f"You don't have a wight to command!" , ephemeral = True)
 
@@ -597,10 +606,10 @@ async def rage(authorid):
     current_time = int(time.time())
     rageplayers = await getplayerdata()
     heal = ((rageplayers[str(authorid)]["Rage"])*420)
-    if players[str(authorid)]["ResetHealCap"] == 0:
-        players[str(authorid)]["ResetHealCap"] = current_time + basecd
-    heal = min(players[str(authorid)]["ResetHealCap"], heal)
-    players[str(authorid)]["ResetHealCap"] = max(0,players[str(authorid)]["ResetHealCap"] - heal)
+    if rageplayers[str(authorid)]["ResetHealCap"] == 0:
+        rageplayers[str(authorid)]["ResetHealCap"] = current_time + basecd
+    heal = min(rageplayers[str(authorid)]["ResetHealCap"], heal)
+    rageplayers[str(authorid)]["ResetHealCap"] = max(0,rageplayers[str(authorid)]["ResetHealCap"] - heal)
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + heal,10000)
     #await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
@@ -918,8 +927,11 @@ async def pollforqueue():
 async def send_message(message : str, **kwargs):
     if('user_id' in kwargs.keys()):
         for targetid in kwargs['user_id']:
-            user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-            await user.send(message)
+            try:
+                user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                await user.send(message)
+            except:
+                print(f"{targetid} not valid user to DM")
     if ('channel_id' in kwargs.keys()):
         for targetid in kwargs['channel_id']:
             channel = await interactions.get(bot, interactions.Channel, object_id=targetid, force='http')
@@ -1456,14 +1468,23 @@ async def dolightattack(authorid,targetid):
             image = lightattackimage,
             fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=lightattackprivemb)
-        user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
-        await user2.send(embeds=lightattackprivemb)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=lightattackprivemb)
+        except:
+            print(f"{authorid} not valid user to DM for queue")
+        try:
+            user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
+            await user2.send(embeds=lightattackprivemb)
+        except:
+            print(f"{realtargetid} not valid user to DM for queue")
         await deadcheck(targethp,targetid,authorid,players)
     else:
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(f"You did not lightattack <@{targetid}> they are no longer a valid target!")
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(f"You did not lightattack <@{targetid}> they are no longer a valid target!")
+        except:
+            print(f"{authorid} not valid user to DM")
 
 @bot.command(
     name="lightattack",
@@ -1631,13 +1652,22 @@ async def doheavyattack(authorid,targetid):
             fields = [interactions.EmbedField(name="Crit Roll",value=critrollstr,inline=True),interactions.EmbedField(name="Damage",value=damage, inline=True),interactions.EmbedField(name="Target HP",value=hpmoji,inline=False)],
         )
         await deadcheck(targethp,targetid,authorid,players)
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=heavyattackprivemb)
-        user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
-        await user2.send(embeds=heavyattackprivemb)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=heavyattackprivemb)
+        except:
+            print(f"{authorid} not valid user to DM")
+        try:
+            user2 = await interactions.get(bot, interactions.Member, object_id=realtargetid, guild_id=guildid, force='http')
+            await user2.send(embeds=heavyattackprivemb)
+        except:
+            print(f"{targetid} not valid user to DM")
     else:
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(f"You did not heavyattack <@{targetid}> they are no longer a valid target!")
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(f"You did not heavyattack <@{targetid}> they are no longer a valid target!")
+        except:
+            print(f"{authorid} not valid user to DM")
 
 @bot.command(
     name="heavyattack",
@@ -1781,16 +1811,25 @@ async def dointerrupt(authorid,targetid):
             image = interruptimage,
             fields = [interactions.EmbedField(name="Interrupted Queue:",value=removequeue,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=interruptembpriv)
-        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-        await user2.send(embeds=interruptembpriv)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=interruptembpriv)
+        except:
+            print(f"{authorid} not valid user to DM")
+        try:
+            user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+            await user2.send(embeds=interruptembpriv)
+        except:
+            print(f"{targetid} not valid user to DM")
         await deadcheck(targethp,targetid,authorid,players)
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
     else:
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(f"You did not interrupt <@{targetid}> they are no longer a valid target!")
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(f"You did not interrupt <@{targetid}> they are no longer a valid target!")
+        except:
+            print(f"{targetid} not valid user to DM")
 
 @bot.command(
     name="interrupt",
@@ -1882,8 +1921,11 @@ async def doevade(authorid):
         description = f"<@{authorid}> is dodging all hands until <t:{players[str(authorid)]['EvadeTimer']}>!",
         image = evadeimg,
         )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=evadeemb)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=evadeemb)
+    except:
+        print(f"{authorid} not valid user to DM")
 
 @bot.command(
     name="evade",
@@ -1952,8 +1994,11 @@ async def dorest(authorid):
         image = restimg,
         fields = [interactions.EmbedField(name="Mana",value=manamoji,inline=True),interactions.EmbedField(name="HP",value=hpmoji,inline=True)],
         )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=restembpriv)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=restembpriv)
+    except:
+        print(f"{authorid} not valid user to DM")
     restemb = interactions.api.models.message.Embed(
         title = f"{players[str(authorid)]['Username']} is now resting!",
         color = 0x05ad0b,
@@ -2047,10 +2092,16 @@ async def doexchange(authorid, targetid, readyitem):
         image = exchangeimg,
         fields = [interactions.EmbedField(name="Item Given",value=readyitem,inline=True)],
     )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=exchangeembpriv)
-    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user2.send(embeds=exchangeembpriv)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=exchangeembpriv)
+    except:
+        print(f"{authorid} not valid user to DM")
+    try:
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=exchangeembpriv)
+    except:
+        print(f"{targetid} not valid user to DM")
 
 @bot.command(
     name="exchange",
@@ -2252,10 +2303,16 @@ async def doaid(authorid, targetid):
         image = aidimg,
         fields = [interactions.EmbedField(name="Heal",value=heal,inline=True),interactions.EmbedField(name="New Target HP",value=hpmoji,inline=True)],
     )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=aidembpriv)
-    user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-    await user2.send(embeds=aidembpriv)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=aidembpriv)
+    except:
+        print(f"{authorid} not valid user to DM")
+    try:
+        user2 = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+        await user2.send(embeds=aidembpriv)
+    except:
+        print(f"{targetid} not valid user to DM")
 
 @bot.command(
     name="aid",
@@ -2362,8 +2419,11 @@ async def dotrade(authorid, itemtarget):
         description = f"<@{authorid}> haggles for a {itemtarget}",
         fields = [interactions.EmbedField(name="Item Bought",value=itemtarget,inline=True),interactions.EmbedField(name="SC Remaining",value=players[str(authorid)]["SC"],inline=True)],
         )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=tradeembpriv)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=tradeembpriv)
+    except:
+        print(f"{authorid} not valid user to DM")
 
 @bot.command(
     name="trade",
@@ -2566,8 +2626,11 @@ async def dodrink(authorid):
             image = drinktenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=drinkprivate)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=drinkprivate)
+        except:
+            print(f"{authorid} not valid user to DM")
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -2593,8 +2656,11 @@ async def dodrink(authorid):
             image = drinktenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=drinkprivate)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=drinkprivate)
+        except:
+            print(f"{authorid} not valid user to DM")
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -2767,8 +2833,11 @@ async def doloot(authorid):
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=lootprivate)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=lootprivate)
+        except:
+            print(f"{authorid} not valid user to DM")
         players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+randomitem
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -2794,8 +2863,11 @@ async def doloot(authorid):
             image = loottenorimage,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=lootprivate)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=lootprivate)
+        except:
+            print(f"{authorid} not valid user to DM")
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -2980,8 +3052,11 @@ async def dobattlelich(authorid):
             image = lichimg,
             fields = [interactions.EmbedField(name="Player Roll",value=playerroll, inline=True),interactions.EmbedField(name="High Score",value=highscore,inline=True),interactions.EmbedField(name="Low Score",value=lowscore,inline=True),interactions.EmbedField(name="New HP",value=hpmoji,inline=True)],
         )
-        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-        await user.send(embeds=lichprivate)
+        try:
+            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+            await user.send(embeds=lichprivate)
+        except:
+            print(f"{authorid} not valid user to DM")
         players[str(authorid)]["HP"] = hp_pull
         with open("players.json","w") as f:
             json.dump(players,f, indent=4)
@@ -3208,8 +3283,11 @@ async def dogoodiebag(authorid):
         description = f"<@{authorid}> cracks open a cold Goodie Bag for a **{randomitem}**!",
         image = itemimg,
     )
-    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-    await user.send(embeds=itememb)
+    try:
+        user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+        await user.send(embeds=itememb)
+    except:
+        print(f"{authorid} not valid user to DM")
     players[str(authorid)]["ReadyInventory"]=players[str(authorid)]["ReadyInventory"] + "\n        "+str(randomitem)
     userreadyinventory=str(players[str(authorid)]["ReadyInventory"])
     #replace first instance of item in user's readyinventory
@@ -5252,8 +5330,11 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(leaveteambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user.send(embeds=recruitemb, components = row)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user.send(embeds=recruitemb, components = row)
+                except:
+                    print(f"{authorid} not valid user to DM")
             #create new team
             else :
                 print("case1.1.2")
@@ -5267,8 +5348,11 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True), interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user.send(embeds=recruitemb, components=row)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user.send(embeds=recruitemb, components=row)
+                except:
+                    print(f"{authorid} not valid user to DM")
                 players[str(targetid)]["NewTeam"] = newteam
                 with open("players.json", "w") as f:
                     json.dump(players, f, indent=4)
@@ -5285,8 +5369,11 @@ async def dorecruit(authorid, targetid):
                 fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                 )
             row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-            await user.send(embeds=recruitemb, components = row)
+            try:
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds=recruitemb, components = row)
+            except:
+                print(f"{authorid} not valid user to DM")
     #target not self
     else:
         print("case2")
@@ -5313,8 +5400,11 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Target Old Team",value=oldteam,inline=True),interactions.EmbedField(name="Target New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-                user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-                await user.send(embeds=recruitemb, components = row)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                    await user.send(embeds=recruitemb, components = row)
+                except:
+                    print(f"{targetid} not valid user to DM")
                 recruitemb2 = interactions.api.models.message.Embed(
                     title = f"An offer has been sent to {players[str(targetid)]['Username']}!",
                     color = 0x2da66c,
@@ -5323,10 +5413,16 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-                user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
-                await user.send(embeds=recruitemb, components = row)
-                user2 = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user2.send(embeds=recruitemb2)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=targetid, guild_id=guildid, force='http')
+                    await user.send(embeds=recruitemb, components = row)
+                except:
+                    print(f"{targetid} not valid user to DM")
+                try:
+                    user2 = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user2.send(embeds=recruitemb2)
+                except:
+                    print(f"{authorid} not valid user to DM")
                 players[str(targetid)]["NewTeam"] = newteam
                 with open("players.json", "w") as f:
                     json.dump(players, f, indent=4)
@@ -5344,8 +5440,11 @@ async def dorecruit(authorid, targetid):
                     fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                     )
                 row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-                await user.send(embeds=recruitemb, components = row)
+                try:
+                    user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                    await user.send(embeds=recruitemb, components = row)
+                except:
+                    print(f"{authorid} not valid user to DM")
                 players[str(authorid)]["NewTeam"] = newteam
                 with open("players.json", "w") as f:
                     json.dump(players, f, indent=4)
@@ -5362,8 +5461,11 @@ async def dorecruit(authorid, targetid):
                 fields = [interactions.EmbedField(name="Old Team",value=oldteam,inline=True),interactions.EmbedField(name="New Team",value=newteam,inline=True)],
                 )
             row = interactions.spread_to_rows(jointeambutton, stayteambutton, futureteamrosterbutton, currentteamrosterbutton)
-            user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
-            await user.send(embeds = recruitemb, components = row)
+            try:
+                user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
+                await user.send(embeds = recruitemb, components = row)
+            except:
+                print(f"{authorid} not valid user to DM")
             players[str(authorid)]["NewTeam"] = newteam
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
