@@ -58,6 +58,7 @@ async def on_ready():
     membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, "OptOutOrder": "", "ResetHealCap": 0, "ResetDamageCap": 0, "DamageCap": 6900, "HealCap": 4200,} for k, v in membersdict.items() if v[1] != 'True'}
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
+        origstr = origstr.encode('ascii', 'ignore').decode('utf-8')
         if origstr[-7:] == " (None)" :
             membersdict[key]["Username"] = origstr[:-7]
         else:
@@ -458,7 +459,11 @@ async def wight_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.command(
     name="wighttravel",
@@ -554,7 +559,11 @@ async def wight_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.event(name="on_message_create")
 async def listen(message: interactions.Message):
@@ -1200,7 +1209,11 @@ async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.autocomplete("order", "action")
 async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1274,7 +1287,11 @@ async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.autocomplete("order", "target")
 async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1336,7 +1353,11 @@ async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.autocomplete("order", "readyitem")
 async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
@@ -1367,7 +1388,11 @@ async def order_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 
 #light attack is below
@@ -1545,16 +1570,14 @@ async def light_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     print (LocationPull)
     print (sameLocationUsernames)
     items = sameLocationUsernames
+    choices = [
+        interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ]
     try:
-        choices = [
-            interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-            ]
+        await ctx.populate(choices)
     except:
-        items = items[:25]
-        choices = [
-            interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-            ]
-    await ctx.populate(choices)
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #heavy attack is below
 async def doheavyattack(authorid,targetid):
@@ -1738,7 +1761,11 @@ async def heavy_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #interrupt is below
 async def dointerrupt(authorid,targetid):
@@ -1898,7 +1925,11 @@ async def interrupt_autocomplete(ctx: interactions.CommandContext, value: str = 
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #evade is below
 async def doevade(authorid):
@@ -2180,7 +2211,11 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 
 @bot.autocomplete("exchange", "readyitem")
@@ -2194,7 +2229,11 @@ async def exchange_autocomplete(ctx: interactions.CommandContext, value: str = "
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #farm is below
 async def dofarm(authorid):
@@ -2376,7 +2415,11 @@ async def aid_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #trade is below
 
@@ -2489,7 +2532,11 @@ async def trade_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #drink is below
 
@@ -3185,7 +3232,11 @@ async def use_autocomplete(ctx: interactions.CommandContext, value: str = ""):
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 #lichitem is below
 
@@ -5519,7 +5570,11 @@ async def recruit_autocomplete(ctx: interactions.CommandContext, value: str = ""
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 @bot.command(
     name="bounty",
@@ -5597,7 +5652,11 @@ async def bounty_autocomplete(ctx: interactions.CommandContext, value: str = "")
     choices = [
         interactions.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ]
-    await ctx.populate(choices)
+    try:
+        await ctx.populate(choices)
+    except:
+        choices = choices[:25]
+        await ctx.populate(choices)
 
 jointeambutton = interactions.Button(
     style=interactions.ButtonStyle.SUCCESS,
