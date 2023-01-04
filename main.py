@@ -11,6 +11,12 @@ import pprint as pp
 import re
 from typing import List
 from interactions.ext.paginator import Page, Paginator
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+logger = logging.getLogger()
+logger.addHandler(logging.FileHandler('test.log', 'a'))
+print = logger.info
 
 
 with open('.gitignore2/config.json', 'r') as cfg:
@@ -1369,7 +1375,6 @@ async def dolightattack(authorid,targetid):
                 prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
-                players[str(authorid)]["Mana"] = 3
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
@@ -1537,7 +1542,6 @@ async def doheavyattack(authorid,targetid):
                 prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
-                players[str(authorid)]["Mana"] = 3
                 ligma = await getligmadata()
                 ligma[players[str(targetid)]["Location"]] = ligma[players[str(targetid)]["Location"]] +1
                 with open("ligma.json","w") as h:
