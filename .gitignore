@@ -26,15 +26,16 @@ $RECYCLE.BIN/
 # gitignore
 .gitignore2/*
 
-# ignore virual environment
+# ignore virtual environment
 venv/**
 
-# playershidden
+# playershiddeninfo
 players.json
 playerbackup.json
+reminders.json
+test.log
+
+# location current scores hidden
 dungeon.json
 tavern.json
 lichcastle.json
-blank.json
-reminders.json
-test.log

@@ -414,6 +414,7 @@ async def wightattack(ctx: interactions.CommandContext, playertarget: str):
                 attackerchannel=str(locations[players[wightid]["Location"]]["Channel_ID"])
                 channel = await interactions.get(bot, interactions.Channel, object_id=attackerchannel , force='http')
                 await channel.send(embeds=wightattackemb)
+                await ctx.send(f"Your wight attacks!" , ephemeral = True)
                 wightattackprivemb = interactions.api.models.message.Embed(
                     title = f"{players[str(authorid)]['Username']} wight attacked {players[str(targetid)]['Username']}!",
                     color = 0x34b7eb,
@@ -539,6 +540,7 @@ async def wighttravel(ctx: interactions.CommandContext, traveltarget: str):
                     fields = [interactions.EmbedField(name="Old Location",value=oldlocation,inline=True),interactions.EmbedField(name="New Location",value=newlocation,inline=True)],
                 )
                 await oldchannel.send(embeds=travelemb)
+                await ctx.send(f"Your wight travels!" , ephemeral = True)
             else:
                 user = await interactions.get(bot, interactions.Member, object_id=authorid, force='http')
                 await send_message(f"You must travel to the Crossroads before you can travel there!", user_id=[user])
@@ -1792,10 +1794,6 @@ async def dointerrupt(authorid,targetid):
             print("resting")
         if resting or evading:
             damage = 4200
-            if players[str(targetid)]["ResetDamageCap"] == 0:
-                players[str(targetid)]["ResetDamageCap"] = current_time + basecd
-            damage = min(players[str(targetid)]["DamageCap"],damage)
-            players[str(targetid)]["DamageCap"] = max(0,players[str(targetid)]["DamageCap"]-damage)
             targethp = players[str(targetid)]["HP"] - damage
             players[str(targetid)]["HP"] = targethp
             players[str(authorid)]["Lastaction"] = "interrupt"
@@ -4262,7 +4260,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Caps",
         color = 0x000000,
-        description = f"When you receive damage from an attack or interrupt and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. While that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. While that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
+        description = f"When you receive damage from an attack and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. While that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. While that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
         fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=DamageCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
