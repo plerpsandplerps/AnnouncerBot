@@ -55,7 +55,7 @@ async def on_ready():
     membersdictfind = r"(\d+):\s*id=\d+\s*,\s*username='(.*?)',\sdiscriminator='\d+',\sbot=(\w+),\snick=(.*?.),"
     membersdict = re.findall(membersdictfind, membersdict)
     membersdict = dict([(a, (b, c, d)) for a, b, c, d in membersdict])
-    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','ReadyDate': current_time,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, "OptOutOrder": "", "ResetHealCap": 0, "ResetDamageCap": 0, "DamageCap": 6900, "HealCap": 4200,} for k, v in membersdict.items() if v[1] != 'True'}
+    membersdict = {k: {'Username': v[0]+" ("+v[2]+")", 'Mana': 3, 'HP': 10000, 'Location': "Crossroads", 'SC': 10, 'Rage': 0, 'InitManaDate': current_time + basecd,'NextMana': current_time + basecd,'ReadyInventory': "\n        goodiebag",'EquippedInventory': ' ','NeedMana': 10,'Lastactiontime': current_time, 'Lastaction':"start",'Nextaction':"", 'RestTimer': current_time,'EvadeTimer': current_time,'Team': "No Team",'NewTeam':"No Team",'BountyReward': 7, 'Orders':"",'OrderDate': 0, "OptOutOrder": "", "ResetHealCap": 0, "ResetDamageCap": 0, "DamageCap": 6900, "HealCap": 4200,} for k, v in membersdict.items() if v[1] != 'True'}
     for key in membersdict.keys():
         origstr = str(membersdict[key]['Username'])
         origstr = origstr.encode('ascii', 'ignore').decode('utf-8')
@@ -276,7 +276,7 @@ async def wightspawn(ctx: interactions.CommandContext):
             players["Wight - "+str(ctx.author.id)]["NextMana"] = current_time + basecd
             players["Wight - "+str(ctx.author.id)]["ReadyInventory"] = " "
             players["Wight - "+str(ctx.author.id)]["EquippedInventory"] = " "
-            players["Wight - "+str(ctx.author.id)]["ReadyDate"] = current_time
+            players["Wight - "+str(ctx.author.id)]["NeedMana"] = 10
             players["Wight - "+str(ctx.author.id)]["Lastactiontime"] = current_time
             players["Wight - "+str(ctx.author.id)]["Lastaction"] = "start"
             players["Wight - "+str(ctx.author.id)]["Nextaction"] = ""
@@ -687,7 +687,7 @@ async def pollfornext():
         for k,v in players.items():
             if v['Nextaction'] != "":
                 words = players[k]['Nextaction'].split()
-                if v['ReadyDate'] < int(time.time()):
+                if v['NeedMana'] <= v['Mana']:
                     #do the action
                     loop = asyncio.get_running_loop()
                     if len(words) == 1:
@@ -1530,8 +1530,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("lightattack",ctx,targetid)
@@ -1718,8 +1717,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
         cost = 3 - min((EquippedInventory_pull.count("AWP")),1)
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("heavyattack",ctx,targetid)
@@ -1879,8 +1877,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("interrupt",ctx,targetid)
@@ -1964,8 +1961,7 @@ async def evade_command(ctx: interactions.CommandContext):
         cost = 1
         Mana_pull = players[str(ctx.author.id)]["Mana"]
         if cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
@@ -2168,8 +2164,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
         elif ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items in your Ready Inventory!", ephemeral = True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("exchange",ctx,targetid,readyitem)
@@ -2274,8 +2269,7 @@ async def farm(ctx: interactions.CommandContext):
         if locations["Farmland"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot farm when you are not in the farmland!", ephemeral=True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
@@ -2376,8 +2370,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
         if locations["Keep"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot aid when you are not in the keep!", ephemeral=True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("aid",ctx,targetid)
@@ -2492,8 +2485,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
         elif SC_pull < cost:
             await ctx.send(f"Your {SC_pull} seed coins are not able to purchase an item that costs {cost} seed coins! ", ephemeral = True)
         elif manacost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((manacost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = manacost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("trade",ctx,itemtarget)
@@ -2723,8 +2715,7 @@ async def drink(ctx: interactions.CommandContext):
         if locations["Tavern"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot drink when you are not in the tavern!", ephemeral=True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
@@ -2934,8 +2925,7 @@ async def loot(ctx: interactions.CommandContext):
         if locations["Dungeon"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot /loot when you are not in the Dungeon!", ephemeral=True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
@@ -3145,8 +3135,7 @@ async def battlelich(ctx: interactions.CommandContext):
         if locations["Lich's Castle"]["Role_ID"] not in ctx.author.roles:
             await ctx.send(f"You cannot battlelich when you are not in the Lich's Castle!", ephemeral=True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
@@ -3191,8 +3180,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
         if ReadyInventory_pull=="":
             await ctx.send(f"You don't have any items to use in your Inventory!", ephemeral = True)
         elif cost-Mana_pull > 0:
-            enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-            players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+            players[str(ctx.author.id)]["NeedMana"] = cost
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("use",ctx,readyitem)
@@ -5138,8 +5126,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = enoughmanatime
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5169,8 +5156,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5201,8 +5187,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5232,8 +5217,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5263,8 +5247,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5294,8 +5277,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
@@ -5325,8 +5307,7 @@ async def button_response(ctx):
     cost = 1
     Mana_pull = players[str(ctx.author.id)]["Mana"]
     if cost-Mana_pull > 0:
-        enoughmanatime = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
-        players[str(ctx.author.id)]["ReadyDate"] = (players[str(ctx.author.id)]["NextMana"])+(max((cost-Mana_pull-1),0))*basecd
+        players[str(ctx.author.id)]["NeedMana"] = cost
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
