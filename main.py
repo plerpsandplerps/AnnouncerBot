@@ -4250,7 +4250,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Caps",
         color = 0x000000,
-        description = f"When you receive damage from an attack and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. While that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. While that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
+        description = f"**Damage Cap**\nWhen you receive damage from an attack and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. \nWhile that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\n**Heal Cap**\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. \nWhile that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
         fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=DamageCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
