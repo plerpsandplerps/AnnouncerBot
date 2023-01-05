@@ -31,7 +31,7 @@ venv/**
 
 # playershiddeninfo
 players.json
-playerbackup.json
+playersbackup.json
 reminders.json
 test.log
 
