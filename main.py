@@ -187,7 +187,8 @@ async def ligmaiterate():
             targetlichprot = EquippedInventory_pull.count("lichitem")
             print(f"\nthe target died!")
             if str("Wight - ") in str(k):
-                await send_message(f"{k} died because of ||LIGMA BALLS||!", channel_id=[general])
+                user = players[str(k)]["Username"]
+                await send_message(f"{user} died because of ||LIGMA BALLS||!", channel_id=[general])
                 players[str(k)]["Location"] = "Dead"
                 with open("players.json","w") as f:
                     json.dump(players,f, indent=4)
@@ -3110,12 +3111,9 @@ async def douse(authorid, readyitem):
     channelid = locations[str(location)]["Channel_ID"]
     current_time = int(time.time())
     ReadyInventory_pull = str(players[str(authorid)]["ReadyInventory"])
-    print("Step1")
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] - shop[str(readyitem)]["ManaCost"]
-    print("Step2")
     with open("players.json","w") as f:
         json.dump(players,f, indent=4)
-    print("Step3")
     loop = asyncio.get_running_loop()
     await loop.create_task(functiondict[readyitem](**{'authorid': authorid}))
 
@@ -3224,7 +3222,6 @@ async def dolichitem(authorid):
     user = await interactions.get(bot, interactions.Member, object_id=authorid, guild_id=guildid, force='http')
     location = players[str(authorid)]["Location"]
     channelid = locations[str(location)]["Channel_ID"]
-    players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
     players[str(authorid)]["Lastaction"] = "lichitem"
     targethp=players[str(authorid)]["HP"]
     hpmoji = await hpmojiconv(targethp)
