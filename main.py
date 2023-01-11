@@ -1452,6 +1452,7 @@ async def dolightattack(authorid,targetid):
                 players[str(targetid)]["Location"] = "Dead"
                 bounty = players[str(targetid)]["BountyReward"]
                 players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
+                players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        goodiebag"
             else:
                 players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"]
             players[str(authorid)]["Lastaction"] = "lightattack"
@@ -1535,7 +1536,7 @@ async def lightattack(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("lightattack",ctx,targetid)
-            await ctx.send(f"You don't have the mana for that!\n\nThe action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that!\n\nThe action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             lightattackemb = interactions.api.models.message.Embed(
@@ -1635,6 +1636,7 @@ async def doheavyattack(authorid,targetid):
                 players[str(targetid)]["Location"] = "Dead"
                 bounty = players[str(targetid)]["BountyReward"]
                 players[str(authorid)]["SC"] = players[str(authorid)]["SC"] + bounty
+                players[str(authorid)]["ReadyInventory"] = players[str(authorid)]["ReadyInventory"] + "\n        goodiebag"
                 prettytargetid = "<@"+str(targetid[8:])+">'s Wight"
                 realtargetid = targetid[8:]
                 await send_message(f"{prettytargetid} died because of <@{authorid}>!", channel_id=[general])
@@ -1722,7 +1724,7 @@ async def heavyattack(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("heavyattack",ctx,targetid)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             heavyattackemb = interactions.api.models.message.Embed(
@@ -1882,7 +1884,7 @@ async def interrupt(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("interrupt",ctx,targetid)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             interruptemb = interactions.api.models.message.Embed(
@@ -1966,7 +1968,7 @@ async def evade_command(ctx: interactions.CommandContext):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             evadeemb = interactions.api.models.message.Embed(
@@ -2169,7 +2171,7 @@ async def exchange(ctx: interactions.CommandContext, playertarget, readyitem: st
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("exchange",ctx,targetid,readyitem)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             exchangeemb = interactions.api.models.message.Embed(
@@ -2274,7 +2276,7 @@ async def farm(ctx: interactions.CommandContext):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             farmemb = interactions.api.models.message.Embed(
@@ -2375,7 +2377,7 @@ async def aid(ctx: interactions.CommandContext, playertarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("aid",ctx,targetid)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             aidemb = interactions.api.models.message.Embed(
@@ -2490,7 +2492,7 @@ async def trade(ctx: interactions.CommandContext, itemtarget: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("trade",ctx,itemtarget)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull - manacost)
             manaemb = interactions.api.models.message.Embed(
@@ -2720,7 +2722,7 @@ async def drink(ctx: interactions.CommandContext):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             await ctx.send(f"You drink!\n\nSubmit another command!",ephemeral=True)
             if Mana_pull - cost > 0:
@@ -2930,7 +2932,7 @@ async def loot(ctx: interactions.CommandContext):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             manaemb = interactions.api.models.message.Embed(
@@ -3137,7 +3139,7 @@ async def battlelich(ctx: interactions.CommandContext):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenext(ctx)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             lichemb = interactions.api.models.message.Embed(
@@ -3182,7 +3184,7 @@ async def use(ctx: interactions.CommandContext, readyitem: str):
             with open("players.json", "w") as f:
                 json.dump(players, f, indent=4)
             await queuenexttarget("use",ctx,readyitem)
-            await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+            await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
         else:
             manamoji = await manamojiconv(Mana_pull- cost)
             manaemb = interactions.api.models.message.Embed(
@@ -3654,7 +3656,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Wights",
         color = 0x000000,
-        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players who attack a Wight with a heavy or light attack gain the wight's bounty reward and increase the next ligma outbreak damage at the wight's location by 250! (This does not change the timing of ligma outbreaks)",
+        description = f"Dead players can spawn a wight with 1hp, 3 mana, and 3 bounty reward in the Crossroads with `/wightspawn` by spending 3 mana! \n\nDead players can order their wight to travel to a new location for 1 of their Wight's mana with `/wighttravel`! \n\nDead players can order their wight to attack another person in their area for 69 damage by spending 1 of the wight's mana with `/wightattack`! \n\nLiving players who attack a Wight with a heavy or light attack gain the wight's bounty reward, gain a goodiebag, and increase the next ligma outbreak damage at the wight's location by 250! (This does not change the timing of ligma outbreaks)",
         )
     await ctx.send(embeds = buttonemb, ephemeral=False)
 
@@ -5137,7 +5139,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana for that! The action has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana for that! The action has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5167,7 +5169,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5198,7 +5200,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5228,7 +5230,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5258,7 +5260,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5288,7 +5290,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
@@ -5318,7 +5320,7 @@ async def button_response(ctx):
         with open("players.json", "w") as f:
             json.dump(players, f, indent=4)
         await queuenexttarget("travel",ctx,destination)
-        await ctx.send(f"You don't have the mana to travel! The travel has been queued for <t:{enoughmanatime}>.", ephemeral = True)
+        await ctx.send(f"You don't have the mana to travel! The travel has been queued.", ephemeral = True)
     else:
         manamoji = await manamojiconv(Mana_pull- cost)
         travelemb = interactions.api.models.message.Embed(
