@@ -616,8 +616,10 @@ async def rage(authorid):
     heal = ((rageplayers[str(authorid)]["Rage"])*420) - max(0, ((rageplayers[str(authorid)]["Rage"])*420) + rageplayers[str(authorid)]["HP"] -10000)
     if rageplayers[str(authorid)]["ResetHealCap"] == 0:
         rageplayers[str(authorid)]["ResetHealCap"] = current_time + basecd
-    heal = min(rageplayers[str(authorid)]["ResetHealCap"], heal)
-    rageplayers[str(authorid)]["ResetHealCap"] = max(0,rageplayers[str(authorid)]["ResetHealCap"] - heal)
+    heal = min(rageplayers[str(authorid)]["HealCap"], heal)
+    print(f"Heal expected on {authorid} = {heal}")
+    print(f"Heal cap is {rageplayers[str(authorid)]['HealCap']}")
+    rageplayers[str(authorid)]["HealCap"] = max(0,rageplayers[str(authorid)]["HealCap"] - heal)
     rageplayers[str(authorid)]["HP"] = min(rageplayers[str(authorid)]["HP"] + heal,10000)
     #await send_message(f"You healed {ragehealing} from :fire: **Rage**!", user_id=authorid)
     rageplayers[str(authorid)]["Rage"] = max(rageplayers[str(authorid)]["Rage"] -1,0)
@@ -1432,6 +1434,8 @@ async def dolightattack(authorid,targetid):
             else:
                 critdmg = 0
             damage = 800 + damageroll + (EquippedInventory_pull.count("drinkingmedal") * 420)+ critdmg
+            print(f"Damage expected on {targetid} = {damage}")
+            print(f"Damage cap is {players[str(targetid)]['DamageCap']}")
             if players[str(targetid)]["ResetDamageCap"] == 0:
                 players[str(targetid)]["ResetDamageCap"] = current_time + basecd
             damage = min(players[str(targetid)]["DamageCap"],damage)
@@ -1616,6 +1620,8 @@ async def doheavyattack(authorid,targetid):
             else:
                 critdmg = 0
             damage = 3500 + damageroll + critdmg
+            print(f"Damage expected on {targetid} = {damage}")
+            print(f"Damage cap is {players[str(targetid)]['DamageCap']}")
             if players[str(targetid)]["ResetDamageCap"] == 0:
                 players[str(targetid)]["ResetDamageCap"] = current_time + basecd
             damage = min(players[str(targetid)]["DamageCap"],damage)
@@ -1994,8 +2000,10 @@ async def dorest(authorid):
     heal = math.ceil(int((10000 - hp_pull) / 2)) - max(0, (math.ceil(int((10000 - hp_pull) / 2)) + players[str(authorid)]["HP"]) -10000)
     if players[str(authorid)]["ResetHealCap"] == 0:
         players[str(authorid)]["ResetHealCap"] = current_time + basecd
-    heal = min(players[str(authorid)]["ResetHealCap"],heal)
-    players[str(authorid)]["ResetHealCap"] = max(0,players[str(authorid)]["ResetHealCap"]-heal)
+    heal = min(players[str(authorid)]["HealCap"],heal)
+    players[str(authorid)]["HealCap"] = max(0,players[str(authorid)]["HealCap"]-heal)
+    print(f"Heal expected on {authorid} = {heal}")
+    print(f"Heal cap is {players[str(authorid)]['HealCap']}")
     players[str(authorid)]["Mana"] = min(players[str(authorid)]["Mana"] + 1,3)
     mana_pull = players[str(authorid)]["Mana"]
     manamoji = await manamojiconv(mana_pull)
@@ -2303,6 +2311,7 @@ async def doaid(authorid, targetid):
     targethp=players[str(targetid)]["HP"]
     heal = min(math.ceil(int((10000 - targethp)/4)),10000)
     players[str(authorid)]["Mana"] = players[str(authorid)]["Mana"] -1
+    print(f"{authorid} spent a Mana to heal {targetid}. New Mana: {players[str(authorid)]['Mana']}")
     players[str(authorid)]["Lastaction"] = "aid"
     players[str(targetid)]["HP"] = min(players[str(targetid)]["HP"] + heal, 10000)
     targethp=players[str(targetid)]["HP"]
@@ -4247,7 +4256,7 @@ async def button_response(ctx):
     buttonemb = interactions.api.models.message.Embed(
         title = f"Caps",
         color = 0x000000,
-        description = f"**Damage Cap**\nWhen you receive damage from an attack and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. \nWhile that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\n**Heal Cap**\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. \nWhile that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
+        description = f"**Damage Cap**\nWhen you receive damage from a light or heavy attack and don't have a damage cap timer running, start a {int(basecd/60/60)}-hour damage cap timer. \nWhile that timer runs, you can only receive up to 6900 damage, including the damage from the attack initiating the timer.\n\n**Heal Cap**\nWhen you receive healing from rage or rest and don't have a heal cap timer running, start a {int(basecd/60/60)}-hour heal cap timer. \nWhile that timer runs, you can only receive up to 4200 healing, including the healing that initiated the timer.",
         fields = [interactions.EmbedField(name="Current Heal Cap",value=HealCap,inline=False),interactions.EmbedField(name="Next Heal Cap Reset",value=ResetHealCap,inline=False),interactions.EmbedField(name="Current Damage Cap",value=DamageCap,inline=False),interactions.EmbedField(name="Next Damage Cap Reset",value=ResetDamageCap,inline=False)],
         )
     await ctx.send(embeds = buttonemb, ephemeral=True)
